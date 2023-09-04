@@ -5,7 +5,7 @@ import Container from "@/components/container"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { ShoppingCart, Sun, Moon, Menu } from "lucide-react"
-import ProfileButton from "@/components/profilebutton"
+import LanguageButton from "@/components/LanguageButton"
 import { useTheme } from "next-themes"
 import { SheetTrigger, SheetContent, Sheet } from "@/components/ui/sheet"
 import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar"
@@ -14,15 +14,19 @@ import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar"
 const routes = [
   {
     href: "/1",
-    label: "Products",
+    label: "Users",
   },
   {
     href: "/2",
-    label: "Categories",
+    label: "Measurments",
   },
   {
     href: "/3",
-    label: "On Sale",
+    label: "SARC-CalF",
+  },
+  {
+    href: "/4",
+    label: "SPPB",
   },
 ]
 
@@ -40,11 +44,11 @@ export default function Header() {
             <Link href="/" className="ml-4 lg:ml-0">
               <div className="flex flex-row items-center">
                 <Avatar>
-                  <AvatarImage src="/img/shadcn.jpg" />
+                  <AvatarImage src="/img/s-logo.png" />
                   <AvatarFallback>SARC</AvatarFallback>
                 </Avatar>
-                <div className="ml-4">
-                  SARCOPENIA ASSESSMENT
+                <div className="ml-2 text-primary text-2xl font-bold">
+                  SarcopeniaCHECK
                 </div>
               </div>
             </Link>
@@ -52,10 +56,11 @@ export default function Header() {
 
           <nav className="mx-6 flex items-center space-x-4 lg:space-x-6 hidden md:block">
             {routes.map((route, i) => (
-              <Button asChild variant={"ghost"}>
-                <Link key={i} href={route.href} className="text-sm font-medium transition-colors">
+              <Button asChild variant={"ghost"} >
+                <Link key={route.href} href={route.href}
+                  className="text-xl font-medium transition-colors text-primary"
+                >
                   {route.label}
-
                 </Link>
               </Button>
             ))
@@ -64,7 +69,7 @@ export default function Header() {
           </nav>
 
           <div className="flex items-center">
-            <ProfileButton />
+            <LanguageButton />
 
           </div>
 
