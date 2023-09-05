@@ -1,6 +1,9 @@
 'use client'
 
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import { Languages } from "lucide-react"
+import { Button } from "./ui/button"
 
 import {
   DropdownMenu,
@@ -17,13 +20,23 @@ import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar"
 function LanguageButton() {
   const [language, setlanguage] = useState("zh")
 
-  const dispalyLamguage = (language: any) => {
+  const router = useRouter();
+
+  useEffect(() => {
+    setlanguage(router.locale)
+  }, [language])
+
+
+  const dispalyLamguage = (language: string) => {
     switch (language) {
-      case "zh":
-        return "中文";
+      case "zh-tw":
+        return "繁體中文";
+        break;
+      case "zh-cn":
+        return "简体中文";
         break;
       case "ja":
-        return "日文";
+        return "日本語";
         break;
       default:
         return "English";
@@ -31,21 +44,26 @@ function LanguageButton() {
   }
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
-        {dispalyLamguage(language)}
+      <DropdownMenuTrigger >
+        <Button variant="ghost" size="icon">
+          <Languages className="w-6 h-6 rotate-0 scale-100 transition-all " />
+        </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        {/* <DropdownMenuLabel>Languages</DropdownMenuLabel> */}
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => setlanguage("en")} className="cursor-pointer">
+        <DropdownMenuItem onClick={() => { setlanguage("en"); router.push('/en') }} className="cursor-pointer">
           English
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setlanguage("ja")} className="cursor-pointer">
-          日文
+        <DropdownMenuItem onClick={() => { setlanguage("zh-tw"); router.push('zh-tw') }} className="cursor-pointer">
+          繁體中文
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setlanguage("zh")} className="cursor-pointer">
-          中文
+        <DropdownMenuItem onClick={() => { setlanguage("zh-cn"); router.push('zh-cn') }} className="cursor-pointer">
+          简体中文
         </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => { setlanguage("ja"); router.push('ja') }} className="cursor-pointer">
+          日本語
+        </DropdownMenuItem>
+
         <DropdownMenuSeparator />
         <DropdownMenuItem className="cursor-pointer">Log Out</DropdownMenuItem>
       </DropdownMenuContent>

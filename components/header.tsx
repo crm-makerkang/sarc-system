@@ -6,37 +6,24 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { ShoppingCart, Sun, Moon, Menu } from "lucide-react"
 import LanguageButton from "@/components/LanguageButton"
-import { useTheme } from "next-themes"
-import { SheetTrigger, SheetContent, Sheet } from "@/components/ui/sheet"
-import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar"
-import { useUrl } from 'nextjs-current-url';
+//import { useTheme } from "next-themes"
+//import { SheetTrigger, SheetContent, Sheet } from "@/components/ui/sheet"
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
+//import { useUrl } from 'nextjs-current-url';
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
+import { useTranslations } from 'next-intl';
 
-// Navigation routes
-const routes = [
-  {
-    href: "/users",
-    label: "Users",
-  },
-  {
-    href: "/measurements",
-    label: "Measurments",
-  },
-  {
-    href: "/sarc-form",
-    label: "SARC-CalF",
-  },
-  {
-    href: "/sppb-form",
-    label: "SPPB",
-  },
-]
+import { get_nav_routes } from "@/settings"
 
 export default function Header(test: any) {
   console.log(test)
 
-  const { theme, setTheme } = useTheme();
+  // const { theme, setTheme } = useTheme();
+
+  const t = useTranslations('sarc');
+
+  const nav_routes = get_nav_routes();
 
   return (
     <div className="sm:flex sm:justify-between py3 px-4 border-b">
@@ -58,12 +45,12 @@ export default function Header(test: any) {
           </div>
 
           <nav className="mx-6 flex items-center space-x-4 lg:space-x-6 hidden md:block">
-            {routes.map((route, i) => (
+            {nav_routes.map((route, i) => (
               <Button asChild variant={"ghost"}  >
                 <Link key={i} href={route.href} id={route.href}
                   className="text-xl font-medium transition-colors text-primary"
                 >
-                  {route.label}
+                  {t(route.href.substring(1))}
                 </Link>
               </Button>
             ))
