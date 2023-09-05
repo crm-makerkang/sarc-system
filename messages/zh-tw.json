@@ -4,6 +4,14 @@
     "users": "用戶",
     "measurements": "量測資料",
     "sarc-form": "SARC-CalF",
-    "sppb-form": "SPPB"
+    "sppb-form": "SPPB",
+    "Status": "狀態",
+    "Email": "電子郵箱",
+    "Amount": "金額",
+    "copyPaymentID": "複製 Payment ID 到剪貼簿",
+    "nextPage": "下一頁",
+    "prevPage": "前一頁",
+    "filterEmails": "用電郵篩選 ...",
+    "Columns": "欄位"
   }
 }

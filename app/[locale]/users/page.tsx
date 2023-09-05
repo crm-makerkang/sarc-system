@@ -9,71 +9,114 @@ import { ShoppingCart, ShoppingBag } from 'lucide-react'
 import ProductList from '@/components/productlist'
 import { useTranslations } from "next-intl"
 
-const products = [
-  {
-    id: "1",
-    category: "Camera",
-    name: "Sony FX3",
-    price: "$3,999.00",
-    images: ["/img/products/FX3.png"],
-  },
-  {
-    id: "2",
-    category: "Camera",
-    name: "Sony A7S III",
-    price: "$3,499.00",
-    images: ["/img/products/7SIII.png"],
-  },
-  {
-    id: "3",
-    category: "Camera",
-    name: "Sony A7C",
-    price: "$1,599.00",
-    images: ["/img/products/7C.png"],
-  },
-  {
-    id: "4",
-    category: "Camera",
-    name: "Sony A7 IV",
-    price: "$2,399.00",
-    images: ["/img/products/7IV.png"],
-  },
-  {
-    id: "5",
-    category: "Camera",
-    name: "Sony A7R III",
-    price: "$2,499.00",
-    images: ["/img/products/7RIII.png"],
-  },
-  {
-    id: "6",
-    category: "Camera",
-    name: "Sony A7R V",
-    price: "$3,899.00",
-    images: ["/img/products/7RV.png"],
-  },
-  {
-    id: "7",
-    category: "Camera",
-    name: "Sony A6700",
-    price: "$1,799.00",
-    images: ["/img/products/6700.png"],
-  },
-  {
-    id: "8",
-    category: "Camera",
-    name: "Sony AZV-E10",
-    price: "$699.00",
-    images: ["/img/products/ZVE10.png"],
-  },
-];
+import { Payment, columns } from "./columns"
+import { DataTable } from "./data-table"
 
-export default function Home() {
+async function getData(): Promise<Payment[]> {
+  // Fetch data from your API here.
+  return [
+    {
+      id: "728ed52f",
+      amount: 100,
+      status: "pending",
+      email: "m@example.com",
+    },
+    {
+      id: "489e1d42",
+      amount: 200,
+      status: "processing",
+      email: "example@gmail.com",
+    },
+    {
+      id: "728ed52f",
+      amount: 300,
+      status: "pending",
+      email: "m@example.com",
+    },
+    {
+      id: "489e1d42",
+      amount: 400,
+      status: "processing",
+      email: "example@gmail.com",
+    },
+    {
+      id: "728ed52f",
+      amount: 550,
+      status: "pending",
+      email: "m@example.com",
+    },
+    {
+      id: "489e1d42",
+      amount: 600,
+      status: "processing",
+      email: "example@gmail.com",
+    },
+    {
+      id: "728ed52f",
+      amount: 700,
+      status: "pending",
+      email: "m@example.com",
+    },
+    {
+      id: "489e1d42",
+      amount: 825,
+      status: "processing",
+      email: "example@gmail.com",
+    },
+    {
+      id: "728ed52f",
+      amount: 900,
+      status: "pending",
+      email: "m@example.com",
+    },
+    {
+      id: "489e1d42",
+      amount: 1025,
+      status: "processing",
+      email: "example@gmail.com",
+    },
+    {
+      id: "728ed52f",
+      amount: 1100,
+      status: "pending",
+      email: "m@example.com",
+    },
+    {
+      id: "489e1d42",
+      amount: 1225,
+      status: "processing",
+      email: "example@gmail.com",
+    },
+    {
+      id: "728ed52f",
+      amount: 1300,
+      status: "pending",
+      email: "m@example.com",
+    },
+    {
+      id: "489e1d42",
+      amount: 1425,
+      status: "processing",
+      email: "example@gmail.com",
+    },
+  ]
+}
+
+export default async function Home() {
   const t = useTranslations('sarc');
+  const data = await getData();
+
+  columns[0].header = t("Status");
+  //columns[1].header = t("Email");
+  columns[2].header = t("Amount");
 
   return (
     <Container>
       {t("users")}
+
+      <div className="container mx-auto py-10">
+        <DataTable columns={columns} data={data} />
+      </div>
     </Container>
   );
 }

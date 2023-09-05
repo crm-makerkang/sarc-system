@@ -4,6 +4,14 @@
     "users": "Users",
     "measurements": "Measurements",
     "sarc-form": "SARC-CalF",
-    "sppb-form": "SPPB"
+    "sppb-form": "SPPB",
+    "Status": "Status",
+    "Email": "Email",
+    "Amount": "Amount",
+    "copyPaymentID": "Copy Payment ID",
+    "nextPage": "Next",
+    "prevPage": "Previous",
+    "filterEmails": "Filter emails...",
+    "Columns": "Columns"
   }
 }
