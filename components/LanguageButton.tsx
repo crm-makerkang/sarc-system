@@ -45,22 +45,22 @@ function LanguageButton() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger >
-        <Button variant="ghost" size="icon">
+        <div>
           <Languages className="w-6 h-6 rotate-0 scale-100 transition-all " />
-        </Button>
+        </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => { setlanguage("en"); router.push('/en') }} className="cursor-pointer">
           English
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => { setlanguage("zh-tw"); router.push('zh-tw') }} className="cursor-pointer">
+        <DropdownMenuItem onClick={() => { setlanguage("zh-tw"); router.push('/zh-tw') }} className="cursor-pointer">
           繁體中文
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => { setlanguage("zh-cn"); router.push('zh-cn') }} className="cursor-pointer">
+        <DropdownMenuItem onClick={() => { setlanguage("zh-cn"); router.push('/zh-cn') }} className="cursor-pointer">
           简体中文
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => { setlanguage("ja"); router.push('ja') }} className="cursor-pointer">
+        <DropdownMenuItem onClick={() => { setlanguage("ja"); router.push('/ja') }} className="cursor-pointer">
           日本語
         </DropdownMenuItem>
 

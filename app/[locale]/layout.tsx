@@ -1,17 +1,11 @@
 
 import './globals.css'
 import type { Metadata } from 'next'
-//import { ThemeProvider } from 'next-themes'
 import { Inter } from 'next/font/google'
 import Header from '@/components/Header'
 
 import { NextIntlClientProvider } from 'next-intl';
 import { notFound } from 'next/navigation';
-
-// 已定義在 middleware.ts
-// export function generateStaticParams() {
-//   return [{ locale: 'en' }, { locale: 'de' }];
-// }
 
 const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {

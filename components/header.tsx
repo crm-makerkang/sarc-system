@@ -1,25 +1,14 @@
-'use client'
-
-import { Butterfly_Kids } from "next/font/google"
+"use client"
 import Container from "@/components/Container"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { ShoppingCart, Sun, Moon, Menu } from "lucide-react"
 import LanguageButton from "@/components/LanguageButton"
-//import { useTheme } from "next-themes"
-//import { SheetTrigger, SheetContent, Sheet } from "@/components/ui/sheet"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
-//import { useUrl } from 'nextjs-current-url';
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { useTranslations } from 'next-intl';
-
-import { get_nav_routes } from "@/settings"
+import { useTranslations } from "next-intl"
+import { get_nav_routes } from "@/Settings/setting"
 
 export default function Header(test: any) {
   console.log(test)
-
-  // const { theme, setTheme } = useTheme();
 
   const t = useTranslations('sarc');
 
@@ -47,15 +36,13 @@ export default function Header(test: any) {
           <nav className="mx-6 flex items-center space-x-4 lg:space-x-6 hidden md:block">
             {nav_routes.map((route, i) => (
               <Button asChild variant={"ghost"}  >
-                <Link key={i} href={route.href} id={route.href}
+                <Link key={route.href} href={route.href} id={route.href}
                   className="text-xl font-medium transition-colors text-primary"
                 >
                   {t(route.href.substring(1))}
                 </Link>
               </Button>
-            ))
-
-            }
+            ))}
           </nav>
 
           <div className="flex items-center">

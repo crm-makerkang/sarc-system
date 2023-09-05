@@ -1,4 +1,3 @@
-
 export function get_nav_routes() {
   return [
     {
@@ -13,5 +12,5 @@ export function get_nav_routes() {
     {
       href: "/sppb-form",
     },
-  ]
+  ];
 }

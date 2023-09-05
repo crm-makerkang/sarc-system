@@ -7,7 +7,6 @@ import Header from '@/components/Header'
 import Container from '@/components/Container'
 import { ShoppingCart, ShoppingBag } from 'lucide-react'
 import ProductList from '@/components/productlist'
-import { useTranslations } from "next-intl"
 
 const products = [
   {
@@ -69,11 +68,9 @@ const products = [
 ];
 
 export default function Home() {
-  const t = useTranslations('sarc');
-
   return (
     <Container>
-      {t("users")}
+      SPPB
     </Container>
   );
 }

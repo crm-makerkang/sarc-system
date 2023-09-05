@@ -70,10 +70,9 @@ const products = [
 
 export default function Home() {
   const t = useTranslations('sarc');
-
   return (
     <Container>
-      {t("users")}
+      {t("measurements")}
     </Container>
   );
 }
