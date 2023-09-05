@@ -4,7 +4,7 @@ import './globals.css'
 import type { Metadata } from 'next'
 import { ThemeProvider } from 'next-themes'
 import { Inter } from 'next/font/google'
-import Header from '@/components/header'
+import Header from '@/components/Header'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -22,7 +22,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         {/* <ThemeProvider attribute="class" defaultTheme='system' enableSystem> */}
-        <Header />
+        <Header forTest />
         {children}
         {/* </ThemeProvider> */}
       </body>
