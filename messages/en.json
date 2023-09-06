@@ -8,10 +8,11 @@
     "Status": "Status",
     "Email": "Email",
     "Amount": "Amount",
-    "copyPaymentID": "Copy Payment ID",
+    "copyUserInfoID": "Copy UserInfo ID",
     "nextPage": "Next",
     "prevPage": "Previous",
     "filterEmails": "Filter emails...",
-    "Columns": "Columns"
+    "Columns": "Columns",
+    "Actions": "Action"
   }
 }

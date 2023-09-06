@@ -4,6 +4,9 @@ import { ColumnDef } from "@tanstack/react-table"
 import { ArrowUpDown, MoreHorizontal } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Checkbox } from "@/components/ui/checkbox"
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,14 +20,33 @@ import { useTranslations } from "next-intl"
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
-export type Payment = {
+export type UserInfo = {
   id: string
   amount: number
   status: "pending" | "processing" | "success" | "failed"
   email: string
 }
 
-export const columns: ColumnDef<Payment>[] = [
+export const columns: ColumnDef<UserInfo>[] = [
+  {
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={table.getIsAllPageRowsSelected()}
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
   {
     accessorKey: "status",
     header: "Status",
@@ -33,22 +55,17 @@ export const columns: ColumnDef<Payment>[] = [
     accessorKey: "email",
     //header: "Email",
     header: ({ column }) => {
-      const t = useTranslations('sarc');
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          {t("Email")}
+          Email
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       )
     },
   },
-  // {
-  //   accessorKey: "amount",
-  //   header: "Amount",
-  // },
   {
     accessorKey: "amount",
     header: () => <div className="text-right">Amount</div>,
@@ -65,7 +82,7 @@ export const columns: ColumnDef<Payment>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const payment = row.original
+      const UserInfo = row.original
       const t = useTranslations('sarc');
       return (
         <DropdownMenu>
@@ -78,14 +95,14 @@ export const columns: ColumnDef<Payment>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel></DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
+              onClick={() => navigator.clipboard.writeText(UserInfo.id)}
             >
-              {/* Copy payment ID */}
-              {t("copyPaymentID")}
+              {/* Copy UserInfo ID */}
+              {t("copyUserInfoID")}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
+            <DropdownMenuItem>View UserInfo details</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )
@@ -93,7 +110,7 @@ export const columns: ColumnDef<Payment>[] = [
   },
 ]
 
-export function get_columns(): ColumnDef<Payment>[] {
+export function get_columns(): ColumnDef<UserInfo>[] {
   return [
     {
       accessorKey: "status",

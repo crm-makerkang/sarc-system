@@ -9,10 +9,10 @@ import { ShoppingCart, ShoppingBag } from 'lucide-react'
 import ProductList from '@/components/productlist'
 import { useTranslations } from "next-intl"
 
-import { Payment, columns } from "./columns"
+import { UserInfo, columns } from "./columns"
 import { DataTable } from "./data-table"
 
-async function getData(): Promise<Payment[]> {
+async function getData(): Promise<UserInfo[]> {
   // Fetch data from your API here.
   return [
     {
@@ -103,12 +103,14 @@ async function getData(): Promise<Payment[]> {
 }
 
 export default async function Home() {
+
+  // Next_intl
   const t = useTranslations('sarc');
   const data = await getData();
 
-  columns[0].header = t("Status");
-  //columns[1].header = t("Email");
-  columns[2].header = t("Amount");
+  columns[1].header = t("Status");
+  columns[2].header = t("Email");
+  columns[3].header = t("Amount");
 
   return (
     <Container>

@@ -8,10 +8,11 @@
     "Status": "狀態",
     "Email": "電子郵箱",
     "Amount": "金額",
-    "copyPaymentID": "複製 Payment ID 到剪貼簿",
+    "copyUserInfoID": "複製 UserInfo ID 到剪貼簿",
     "nextPage": "下一頁",
     "prevPage": "前一頁",
     "filterEmails": "用電郵篩選 ...",
-    "Columns": "欄位"
+    "Columns": "欄位",
+    "Actions": "操作"
   }
 }

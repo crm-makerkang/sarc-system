@@ -51,6 +51,8 @@ export function DataTable<TData, TValue>({
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
 
+  const [rowSelection, setRowSelection] = React.useState({})
+
   const table = useReactTable({
     data,
     columns,
@@ -61,10 +63,12 @@ export function DataTable<TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
+    onRowSelectionChange: setRowSelection,
     state: {
       sorting,
       columnFilters,
       columnVisibility,
+      rowSelection,
     },
   })
 
@@ -85,7 +89,7 @@ export function DataTable<TData, TValue>({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
-              {t("Columns")}
+              {t("Columns")} {/* next-intl works */}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
@@ -94,7 +98,8 @@ export function DataTable<TData, TValue>({
               .filter(
                 (column) => column.getCanHide()
               )
-              .map((column) => {
+              .map((column, i) => {
+                const t = useTranslations('sarc');
                 return (
                   <DropdownMenuCheckboxItem
                     key={column.id}
@@ -104,7 +109,11 @@ export function DataTable<TData, TValue>({
                       column.toggleVisibility(!!value)
                     }
                   >
-                    {column.id}
+                    {/* {t(column.id)} next-intl not works */}
+                    {i == 0 ? t("Status") : null}
+                    {i == 1 ? t("Email") : null}
+                    {i == 2 ? t("Amount") : null}
+                    {i == 3 ? t("Actions") : null}
                     {/* {column.id} */}
                   </DropdownMenuCheckboxItem>
                 )
