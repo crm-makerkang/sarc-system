@@ -30,6 +30,7 @@ export type UserInfo = {
 export const columns: ColumnDef<UserInfo>[] = [
   {
     id: "select",
+    accessorKey: "id",
     header: ({ table }) => (
       <Checkbox
         checked={table.getIsAllPageRowsSelected()}
@@ -48,6 +49,7 @@ export const columns: ColumnDef<UserInfo>[] = [
     enableHiding: false,
   },
   {
+    id: "status",
     accessorKey: "status",
     header: "Status",
   },
@@ -101,8 +103,20 @@ export const columns: ColumnDef<UserInfo>[] = [
               {t("copyUserInfoID")}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View UserInfo details</DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                var msg = `UserID:${UserInfo.id}\nEmail:${UserInfo.email}`;
+                alert(msg);
+              }}
+            >View customer</DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                //api to delete record
+                window.location.href = "/users";
+              }}
+            >
+              Delete
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )
@@ -110,19 +124,19 @@ export const columns: ColumnDef<UserInfo>[] = [
   },
 ]
 
-export function get_columns(): ColumnDef<UserInfo>[] {
-  return [
-    {
-      accessorKey: "status",
-      header: "Status",
-    },
-    {
-      accessorKey: "email",
-      header: "Email",
-    },
-    {
-      accessorKey: "amount",
-      header: "Amount",
-    },
-  ]
-}
+// export function get_columns(): ColumnDef<UserInfo>[] {
+//   return [
+//     {
+//       accessorKey: "status",
+//       header: "Status",
+//     },
+//     {
+//       accessorKey: "email",
+//       header: "Email",
+//     },
+//     {
+//       accessorKey: "amount",
+//       header: "Amount",
+//     },
+//   ]
+// }

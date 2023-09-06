@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button'
 import Header from '@/components/Header'
 import Container from '@/components/Container'
 import { ShoppingCart, ShoppingBag } from 'lucide-react'
-import ProductList from '@/components/productlist'
 import { useTranslations } from "next-intl"
 
 import { UserInfo, columns } from "./columns"
@@ -16,85 +15,85 @@ async function getData(): Promise<UserInfo[]> {
   // Fetch data from your API here.
   return [
     {
-      id: "728ed52f",
+      id: "1",
       amount: 100,
       status: "pending",
       email: "m@example.com",
     },
     {
-      id: "489e1d42",
+      id: "2",
       amount: 200,
       status: "processing",
       email: "example@gmail.com",
     },
     {
-      id: "728ed52f",
+      id: "3",
       amount: 300,
       status: "pending",
       email: "m@example.com",
     },
     {
-      id: "489e1d42",
+      id: "4",
       amount: 400,
       status: "processing",
       email: "example@gmail.com",
     },
     {
-      id: "728ed52f",
+      id: "5",
       amount: 550,
       status: "pending",
       email: "m@example.com",
     },
     {
-      id: "489e1d42",
+      id: "6",
       amount: 600,
       status: "processing",
       email: "example@gmail.com",
     },
     {
-      id: "728ed52f",
+      id: "7",
       amount: 700,
       status: "pending",
       email: "m@example.com",
     },
     {
-      id: "489e1d42",
+      id: "8",
       amount: 825,
       status: "processing",
       email: "example@gmail.com",
     },
     {
-      id: "728ed52f",
+      id: "9",
       amount: 900,
       status: "pending",
       email: "m@example.com",
     },
     {
-      id: "489e1d42",
+      id: "10",
       amount: 1025,
       status: "processing",
       email: "example@gmail.com",
     },
     {
-      id: "728ed52f",
+      id: "11",
       amount: 1100,
       status: "pending",
       email: "m@example.com",
     },
     {
-      id: "489e1d42",
+      id: "12",
       amount: 1225,
       status: "processing",
       email: "example@gmail.com",
     },
     {
-      id: "728ed52f",
+      id: "13",
       amount: 1300,
       status: "pending",
       email: "m@example.com",
     },
     {
-      id: "489e1d42",
+      id: "14",
       amount: 1425,
       status: "processing",
       email: "example@gmail.com",
@@ -105,12 +104,13 @@ async function getData(): Promise<UserInfo[]> {
 export default async function Home() {
 
   // Next_intl
-  const t = useTranslations('sarc');
+  const t = useTranslations('sarc'); // 會造成 Warning: Hooks are not supported inside an async component. 
+  // 但程式執行正常
   const data = await getData();
 
-  columns[1].header = t("Status");
-  columns[2].header = t("Email");
-  columns[3].header = t("Amount");
+  // columns[1].header = t("Status");
+  // columns[2].header = t("Email");
+  // columns[3].header = t("Amount");
 
   return (
     <Container>

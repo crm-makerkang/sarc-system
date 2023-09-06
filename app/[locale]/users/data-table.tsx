@@ -74,6 +74,11 @@ export function DataTable<TData, TValue>({
 
   // more pagination control, see https://github.com/TanStack/table/tree/main/examples/react/pagination-controlled
 
+  React.useEffect(() => {
+    table.setPageSize(Number(7))
+  })
+
+
   return (
     <div>
       <div className="flex items-center py-4">
@@ -165,7 +170,19 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
+
       <div className="flex items-center justify-end space-x-2 py-4">
+
+        <div className="flex-1 text-sm text-muted-foreground">
+          {table.getFilteredSelectedRowModel().rows.map((row) => (row.getValue('select')))} /{" "}
+          {table.getFilteredRowModel().rows.length} row(s) selected.
+        </div>
+
+        <div className="flex-1 text-sm text-muted-foreground">
+          {table.getState().pagination.pageIndex + 1} /{" "}
+          {table.getPageCount()}
+        </div>
+
         <Button
           variant="outline"
           size="sm"
