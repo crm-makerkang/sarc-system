@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 import { useTranslations } from "next-intl"
+import { table_text_size } from "@/Settings/setting"
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -107,7 +108,7 @@ export const columns: ColumnDef<UserInfo>[] = [
               onClick={() => navigator.clipboard.writeText(UserInfo.id)}
             >
               {/* Copy UserInfo ID */}
-              {t("copyUserInfoID")}
+              <div className={table_text_size}>{t("copyUserInfoID")}</div>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
@@ -115,14 +116,16 @@ export const columns: ColumnDef<UserInfo>[] = [
                 var msg = `UserID:${UserInfo.id}\nEmail:${UserInfo.email}`;
                 alert(msg);
               }}
-            >View customer</DropdownMenuItem>
+            >
+              <div className={table_text_size}>View customer</div>
+            </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => {
                 //api to delete record
                 window.location.href = "/users";
               }}
             >
-              Delete
+              <div className={table_text_size}>Delete</div>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -130,20 +133,3 @@ export const columns: ColumnDef<UserInfo>[] = [
     },
   },
 ]
-
-// export function get_columns(): ColumnDef<UserInfo>[] {
-//   return [
-//     {
-//       accessorKey: "status",
-//       header: "Status",
-//     },
-//     {
-//       accessorKey: "email",
-//       header: "Email",
-//     },
-//     {
-//       accessorKey: "amount",
-//       header: "Amount",
-//     },
-//   ]
-// }
