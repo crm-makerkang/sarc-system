@@ -14,7 +14,6 @@ export const metadata: Metadata = {
 }
 
 export default async function LocaleLayout({ children, params: { locale } }) {
-  //console.log(locale);
   let messages;
   try {
     messages = (await import(`../../messages/${locale}.json`)).default;

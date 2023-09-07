@@ -14,3 +14,5 @@ export function get_nav_routes() {
     },
   ];
 }
+
+export const table_text_size = "text-xl"; 

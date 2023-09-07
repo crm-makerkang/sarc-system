@@ -3,6 +3,7 @@ import * as React from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useTranslations } from "next-intl"
+import { table_text_size } from "@/Settings/setting"
 
 import {
   DropdownMenu,
@@ -75,7 +76,7 @@ export function DataTable<TData, TValue>({
   // more pagination control, see https://github.com/TanStack/table/tree/main/examples/react/pagination-controlled
 
   React.useEffect(() => {
-    table.setPageSize(Number(7))
+    table.setPageSize(Number(8))
   })
 
 
@@ -86,14 +87,13 @@ export function DataTable<TData, TValue>({
           placeholder={t("filterEmails")}
           value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            //console.log("aaa")
             table.getColumn("email")?.setFilterValue(event.target.value)
           }
-          className="max-w-sm"
+          className={"max-w-sm border-black " + table_text_size}
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
+            <Button variant="outline" className={"ml-auto border-black " + table_text_size}>
               {t("Columns")} {/* next-intl works */}
             </Button>
           </DropdownMenuTrigger>
@@ -113,33 +113,35 @@ export function DataTable<TData, TValue>({
                     onCheckedChange={(value) =>
                       column.toggleVisibility(!!value)
                     }
-                  >
-                    {/* {t(column.id)} next-intl not works */}
-                    {i == 0 ? t("Status") : null}
-                    {i == 1 ? t("Email") : null}
-                    {i == 2 ? t("Amount") : null}
-                    {i == 3 ? t("Actions") : null}
-                    {/* {column.id} */}
+                  > <div className={table_text_size}>
+                      {/* {t(column.id)} next-intl not works */}
+                      {i == 0 ? t("Status") : null}
+                      {i == 1 ? t("Email") : null}
+                      {i == 2 ? t("Amount") : null}
+                      {i == 3 ? t("Actions") : null}
+                      {/* {column.id} */}
+                    </div>
                   </DropdownMenuCheckboxItem>
                 )
               })}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="rounded-md border">
+      <div className="rounded-md border border-gray-500">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead key={header.id} className={"text-primary font-bold text-xl"}>
                       {header.isPlaceholder
                         ? null
                         : flexRender(
                           header.column.columnDef.header,
                           header.getContext()
                         )}
+
                     </TableHead>
                   )
                 })}
@@ -149,12 +151,12 @@ export function DataTable<TData, TValue>({
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow
+                <TableRow className={table_text_size}
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className={table_text_size}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}
@@ -173,12 +175,12 @@ export function DataTable<TData, TValue>({
 
       <div className="flex items-center justify-end space-x-2 py-4">
 
-        <div className="flex-1 text-sm text-muted-foreground">
+        <div className={"flex-1 text-muted-foreground " + table_text_size}>
           {table.getFilteredSelectedRowModel().rows.map((row) => (row.getValue('select')))} /{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
         </div>
 
-        <div className="flex-1 text-sm text-muted-foreground">
+        <div className={"flex-1 text-muted-foreground " + table_text_size}>
           {table.getState().pagination.pageIndex + 1} /{" "}
           {table.getPageCount()}
         </div>
@@ -188,6 +190,7 @@ export function DataTable<TData, TValue>({
           size="sm"
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
+          className={table_text_size}
         >
           {t("prevPage")}
         </Button>
@@ -196,6 +199,7 @@ export function DataTable<TData, TValue>({
           size="sm"
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
+          className={table_text_size}
         >
           {t("nextPage")}
         </Button>

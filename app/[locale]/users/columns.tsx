@@ -51,18 +51,22 @@ export const columns: ColumnDef<UserInfo>[] = [
   {
     id: "status",
     accessorKey: "status",
-    header: "Status",
+    header: () => {
+      const t = useTranslations('sarc');
+      return <div>{t('Status')}</div>
+    },
   },
   {
     accessorKey: "email",
     //header: "Email",
     header: ({ column }) => {
+      const t = useTranslations('sarc');
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Email
+          <div className="text-xl">{t('Email')}</div>
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       )
@@ -70,7 +74,10 @@ export const columns: ColumnDef<UserInfo>[] = [
   },
   {
     accessorKey: "amount",
-    header: () => <div className="text-right">Amount</div>,
+    header: () => {
+      const t = useTranslations('sarc');
+      return <div className="text-right">{t('Amount')}</div>
+    },
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("amount"))
       const formatted = new Intl.NumberFormat("en-US", {

@@ -1,4 +1,6 @@
 "use client"
+
+import React, { useEffect } from "react"
 import Container from "@/components/Container"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
@@ -9,11 +11,21 @@ import { useTranslations } from "next-intl"
 import { get_nav_routes } from "@/Settings/setting"
 
 export default function Header(test: any) {
-  console.log(test)
+  console.log("aaa", test)
+
+  const [tab, setTab] = React.useState("");
+
+  useEffect(() => {
+    const pathArray = window.location.href.split("/")
+    setTab("/" + pathArray[pathArray.length - 1]);
+  }, [])
 
   const t = useTranslations('sarc');
 
   const nav_routes = get_nav_routes();
+
+  const baseStyle = "text-xl font-medium transition-colors text-primary "
+  const underlineStyle = " underline underline-offset-4"
 
   return (
     <div className="sm:flex sm:justify-between py3 px-4 border-b">
@@ -40,7 +52,7 @@ export default function Header(test: any) {
           <nav className="mx-6 flex items-center space-x-4 lg:space-x-6 hidden md:block">
             {nav_routes.map((route, i) => (
               <Button variant={"ghost"} key={i} onClick={() => { window.location.href = route.href }}
-                className="text-xl font-medium transition-colors text-primary"
+                className={baseStyle + (tab == route.href ? underlineStyle : "")}
               >
                 {/* <Link key={i} href={route.href} id={route.href}
               //   className="text-xl font-medium transition-colors text-primary"

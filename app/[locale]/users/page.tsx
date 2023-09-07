@@ -7,7 +7,7 @@ import Header from '@/components/Header'
 import Container from '@/components/Container'
 import { ShoppingCart, ShoppingBag } from 'lucide-react'
 import { useTranslations } from "next-intl"
-
+import { ArrowUpDown, MoreHorizontal } from "lucide-react"
 import { UserInfo, columns } from "./columns"
 import { DataTable } from "./data-table"
 
@@ -104,21 +104,31 @@ async function getData(): Promise<UserInfo[]> {
 export default async function Home() {
 
   // Next_intl
-  const t = useTranslations('sarc'); // 會造成 Warning: Hooks are not supported inside an async component. 
+  //const t = useTranslations('sarc'); // 會造成 Warning: Hooks are not supported inside an async component. 
   // 但程式執行正常
   const data = await getData();
 
   // columns[1].header = t("Status");
-  // columns[2].header = t("Email");
+  // // columns[2].header = t("Email");
+
+  // columns[2].header =
+  //   <Button variant="ghost" >
+  //     <div className='text-xl'>{t("Email")}</div>
+  //     <ArrowUpDown className="ml-2 h-6 w-6" />
+  //   </Button>
+
+
   // columns[3].header = t("Amount");
 
   return (
-    <Container>
-      {t("users")}
-
-      <div className="container mx-auto py-10">
+    // <Container> use my Container in components/Container.tsx
+    <div className="container mx-auto"> {/*Tailwind's container class */}
+      {/* <div className='text-xl'> {t("users")}</div> */}
+      <div>
         <DataTable columns={columns} data={data} />
       </div>
-    </Container>
+    </div >
+
+    // </Container>
   );
 }

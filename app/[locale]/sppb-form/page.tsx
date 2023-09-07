@@ -69,8 +69,10 @@ const products = [
 
 export default function Home() {
   return (
-    <Container>
+    // <Container> use my Container in components/Container.tsx
+    <div className="container mx-auto"> {/*Tailwind's container class */}
       SPPB
-    </Container>
+    </div>
+    // </Container>
   );
 }

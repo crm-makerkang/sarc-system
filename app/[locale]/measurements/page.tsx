@@ -71,8 +71,10 @@ const products = [
 export default function Home() {
   const t = useTranslations('sarc');
   return (
-    <Container>
+    // <Container> use my Container in components/Container.tsx
+    <div className="container mx-auto"> {/*Tailwind's container class */}
       {t("measurements")}
-    </Container>
+    </div>
+    // </Container>
   );
 }
