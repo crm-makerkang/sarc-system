@@ -6,13 +6,17 @@
     "sarc-form": "SARC-CalF",
     "sppb-form": "SPPB",
     "Status": "狀態",
-    "Email": "電子郵箱",
     "Amount": "金額",
     "copyUserInfoID": "複製 UserInfo ID 到剪貼簿",
     "nextPage": "下一頁",
     "prevPage": "前一頁",
     "filterEmails": "用電郵篩選 ...",
     "Columns": "欄位",
-    "Actions": "操作"
+    "Actions": "操作",
+    "Name": "姓名",
+    "Email": "電子郵箱",
+    "Gender": "性別",
+    "Age": "年齡",
+    "Phone": "電話號碼"
   }
 }

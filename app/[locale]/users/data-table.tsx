@@ -3,7 +3,7 @@ import * as React from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useTranslations } from "next-intl"
-import { table_text_size } from "@/Settings/setting"
+import { table_text_size } from "@/settings/setting"
 
 import {
   DropdownMenu,
@@ -94,7 +94,7 @@ export function DataTable<TData, TValue>({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className={"ml-auto border-black " + table_text_size}>
-              {t("Columns")} {/* next-intl works */}
+              {t("columns")} {/* next-intl works */}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
@@ -115,10 +115,10 @@ export function DataTable<TData, TValue>({
                     }
                   > <div className={table_text_size}>
                       {/* {t(column.id)} next-intl not works */}
-                      {i == 0 ? t("Status") : null}
-                      {i == 1 ? t("Email") : null}
-                      {i == 2 ? t("Amount") : null}
-                      {i == 3 ? t("Actions") : null}
+                      {i == 0 ? t("status") : null}
+                      {i == 1 ? t("email") : null}
+                      {i == 2 ? t("amount") : null}
+                      {i == 3 ? t("actions") : null}
                       {/* {column.id} */}
                     </div>
                   </DropdownMenuCheckboxItem>

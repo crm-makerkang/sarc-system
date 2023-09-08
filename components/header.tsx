@@ -8,7 +8,7 @@ import Link from "next/link"
 import LanguageButton from "@/components/LanguageButton"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { useTranslations } from "next-intl"
-import { get_nav_routes } from "@/Settings/setting"
+import { nav_routes } from "@/models/nav_routes";
 
 export default function Header(test: any) {
   console.log("aaa", test)
@@ -21,8 +21,6 @@ export default function Header(test: any) {
   }, [])
 
   const t = useTranslations('sarc');
-
-  const nav_routes = get_nav_routes();
 
   const baseStyle = "text-xl font-medium transition-colors text-primary "
   const underlineStyle = " underline underline-offset-4"
@@ -49,7 +47,7 @@ export default function Header(test: any) {
             </Button>
           </div>
 
-          <nav className="mx-6 flex items-center space-x-4 lg:space-x-6 hidden md:block">
+          <nav className="mx-6 flex items-center space-x-4 lg:space-x-6  md:block">
             {nav_routes.map((route, i) => (
               <Button variant={"ghost"} key={i} onClick={() => { window.location.href = route.href }}
                 className={baseStyle + (tab == route.href ? underlineStyle : "")}

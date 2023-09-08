@@ -1,23 +1,15 @@
-import { createCheckboxScope } from "@radix-ui/react-checkbox";
 import { NextRequest, NextResponse } from "next/server";
 import { v4 as uuidv4 } from 'uuid';
 import * as fs from "fs";
 
-type userInfo = {
-  uuid: string,
-  user: {
-    name: string,
-    email: string,
-    gender: string,
-    age: number,
-    phone: string
-  }
-}
-var users: userInfo[] = []
+import { UserInfo } from '@/types/types'
+var users: UserInfo[] = []
+
+import { json_users_filename } from '@/settings/setting'
 
 function readUsers() {
   try {
-    var data = fs.readFileSync('Output.txt', 'utf8');
+    var data = fs.readFileSync(json_users_filename, 'utf8');
     //console.log(data);
     try {
       users = JSON.parse(data);
@@ -54,7 +46,10 @@ export async function POST(request: NextRequest) {
       const reqBody = await request.json()
 
       const user_uuid = uuidv4()
-      users.push({ "uuid": user_uuid, "user": reqBody });
+      // users.push({ "uuid": user_uuid, "user": reqBody });
+
+      reqBody.uuid = user_uuid;
+      users.push(reqBody);
       console.log(users.length);
 
     } catch (error) {
@@ -62,16 +57,10 @@ export async function POST(request: NextRequest) {
     }
 
     try {
-      fs.writeFileSync('Output.txt', JSON.stringify(users))
+      fs.writeFileSync(json_users_filename, JSON.stringify(users))
     } catch (error: any) {
       console.log(error.message);
     }
-
-    // try { //appendFile 無法新增 object element
-    //   fs.appendFileSync('Output.txt', user)
-    // } catch (error: any) {
-    //   console.log(error.message);
-    // }
 
     const response = NextResponse.json({
       message: "POST successful:",

@@ -5,14 +5,18 @@
     "measurements": "Measurements",
     "sarc-form": "SARC-CalF",
     "sppb-form": "SPPB",
-    "Status": "Status",
-    "Email": "Email",
-    "Amount": "Amount",
+    "status": "Status",
+    "amount": "Amount",
     "copyUserInfoID": "Copy UserInfo ID",
     "nextPage": "Next",
     "prevPage": "Previous",
     "filterEmails": "Filter emails...",
-    "Columns": "Columns",
-    "Actions": "Action"
+    "columns": "Columns",
+    "actions": "Action",
+    "name": "Name",
+    "email": "Email",
+    "gender": "Gender",
+    "age": "Age",
+    "Phone": "Phone No."
   }
 }

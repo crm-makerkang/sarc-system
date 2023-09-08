@@ -8,10 +8,21 @@ import Container from '@/components/Container'
 import { ShoppingCart, ShoppingBag } from 'lucide-react'
 import { useTranslations } from "next-intl"
 import { ArrowUpDown, MoreHorizontal } from "lucide-react"
-import { UserInfo, columns } from "./columns"
+import { columns } from "./columns"
+
+import { UserInfo } from "@/types/types"
 import { DataTable } from "./data-table"
 
-async function getData(): Promise<UserInfo[]> {
+// ***** for Test
+type UserInfoTest = {
+  id: string
+  amount: number
+  status: "pending" | "processing" | "success" | "failed"
+  email: string
+}
+// ***** for test
+
+async function getData(): Promise<UserInfoTest[]> {
   // Fetch data from your API here.
   return [
     {
@@ -103,22 +114,17 @@ async function getData(): Promise<UserInfo[]> {
 
 export default async function Home() {
 
-  // Next_intl
-  //const t = useTranslations('sarc'); // 會造成 Warning: Hooks are not supported inside an async component. 
-  // 但程式執行正常
   const data = await getData();
-
-  // columns[1].header = t("Status");
-  // // columns[2].header = t("Email");
-
-  // columns[2].header =
-  //   <Button variant="ghost" >
-  //     <div className='text-xl'>{t("Email")}</div>
-  //     <ArrowUpDown className="ml-2 h-6 w-6" />
-  //   </Button>
-
-
-  // columns[3].header = t("Amount");
+  // const data:UserInfo[] = [
+  //   {
+  //       "name": "paul",
+  //       "email": "email",
+  //       "gender": "male",
+  //       "age": 57,
+  //       "phone": "12345678",
+  //       "uuid": "d881f741-3b70-4ec1-b9e1-0ef418254298"
+  //   }
+  // ]
 
   return (
     // <Container> use my Container in components/Container.tsx
