@@ -144,7 +144,7 @@ export const columns: ColumnDef<UserInfo>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel></DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(UserInfo.id)}
+              onClick={() => navigator.clipboard.writeText(UserInfo.uuid)}
             >
               {/* Copy UserInfo ID */}
               <div className={table_text_size}>{t("delete")}</div>
