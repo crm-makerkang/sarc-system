@@ -22,6 +22,12 @@
     "remark": "Remark",
     "delete": "Delete",
     "noData": "No Data",
-    "loading-data": "Loading data"
+    "loading-data": "Loading data",
+    "login": "Login",
+    "login-msg": "Please login to continue",
+    "your-name": "Your Name",
+    "password": "Password",
+    "your-password": "Your Password",
+    "cancel": "Cancel"
   }
 }

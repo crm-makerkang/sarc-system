@@ -22,6 +22,12 @@
     "remark": "備註",
     "delete": "刪除",
     "noData": "無資料",
-    "loading-data": "資料下載中"
+    "loading-data": "資料下載中",
+    "login": "登入",
+    "login-msg": "請登入以繼續",
+    "your-name": "您的名字",
+    "password": "密碼",
+    "your-password": "您的密碼",
+    "cancel": "取消"
   }
 }

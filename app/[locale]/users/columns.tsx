@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 import { useTranslations } from "next-intl"
-import { table_text_size } from "@/settings/setting"
+import { table_text_size } from "@/Settings/settings"
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.

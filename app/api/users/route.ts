@@ -5,7 +5,7 @@ import * as fs from "fs";
 import { UserInfo } from '@/types/types'
 var users: UserInfo[] = []
 
-import { json_users_filename } from '@/settings/setting'
+import { json_users_filename } from '@/Settings/settings'
 
 function readUsers() {
   try {
@@ -25,6 +25,7 @@ function readUsers() {
 
 export async function GET(request: NextRequest) {
   console.log("GET method");
+  //console.log("api",process.env.DOMAIN);
 
   try {
     users = readUsers();

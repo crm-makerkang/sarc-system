@@ -75,6 +75,8 @@ export default function Home() {
 
   }, [])
 
+  console.log("page",process.env.DOMAIN);
+
   return (
     // <Container> use my Container in components/Container.tsx
     <div className="container mx-auto"> {/*Tailwind's container class */}
