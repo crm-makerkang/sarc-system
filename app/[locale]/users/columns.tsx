@@ -22,19 +22,12 @@ import { table_text_size } from "@/settings/setting"
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 
-type UserInfoTest = {
-  id: string
-  amount: number
-  status: "pending" | "processing" | "success" | "failed"
-  email: string
-}
-
 import { UserInfo } from "@/types/types"
 
 export const columns: ColumnDef<UserInfo>[] = [
   {
     id: "select",
-    accessorKey: "id",
+    accessorKey: "uuid",
     header: ({ table }) => (
       <Checkbox
         checked={table.getIsAllPageRowsSelected()}
@@ -53,45 +46,88 @@ export const columns: ColumnDef<UserInfo>[] = [
     enableHiding: false,
   },
   {
-    id: "status",
-    accessorKey: "status",
+    id: "name",
+    accessorKey: "name",
     header: () => {
       const t = useTranslations('sarc');
-      return <div>{t('status')}</div>
+      return <div>{t('name')}</div>
     },
   },
   {
-    accessorKey: "email",
-    //header: "Email",
+    accessorKey: "phone",
     header: ({ column }) => {
       const t = useTranslations('sarc');
       return (
-        <Button
-          variant="ghost"
+        <span
+          className="flex flex-start"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          <div className="text-xl">{t('email')}</div>
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
+          <div className="text-xl">{t('phone')}</div>
+          <ArrowUpDown className="ml-2 mt-2 h-4 w-4" />
+        </span>
       )
     },
   },
+
   {
-    accessorKey: "amount",
+    id: "email",
+    accessorKey: "email",
     header: () => {
       const t = useTranslations('sarc');
-      return <div className="text-right">{t('amount')}</div>
-    },
-    cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"))
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(amount)
-
-      return <div className="text-right font-medium">{formatted}</div>
+      return <div>{t('email')}</div>
     },
   },
+
+  {
+    id: "gender",
+    accessorKey: "gender",
+    header: () => {
+      const t = useTranslations('sarc');
+      return <div>{t('gender')}</div>
+    },
+  },
+
+  {
+    accessorKey: "age",
+    header: ({ column }) => {
+      const t = useTranslations('sarc');
+      return (
+        <span
+          className="flex flex-start"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          <div className="text-xl">{t('age')}</div>
+          <ArrowUpDown className="ml-2 mt-2 h-4 w-4" />
+        </span>
+      )
+    },
+  },
+
+  {
+    id: "remark",
+    accessorKey: "remark",
+    header: () => {
+      const t = useTranslations('sarc');
+      return <div className="w-48">{t('remark')}</div>
+    },
+  },
+  // {
+  //   accessorKey: "amount",
+  //   header: () => {
+  //     const t = useTranslations('sarc');
+  //     return <div className="text-right">{t('amount')}</div>
+  //   },
+  //   cell: ({ row }) => {
+  //     const amount = parseFloat(row.getValue("amount"))
+  //     const formatted = new Intl.NumberFormat("en-US", {
+  //       style: "currency",
+  //       currency: "USD",
+  //     }).format(amount)
+
+  //     return <div className="text-right font-medium">{formatted}</div>
+  //   },
+  // },
+
   {
     id: "actions",
     cell: ({ row }) => {
@@ -111,25 +147,11 @@ export const columns: ColumnDef<UserInfo>[] = [
               onClick={() => navigator.clipboard.writeText(UserInfo.id)}
             >
               {/* Copy UserInfo ID */}
-              <div className={table_text_size}>{t("copyUserInfoID")}</div>
+              <div className={table_text_size}>{t("delete")}</div>
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => {
-                var msg = `UserID:${UserInfo.id}\nEmail:${UserInfo.email}`;
-                alert(msg);
-              }}
-            >
-              <div className={table_text_size}>View customer</div>
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => {
-                //api to delete record
-                window.location.href = "/users";
-              }}
-            >
-              <div className={table_text_size}>Delete</div>
-            </DropdownMenuItem>
+
+            {/* <DropdownMenuSeparator /> */}
+
           </DropdownMenuContent>
         </DropdownMenu>
       )

@@ -2,6 +2,7 @@
 import * as React from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Switch } from "@/components/ui/switch"
 import { useTranslations } from "next-intl"
 import { table_text_size } from "@/settings/setting"
 
@@ -42,6 +43,7 @@ interface DataTableProps<TData, TValue> {
 export function DataTable<TData, TValue>({
   columns,
   data,
+  getUsers,
 }: DataTableProps<TData, TValue>) {
   const t = useTranslations('sarc');
 
@@ -53,6 +55,11 @@ export function DataTable<TData, TValue>({
     React.useState<VisibilityState>({})
 
   const [rowSelection, setRowSelection] = React.useState({})
+
+  const [loading, setLoading] = React.useState(true)
+
+  const [userAutoUpdate, setUserAutoUpdate] = React.useState(false)
+  const [userAutoUpdateInterval, setUserAutoUpdateInterval] = React.useState(null)
 
   const table = useReactTable({
     data,
@@ -73,24 +80,82 @@ export function DataTable<TData, TValue>({
     },
   })
 
+  var autoUpdate = false
+
   // more pagination control, see https://github.com/TanStack/table/tree/main/examples/react/pagination-controlled
+  React.useEffect(() => {
+    const interval = setTimeout(() => {
+      setLoading(false)
+    }, 3000)
+
+    table.setPageSize(Number(8))
+  }, [])
 
   React.useEffect(() => {
-    table.setPageSize(Number(8))
-  })
+    console.log("userAutoUpdate:", userAutoUpdate)
 
+    if (userAutoUpdate) {
+      const autoUpdateInterval = window.setInterval(() => {
+        getUsers()
+      }, 3000)
+      setUserAutoUpdateInterval(autoUpdateInterval)
+    } else {
+      // 雖然粗暴，但有用
+      if (userAutoUpdateInterval != null) {
+        window.location.reload();
+      }
+    }
+
+    table.setPageSize(Number(8))
+  }, [userAutoUpdate])
 
   return (
     <div>
       <div className="flex items-center py-4">
         <Input
-          placeholder={t("filterEmails")}
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
+          placeholder={t("filter-names")}
+          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+          onChange={
+            (event) => {
+              table.getColumn("name")?.setFilterValue(event.target.value)
+            }
           }
           className={"max-w-sm border-black " + table_text_size}
         />
+        <Switch
+          className="ml-24 text-xl"
+          checked={userAutoUpdate}
+          onCheckedChange={() => {
+            const uub = document.getElementById("userUpdateButton");
+
+            // 定時更新資料
+            // const interval = setInterval(() => {
+            //   getUsers()
+            // }, 3000)
+
+
+            if (!userAutoUpdate) {
+              uub!.innerHTML = "自動更新"
+              uub!.setAttribute("disabled", "");
+            } else {
+              uub!.innerHTML = "手動更新"
+              uub!.removeAttribute("disabled");
+            }
+
+            setUserAutoUpdate(!userAutoUpdate);
+          }}
+        >
+          自動更新
+        </Switch>
+
+        <Button id="userUpdateButton" variant="outline" className="ml-4 text-xl"
+          onClick={() => {
+            getUsers();
+          }}
+        >
+          手動更新
+        </Button>
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className={"ml-auto border-black " + table_text_size}>
@@ -115,10 +180,12 @@ export function DataTable<TData, TValue>({
                     }
                   > <div className={table_text_size}>
                       {/* {t(column.id)} next-intl not works */}
-                      {i == 0 ? t("status") : null}
+                      {i == 0 ? t("name") : null}
                       {i == 1 ? t("email") : null}
-                      {i == 2 ? t("amount") : null}
-                      {i == 3 ? t("actions") : null}
+                      {i == 2 ? t("phone") : null}
+                      {i == 3 ? t("gender") : null}
+                      {i == 4 ? t("age") : null}
+                      {i == 5 ? t("actions") : null}
                       {/* {column.id} */}
                     </div>
                   </DropdownMenuCheckboxItem>
@@ -165,7 +232,7 @@ export function DataTable<TData, TValue>({
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                  No results.
+                  {loading ? (<div className="text-xl">{t('loading-data')} ... </div>) : (<div className="text-xl">{t('noData')}</div>)}
                 </TableCell>
               </TableRow>
             )}
@@ -176,7 +243,8 @@ export function DataTable<TData, TValue>({
       <div className="flex items-center justify-end space-x-2 py-4">
 
         <div className={"flex-1 text-muted-foreground " + table_text_size}>
-          {table.getFilteredSelectedRowModel().rows.map((row) => (row.getValue('select')))} /{" "}
+          {table.getFilteredSelectedRowModel().rows.map((row) => (row.getValue('select')))} {" "}
+          {table.getFilteredSelectedRowModel().rows.length}/{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
         </div>
 

@@ -10,13 +10,18 @@
     "copyUserInfoID": "Copy UserInfo ID",
     "nextPage": "Next",
     "prevPage": "Previous",
-    "filterEmails": "Filter emails...",
+    "filter-emails": "Filter emails...",
+    "filter-names": "Filter names...",
     "columns": "Columns",
     "actions": "Action",
     "name": "Name",
     "email": "Email",
     "gender": "Gender",
     "age": "Age",
-    "Phone": "Phone No."
+    "phone": "Phone No.",
+    "remark": "Remark",
+    "delete": "Delete",
+    "noData": "No Data",
+    "loading-data": "Loading data"
   }
 }

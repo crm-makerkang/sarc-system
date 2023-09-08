@@ -3,6 +3,7 @@ export type UserInfo = {
   name: string,
   email: string,
   gender: string,
-  age: number,
-  phone: string
+  age: string,
+  phone: string,
+  remark: string
 }
