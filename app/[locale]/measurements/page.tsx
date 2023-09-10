@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import Header from '@/components/Header'
 import Container from '@/components/Container'
 import { ShoppingCart, ShoppingBag } from 'lucide-react'
-import ProductList from '@/components/productlist'
+// import ProductList from '@/components/productlist'
 import { useTranslations } from "next-intl"
 
 const products = [

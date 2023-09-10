@@ -39,6 +39,7 @@ import {
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
+  getUsers: any
 }
 
 export function DataTable<TData, TValue>({
@@ -60,7 +61,7 @@ export function DataTable<TData, TValue>({
   const [loading, setLoading] = React.useState(true)
 
   const [userAutoUpdate, setUserAutoUpdate] = React.useState(false)
-  const [userAutoUpdateInterval, setUserAutoUpdateInterval] = React.useState(null)
+  const [userAutoUpdateInterval, setUserAutoUpdateInterval] = React.useState(false)
 
   const table = useReactTable({
     data,
@@ -98,10 +99,10 @@ export function DataTable<TData, TValue>({
       const autoUpdateInterval = window.setInterval(() => {
         getUsers()
       }, 3000)
-      setUserAutoUpdateInterval(autoUpdateInterval)
+      setUserAutoUpdateInterval(true)
     } else {
       // 雖然粗暴，但有用
-      if (userAutoUpdateInterval != null) {
+      if (userAutoUpdateInterval != false) {
         window.location.reload();
       }
     }

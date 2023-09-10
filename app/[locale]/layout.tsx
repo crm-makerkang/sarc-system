@@ -13,7 +13,11 @@ export const metadata: Metadata = {
   description: '',
 }
 
-export default async function LocaleLayout({ children, params: { locale } }) {
+export function generateStaticParams() {
+  return [{locale: 'en'}, {locale: 'zh-tw'}, {locale: 'zh-cn'}, {locale: 'ja'}];
+}
+
+export default async function LocaleLayout({ children, params: { locale } }: any) {
   let messages;
   try {
     messages = (await import(`../../messages/${locale}.json`)).default;
