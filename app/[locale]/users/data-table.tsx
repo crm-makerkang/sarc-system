@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
 import { useTranslations } from "next-intl"
 import { table_text_size } from "@/Settings/settings"
+import { rows_per_page } from "@/Settings/settings"
 
 import {
   DropdownMenu,
@@ -88,7 +89,6 @@ export function DataTable<TData, TValue>({
       setLoading(false)
     }, 3000)
 
-    table.setPageSize(Number(8))
   }, [])
 
   React.useEffect(() => {
@@ -106,7 +106,7 @@ export function DataTable<TData, TValue>({
       }
     }
 
-    table.setPageSize(Number(8))
+    table.setPageSize(rows_per_page)
   }, [userAutoUpdate])
 
   return (
@@ -128,24 +128,18 @@ export function DataTable<TData, TValue>({
           onCheckedChange={() => {
             const uub = document.getElementById("userUpdateButton");
 
-            // 定時更新資料
-            // const interval = setInterval(() => {
-            //   getUsers()
-            // }, 3000)
-
-
             if (!userAutoUpdate) {
-              uub!.innerHTML = "自動更新"
+              uub!.innerHTML = t("autoUpdate");
               uub!.setAttribute("disabled", "");
             } else {
-              uub!.innerHTML = "手動更新"
+              uub!.innerHTML = t("manualUpdate");
               uub!.removeAttribute("disabled");
             }
 
             setUserAutoUpdate(!userAutoUpdate);
           }}
         >
-          自動更新
+          {t("autoUpdate")}
         </Switch>
 
         <Button id="userUpdateButton" variant="outline" className="ml-4 text-xl"
@@ -153,7 +147,7 @@ export function DataTable<TData, TValue>({
             getUsers();
           }}
         >
-          手動更新
+          {t("manualUpdate")}
         </Button>
 
         <DropdownMenu>

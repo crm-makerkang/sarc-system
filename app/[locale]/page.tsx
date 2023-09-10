@@ -24,6 +24,14 @@ import {
 
 export default function Index() {
   const t = useTranslations('sarc');
+  const [user, setUser] = React.useState({
+    name: "",
+    password: "",
+   
+  })
+  const [buttonDisabled, setButtonDisabled] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
+
   return ( 
   <div className='container flex items-center justify-center' style={{ 
     backgroundImage: 'url(/img/bg-md.png)',
@@ -42,7 +50,13 @@ export default function Index() {
           <div className="grid w-full items-center gap-4">
             <div className="flex flex-col space-y-1.5">
               <Label className={table_text_size} htmlFor="name">{t('name')}</Label>
-              <Input className={table_text_size} id="name" placeholder={t('your-name')} />
+              <Input className={table_text_size} 
+                id="name" 
+                value={user.name}
+                onChange={(e) => setUser({...user, name: e.target.value})}
+                placeholder={t('your-name')} 
+
+              />
             </div>
             <div className="flex flex-col space-y-1.5">
               <Label className={table_text_size} htmlFor="name">{t('password')}</Label>
@@ -50,8 +64,8 @@ export default function Index() {
                                + "focus:outline-none focus:border-gray-600 text-black"}
                 id="password"
                 type="password"
-                // value={user.password}
-                // onChange={(e) => setUser({...user, password: e.target.value})}
+                value={user.password}
+                onChange={(e) => setUser({...user, password: e.target.value})}
                 placeholder={t('your-password')}
               />
             </div>
@@ -60,7 +74,14 @@ export default function Index() {
       </CardContent>
       <CardFooter className="flex justify-between">
         <Button className={table_text_size} variant="ghost">{t('cancel')}</Button>
-        <Button className={'bg-primary ' + table_text_size}>{t('login')}</Button>
+        <Button className={'bg-primary ' + table_text_size}
+          onClick={() => {
+            setUser(user);
+            console.log(user);
+          }}
+        >
+          {t('login')}
+        </Button>
       </CardFooter>
     </Card>
   </div>

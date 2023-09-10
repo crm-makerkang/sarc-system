@@ -28,6 +28,13 @@
     "your-name": "您的名字",
     "password": "密碼",
     "your-password": "您的密碼",
-    "cancel": "取消"
+    "cancel": "取消",
+    "autoUpdate": "自動更新",
+    "manualUpdate": "手動更新",
+    "s-font": "小字體",
+    "m-font": "中字體",
+    "l-font": "大字體",
+    "logout": "登出",
+    "rows-per-page": "列數/每頁"
   }
 }

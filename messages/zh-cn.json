@@ -1,9 +1,35 @@
 {
   "sarc": {
-    "language": "简体中文",
+    "language": "繁体中文",
     "users": "用户",
     "measurements": "量测资料",
     "sarc-form": "SARC-CalF",
-    "sppb-form": "SPPB"
+    "sppb-form": "SPPB",
+    "status": "状态",
+    "amount": "金额",
+    "copyUserInfoID": "复制 UserInfo ID 到剪贴簿",
+    "nextPage": "下一页",
+    "prevPage": "前一页",
+    "filter-emails": "用电邮筛选 ...",
+    "filter-names": "用姓名筛选 ...",
+    "columns": "栏位",
+    "actions": "操作",
+    "name": "姓名",
+    "email": "电子邮箱",
+    "gender": "性别",
+    "age": "年龄",
+    "phone": "电话号码",
+    "remark": "备注",
+    "delete": "删除",
+    "noData": "无资料",
+    "loading-data": "资料下载中",
+    "login": "登入",
+    "login-msg": "请登入以继续",
+    "your-name": "您的名字",
+    "password": "密码",
+    "your-password": "您的密码",
+    "cancel": "取消",
+    "autoUpdate": "自动更新",
+    "manualUpdate": "手动更新"
   }
 }

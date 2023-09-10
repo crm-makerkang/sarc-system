@@ -19,39 +19,6 @@ import { UserInfo } from "@/types/types"
 import { DataTable } from "./data-table"
 import { useEffect } from "react";
 
-// async function getData(): Promise<UserInfo[]> {
-//   // Fetch data from your API here.
-//   return [
-//     {
-//       uuid: "d881f741-3b70-4ec1-b9e1-0ef418254298",
-//       name: "Paul Kang",
-//       email: "paul.k@example.com",
-//       phone: "12345678",
-//       age: "57",
-//       gender: "男",
-//       remark: "VIP"
-//     },
-//     {
-//       uuid: "d881f741-3b70-4ec1-b9e1-0ef418254298",
-//       name: "Tony Lu",
-//       email: "tony.l@example.com",
-//       phone: "22222222",
-//       age: "22",
-//       gender: "男",
-//       remark: "VIP"
-//     },
-//     {
-//       uuid: "d881f741-3b70-4ec1-b9e1-0ef418254298",
-//       name: "Sarah Lin",
-//       email: "sarah.l@example.com",
-//       phone: "33333333",
-//       age: "18",
-//       gender: "女",
-//       remark: "VVIP"
-//     },
-//   ]
-// }
-
 export default function Home() {
 
   var [data, setData] = React.useState<UserInfo[]>([])
@@ -67,11 +34,6 @@ export default function Home() {
 
   useEffect(() => {
     getUsers();
-
-    // 定時更新資料
-    // const interval = setInterval(() => {
-    //   getUsers()
-    // }, 3000)
 
   }, [])
 

@@ -28,6 +28,13 @@
     "your-name": "Your Name",
     "password": "Password",
     "your-password": "Your Password",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "autoUpdate": "Auto Update",
+    "manualUpdate": "Manual Update",
+    "s-font": "Small Font",
+    "m-font": "Medium Font",
+    "l-font": "Large Font",
+    "logout": "Logout",
+    "rows-per-page": "Rows/Page"
   }
 }

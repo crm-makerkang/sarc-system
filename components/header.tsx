@@ -5,7 +5,7 @@ import Container from "@/components/Container"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
 import Link from "next/link"
-import LanguageButton from "@/components/LanguageButton"
+import SettingButton from "@/components/SettingButton"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { useTranslations } from "next-intl"
 import { nav_routes } from "@/models/nav_routes";
@@ -63,7 +63,7 @@ export default function Header(test: any) {
           </nav>
 
           <div className="flex items-center">
-            <LanguageButton />
+            <SettingButton />
 
           </div>
 
