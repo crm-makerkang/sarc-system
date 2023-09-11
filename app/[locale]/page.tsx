@@ -2,10 +2,13 @@
 
 // PARQ 參考 https://github.com/parqform/webform/blob/main/index.html
 
+import { UserInfo } from "@/types/types"
 import { useTranslations } from 'next-intl';
 import { table_text_size } from "@/Settings/settings"
 import { Checkbox } from '@/components/ui/checkbox';
 import * as React from "react"
+import { useEffect } from "react";
+
 import axios from "axios";
 
 import { Button } from "@/components/ui/button"
@@ -49,6 +52,30 @@ export default function Index() {
   const [showBinding, setshowBinding] = React.useState(false);
   const [showParqCard, setshowParqCard] = React.useState(false);
   const [parq_checked, setParq_checked] = React.useState(false);
+
+  var [data, setData] = React.useState<UserInfo[]>([])
+
+  
+  const getUsers = async () => {
+    const res = await axios.get('/api/users/')
+    console.log(res.data);
+    setData(res.data);
+    //simulate no data setData([]);
+  }
+
+  useEffect( () => {
+    getUsers();
+  }, [])
+
+  useEffect(() => {
+    if (user.name.length >4) {
+    data.forEach(element => {
+      if (element.name.includes(user.name)){
+        console.log(element.name);
+      }
+    });
+  }
+  }, [user])
 
   return (
     <div className='container flex items-center justify-center ' style={{

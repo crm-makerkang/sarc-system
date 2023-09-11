@@ -12,7 +12,6 @@ import { ShoppingCart, ShoppingBag } from 'lucide-react'
 import { useTranslations } from "next-intl"
 import { ArrowUpDown, MoreHorizontal } from "lucide-react"
 
-
 import { columns } from "./columns"
 
 import { UserInfo } from "@/types/types"
@@ -32,9 +31,8 @@ export default function Home() {
     //simulate no data setData([]);
   }
 
-  useEffect(() => {
+  useEffect( () => {
     getUsers();
-
   }, [])
 
   console.log("page",process.env.DOMAIN);
