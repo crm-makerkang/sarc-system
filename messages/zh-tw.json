@@ -1,6 +1,7 @@
 {
   "sarc": {
     "language": "繁體中文",
+    "start": "開始",
     "users": "用戶",
     "measurements": "量測資料",
     "sarc-form": "SARC-CalF",
@@ -25,6 +26,7 @@
     "loading-data": "資料下載中",
     "login": "登入",
     "login-msg": "請登入以繼續",
+    "login-failed-msg": "登入失敗，請檢查您的登入名稱和密碼",
     "your-name": "您的名字",
     "password": "密碼",
     "your-password": "您的密碼",
@@ -35,7 +37,7 @@
     "m-font": "中字體",
     "l-font": "大字體",
     "logout": "登出",
-    "rows-per-page": "列數/每頁",
+    "rows-per-page": "列/每頁",
     "male": "男",
     "female": "女",
     "user-data": "填寫資料",

@@ -22,11 +22,11 @@ export async function GET(request: NextRequest) {
 
   let settings = readSettings();
 
-  const response = settings == "Error" 
+  const response = settings == "Error"
     ? NextResponse.json({
       message: "GET: settings file read failed!",
       success: false,
-    }) 
+    })
     : NextResponse.json({
       message: settings,
       success: true,
@@ -41,42 +41,42 @@ export async function POST(request: NextRequest) {
 
   let settings = readSettings();
 
-    try {
-      const reqBody = await request.json()
+  try {
+    const reqBody = await request.json()
 
-      console.log(reqBody.table_text_size, reqBody.row_per_page);
+    console.log(reqBody.table_text_size, reqBody.rows_per_page);
 
-      //用來找 settings 中參數的位置 console.log(settings.search("8"));
+    //用來找 settings 中參數的位置 console.log(settings.search("8"));
 
-      const font_size =(settings.substring(32,39));
-      const row_per_page = settings.substring(72,74);
+    const font_size = settings.substring(32, 39);
+    const rows_per_page = settings.substring(70, 72);
 
-      if (reqBody.table_text_size) {
-        console.log("prev:",font_size, "\t new:", reqBody.table_text_size);
-        settings = settings.replace(font_size, reqBody.table_text_size);
-      }
-
-      if (reqBody.row_per_page) {
-        console.log("prev:",row_per_page, "\t new:", reqBody.row_per_page);
-        settings = settings.replace(row_per_page, reqBody.row_per_page);
-      }
-      console.log(settings);
-
-
-    } catch (error) {
-      console.log("reqBody err");
+    if (reqBody.table_text_size) {
+      console.log("prev:", font_size, "\t new:", reqBody.table_text_size);
+      settings = settings.replace(font_size, reqBody.table_text_size);
     }
 
-    try {
-      fs.writeFileSync(json_settings_filename, settings)
-    } catch (error: any) {
-      console.log(error.message);
+    if (reqBody.rows_per_page) {
+      console.log("prev:", rows_per_page, "\t new:", reqBody.rows_per_page);
+      settings = settings.replace(rows_per_page, reqBody.rows_per_page);
     }
+    console.log(settings);
 
-    const response = NextResponse.json({
-      message: "POST successful:",
-      success: true,
-    })
 
-    return response;
+  } catch (error) {
+    console.log("reqBody err");
+  }
+
+  try {
+    fs.writeFileSync(json_settings_filename, settings)
+  } catch (error: any) {
+    console.log(error.message);
+  }
+
+  const response = NextResponse.json({
+    message: "POST successful:",
+    success: true,
+  })
+
+  return response;
 }

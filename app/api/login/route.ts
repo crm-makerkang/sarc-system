@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
+import Cryptr from "cryptr";
 
 function hash(input: string): string {
   var hash = 0,
@@ -25,10 +26,9 @@ export async function POST(request: NextRequest) {
     console.log("aaa", reqBody);
 
     const encryptedString = hash(username + process.env.TOKEN_SECRET!);
+    console.log("bbb", encryptedString.substring(0, 6));
 
     const validPassword = encryptedString.substring(0, 6) === reqBody.password
-    console.log("ccc", encryptedString.substring(0, 6));
-    console.log("bbb", validPassword);
 
     if (!validPassword) {
       return NextResponse.json({
@@ -38,18 +38,23 @@ export async function POST(request: NextRequest) {
     }
 
     //create token data
-    const tokenData = {
+    const loginTokenData = {
       username: username,
+      expireAT: new Date().getTime() + 1000 * 60 * 60 * 23  // 1hr
     }
+    const cryptr = new Cryptr(process.env.TOKEN_SECRET!);
+
     //create token
-    const token = await jwt.sign(tokenData, process.env.TOKEN_SECRET!, { expiresIn: "1d" })
+    // const token = await jwt.sign(tokenData, process.env.TOKEN_SECRET!, { expiresIn: "1d" })
+
+    const loginToken = cryptr.encrypt(JSON.stringify(loginTokenData));
 
     const response = NextResponse.json({
       message: "Login successful",
       success: true,
     })
 
-    response.cookies.set("token", token, {
+    response.cookies.set("loginToken", loginToken, {
       httpOnly: true,
 
     })

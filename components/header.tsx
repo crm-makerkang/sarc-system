@@ -31,7 +31,7 @@ export default function Header(test: any) {
         <div className="relative px-4 sm:px-6 lg:px-8 flex h-16 
                         items-center justify-between w-full">
           <div className="flex items-center">
-            <Button variant={"ghost"} onClick={() => { window.location.href = "/" }} className="ml-4 lg:ml-0">
+            <div className="ml-4 lg:ml-0">
               <div className="flex flex-row items-center">
                 {/* <Avatar>
                   <AvatarImage src="/img/s-logo.png" />
@@ -44,7 +44,7 @@ export default function Header(test: any) {
                   SarcCHECK
                 </div>
               </div>
-            </Button>
+            </div>
           </div>
 
           <nav className="mx-6 flex items-center space-x-4 lg:space-x-6  md:block">
