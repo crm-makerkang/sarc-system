@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 }
 
 export function generateStaticParams() {
-  return [{locale: 'en'}, {locale: 'zh-tw'}, {locale: 'zh-cn'}, {locale: 'ja'}];
+  return [{ locale: 'en' }, { locale: 'zh-tw' }, { locale: 'zh-cn' }, { locale: 'ja' }];
 }
 
 export default async function LocaleLayout({ children, params: { locale } }: any) {
@@ -29,6 +29,8 @@ export default async function LocaleLayout({ children, params: { locale } }: any
     <html lang={locale}>
       <body className={inter.className}>
         <NextIntlClientProvider locale={locale} messages={messages}>
+          <div className='h-2 w-full bg-orange-500'></div>
+          <div className='h-4 w-full '></div>
           <Header forTest />
           {children}
         </NextIntlClientProvider>

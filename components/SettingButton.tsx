@@ -21,7 +21,7 @@ import {
 
 import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar"
 
-function SettingButton(request: NextRequest) {
+function SettingButton() {
   const t = useTranslations('sarc');
 
   const router = useRouter();

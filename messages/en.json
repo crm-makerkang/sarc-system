@@ -51,5 +51,15 @@
     "card-no": "Card No.",
     "bind-msg": "This card is Associated to you, please proceed tests.",
     "rfid-msg": "User crad reder to get card no"
+  },
+  "parq": {
+    "p1q1": "Q1: Has your doctor ever said that you have a heart condition OR high blood pressure?",
+    "p1q1a": "Q1A: If you answered YES to the Question #1 (above) please select the appropriate condition. Select ALL that apply.",
+    "p1q2": "Q2: Do you feel pain in your chest at rest, during your daily activities of living, OR when you do physical activity?",
+    "p1q3": "Q3: Do you lose balance because of dizziness OR have you lost consciousness in the last 12 months? Please answer NO if your dizziness was associated with over-breathing (including during vigorous exercise).",
+    "p1q4": "Q4: Have you ever been diagnosed with another chronic medical condition (other than heart disease or high blood pressure)?",
+    "p2q5": "Q5: Are you currently taking prescribed medications for a chronic medical condition?",
+    "p1q6": "Q6: Do you currently have (or have had within the past 12 months) a bone, joint, or soft tissue (muscle, ligament, or tendon) problem that could be made worse by becoming more physically active? Please answer NO if you had a problem in the past, but it does not limit your current ability to be physically active.",
+    "p1q7": "Q7: Has your doctor ever said that you should only do medically supervised physical activity?"
   }
 }
