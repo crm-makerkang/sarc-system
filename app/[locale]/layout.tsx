@@ -1,4 +1,4 @@
-
+'use client'
 import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
@@ -6,6 +6,10 @@ import Header from '@/components/Header'
 
 import { NextIntlClientProvider } from 'next-intl';
 import { notFound } from 'next/navigation';
+import { table_text_size } from "@/Settings/settings"
+import { rows_per_page } from "@/Settings/settings"
+
+import React from 'react';
 
 const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
@@ -19,7 +23,13 @@ export function generateStaticParams() {
 
 // export default async function LocaleLayout({ children, params: { locale } }: any) {
 export default async function LocaleLayout(props: any) {
-  console.log(props);
+  //console.log(props);
+
+  // props.params.table_text_size=table_text_size;
+  // props.params.rows_per_page=rows_per_page
+
+  // console.log(props.params);
+
   let messages;
   try {
     messages = (await import(`../../messages/${props.params.locale}.json`)).default;

@@ -182,7 +182,8 @@ export function DataTable<TData, TValue>({
                       {i == 2 ? t("phone") : null}
                       {i == 3 ? t("gender") : null}
                       {i == 4 ? t("age") : null}
-                      {i == 5 ? t("actions") : null}
+                      {i == 5 ? t("remark") : null}
+                      {i == 6 ? t("actions") : null}
                       {/* {column.id} */}
                     </div>
                   </DropdownMenuCheckboxItem>

@@ -34,7 +34,7 @@ import {
 
 export default function Index(props: any) {
 
-  console.log("xxx", props);
+  //console.log("xxx", props);
 
   const t = useTranslations('sarc');
   const [user, setUser] = React.useState({
