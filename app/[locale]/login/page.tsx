@@ -1,6 +1,7 @@
 'use client';
 import { useTranslations } from 'next-intl';
 import { table_text_size } from "@/Settings/settings"
+import { Loader2, Settings } from "lucide-react"
 import * as React from "react"
 import axios from "axios";
 
@@ -34,9 +35,10 @@ export default function Index() {
 
   })
   const [buttonDisabled, setButtonDisabled] = React.useState(false);
-  const [loading, setLoading] = React.useState(false);
+  const [logining, setLogining] = React.useState(false);
 
   const login = async () => {
+    setLogining(true);
     setUser(user);
     const res = await axios.post('/api/login/',
       {
@@ -49,6 +51,7 @@ export default function Index() {
     } else {
       console.log("login failed");
       alert(t('login-failed-msg'));
+      setLogining(false);
       // toast not working here, don't know why: toast(res.data.message);
     }
   }
@@ -60,10 +63,24 @@ export default function Index() {
       height: '91vh', width: '100%'
     }}>
 
-      <Card className="w-[350px]">
+      {/* <span className='float h-1/2 w-1/2 bg-red-500 opacity-50 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'>
+        <div className='flex items-center justify-center align-center'>
+          <Loader2 className="animate-spin  -ml-2 mr-2 h-32 w-32 opacity-75 "></Loader2>
+          AAA
+        </div>
+      </span> */}
+
+      <Card className="w-[550px]">
         <CardHeader>
           <CardTitle className='mb-8'>{t('login')}</CardTitle>
           {/* <CardDescription className={table_text_size}>{t('login-msg')}</CardDescription> */}
+
+          {logining && (
+            <div className='float h-16 w-16 absolute top-1/2 left-1/2 -translate-x-8 -translate-y-8'>
+              <Loader2 className="animate-spin  -ml-2 mr-2 h-16 w-16 opacity-75 "></Loader2>
+            </div>
+          )}
+
         </CardHeader>
         <CardContent>
           <form>
