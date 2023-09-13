@@ -23,6 +23,7 @@ export async function GET(request: NextRequest) {
   console.log("GET method");
 
   if (globalSettings == "") {
+    console.log("globalSettings is empty");
     let settings = readSettings();
 
     if (settings == "Error") {
@@ -70,7 +71,11 @@ export async function POST(request: NextRequest) {
     }
     console.log(settings);
 
-    globalSettings = JSON.stringify({ "table_text_size": reqBody.table_text_size, "rows_per_page": reqBody.rows_per_page });
+    globalSettings = JSON.stringify({
+      "table_text_size": reqBody.table_text_size ? reqBody.table_text_size : font_size,
+      "rows_per_page": reqBody.rows_per_page ? reqBody.rows_per_page : rows_per_page
+    });
+    console.log(globalSettings);
 
 
 
