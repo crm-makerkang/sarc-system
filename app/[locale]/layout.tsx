@@ -17,22 +17,24 @@ export function generateStaticParams() {
   return [{ locale: 'en' }, { locale: 'zh-tw' }, { locale: 'zh-cn' }, { locale: 'ja' }];
 }
 
-export default async function LocaleLayout({ children, params: { locale } }: any) {
+// export default async function LocaleLayout({ children, params: { locale } }: any) {
+export default async function LocaleLayout(props: any) {
+  console.log(props);
   let messages;
   try {
-    messages = (await import(`../../messages/${locale}.json`)).default;
+    messages = (await import(`../../messages/${props.params.locale}.json`)).default;
   } catch (error) {
     notFound();
   }
 
   return (
-    <html lang={locale}>
+    <html lang={props.params.locale}>
       <body className={inter.className}>
-        <NextIntlClientProvider locale={locale} messages={messages}>
+        <NextIntlClientProvider locale={props.params.locale} messages={messages} >
           <div className='h-2 w-full bg-orange-500'></div>
           <div className='h-4 w-full '></div>
           <Header forTest />
-          {children}
+          {props.children}
         </NextIntlClientProvider>
       </body>
     </html>
