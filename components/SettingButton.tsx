@@ -96,9 +96,9 @@ function SettingButton() {
           日本語
         </DropdownMenuItem>
 
-        <DropdownMenuSeparator className="w-full h-0.5 bg-gray-300 border-0" />
+        {/* <DropdownMenuSeparator className="w-full h-0.5 bg-gray-300 border-0" /> */}
 
-        <DropdownMenuItem
+        {/* <DropdownMenuItem
           className={"cursor-pointer " + settings.table_text_size}
           onClick={
             async () => {
@@ -188,7 +188,7 @@ function SettingButton() {
           }
         >
           10 {t("rows-per-page")}
-        </DropdownMenuItem>
+        </DropdownMenuItem> */}
 
         <DropdownMenuSeparator className="w-full h-0.5 bg-gray-300 border-0" />
 

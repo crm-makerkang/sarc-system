@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
 import { useTranslations } from "next-intl"
-// import { table_text_size } from "@/Settings/settings"
-// import { rows_per_page } from "@/Settings/settings"
+import { table_text_size } from "@/Settings/settings"
+import { rows_per_page } from "@/Settings/settings"
 import axios from "axios"
 
 import {
@@ -56,8 +56,7 @@ export function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   )
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
 
   const [rowSelection, setRowSelection] = React.useState({})
 
@@ -65,11 +64,6 @@ export function DataTable<TData, TValue>({
 
   const [userAutoUpdate, setUserAutoUpdate] = React.useState(false)
   const [userAutoUpdateInterval, setUserAutoUpdateInterval] = React.useState(false)
-
-  const [settings, setSettings] = React.useState({
-    table_text_size: "",
-    rows_per_page: "",
-  })
 
   const table = useReactTable({
     data,
@@ -93,24 +87,9 @@ export function DataTable<TData, TValue>({
   var autoUpdate = false
 
 
-  useEffect(() => {
-    const getSettings = async () => {
-      const res = await axios.get('/api/settings/')
-      console.log(res.data);
-      setSettings({
-        table_text_size: JSON.parse(res.data.message).table_text_size,
-        rows_per_page: JSON.parse(res.data.message).rows_per_page
-      })
-
-      table.setPageSize(parseInt(JSON.parse(res.data.message).rows_per_page));
-    }
-
-    getSettings();
-
-  }, [])
-
   // more pagination control, see https://github.com/TanStack/table/tree/main/examples/react/pagination-controlled
   React.useEffect(() => {
+    table.setPageSize(rows_per_page);
     const interval = setTimeout(() => {
       setLoading(false)
     }, 3000)
@@ -144,7 +123,7 @@ export function DataTable<TData, TValue>({
               table.getColumn("name")?.setFilterValue(event.target.value)
             }
           }
-          className={"max-w-sm border-black " + settings.table_text_size}
+          className={"max-w-sm border-black " + table_text_size}
         />
         <Switch
           className="ml-24 text-xl"
@@ -176,7 +155,7 @@ export function DataTable<TData, TValue>({
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className={"ml-auto border-black " + settings.table_text_size}>
+            <Button variant="outline" className={"ml-auto border-black " + table_text_size}>
               {t("columns")} {/* next-intl works */}
             </Button>
           </DropdownMenuTrigger>
@@ -196,7 +175,7 @@ export function DataTable<TData, TValue>({
                     onCheckedChange={(value) =>
                       column.toggleVisibility(!!value)
                     }
-                  > <div className={settings.table_text_size}>
+                  > <div className={table_text_size}>
                       {/* {t(column.id)} next-intl not works */}
                       {i == 0 ? t("name") : null}
                       {i == 1 ? t("email") : null}
@@ -236,12 +215,12 @@ export function DataTable<TData, TValue>({
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow className={settings.table_text_size}
+                <TableRow className={table_text_size}
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className={settings.table_text_size}>
+                    <TableCell key={cell.id} className={table_text_size}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}
@@ -260,13 +239,13 @@ export function DataTable<TData, TValue>({
 
       <div className="flex items-center justify-end space-x-2 py-4">
 
-        <div className={"flex-1 text-muted-foreground " + settings.table_text_size}>
+        <div className={"flex-1 text-muted-foreground " + table_text_size}>
           {table.getFilteredSelectedRowModel().rows.map((row) => (row.getValue('select')))} {" "}
           {table.getFilteredSelectedRowModel().rows.length}/{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
         </div>
 
-        <div className={"flex-1 text-muted-foreground " + settings.table_text_size}>
+        <div className={"flex-1 text-muted-foreground " + table_text_size}>
           {table.getState().pagination.pageIndex + 1} /{" "}
           {table.getPageCount()}
         </div>
@@ -276,7 +255,7 @@ export function DataTable<TData, TValue>({
           size="sm"
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
-          className={settings.table_text_size}
+          className={table_text_size}
         >
           {t("prevPage")}
         </Button>
@@ -285,7 +264,7 @@ export function DataTable<TData, TValue>({
           size="sm"
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
-          className={settings.table_text_size}
+          className={table_text_size}
         >
           {t("nextPage")}
         </Button>

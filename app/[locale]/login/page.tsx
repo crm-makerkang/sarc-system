@@ -1,6 +1,6 @@
 'use client';
 import { useTranslations } from 'next-intl';
-//import { table_text_size } from "@/Settings/settings"
+import { table_text_size } from "@/Settings/settings"
 import { Loader2, Settings } from "lucide-react"
 import * as React from "react"
 import { useEffect } from 'react';
@@ -38,27 +38,6 @@ export default function Index() {
   const [buttonDisabled, setButtonDisabled] = React.useState(false);
   const [logining, setLogining] = React.useState(false);
 
-  const [settings, setSettings] = React.useState({
-    table_text_size: "",
-    rows_per_page: "",
-  })
-
-
-  useEffect(() => {
-    const getSettings = async () => {
-      const res = await axios.get('/api/settings/')
-      console.log(res.data);
-      setSettings({
-        table_text_size: JSON.parse(res.data.message).table_text_size,
-        rows_per_page: JSON.parse(res.data.message).rows_per_page
-      })
-
-    }
-
-    getSettings();
-
-  }, [])
-
   const login = async () => {
     setLogining(true);
     setUser(user);
@@ -95,7 +74,7 @@ export default function Index() {
       <Card className="w-[550px]">
         <CardHeader>
           <CardTitle className='mb-8'>{t('login')}</CardTitle>
-          {/* <CardDescription className={settings.table_text_size}>{t('login-msg')}</CardDescription> */}
+          {/* <CardDescription className={table_text_size}>{t('login-msg')}</CardDescription> */}
 
           {logining && (
             <div className='float h-16 w-16 absolute top-1/2 left-1/2 -translate-x-8 -translate-y-8'>
@@ -108,8 +87,8 @@ export default function Index() {
           <form>
             <div className="grid w-full items-center gap-4">
               <div className="flex flex-col space-y-1.5">
-                <Label className={settings.table_text_size} htmlFor="name">{t('name')}</Label>
-                <Input className={settings.table_text_size} autoFocus
+                <Label className={table_text_size} htmlFor="name">{t('name')}</Label>
+                <Input className={table_text_size} autoFocus
                   id="name"
                   value={user.name}
                   onChange={(e) => setUser({ ...user, name: e.target.value })}
@@ -118,9 +97,9 @@ export default function Index() {
                 />
               </div>
               <div className="flex flex-col space-y-1.5">
-                <Label className={settings.table_text_size} htmlFor="name">{t('password')}</Label>
+                <Label className={table_text_size} htmlFor="name">{t('password')}</Label>
                 <input className={"p-2 border border-gray-300 rounded-lg mb-4 "
-                  + "focus:outline-none focus:border-gray-600 text-black " + settings.table_text_size}
+                  + "focus:outline-none focus:border-gray-600 text-black " + table_text_size}
                   id="password"
                   type="password"
                   value={user.password}
@@ -140,8 +119,8 @@ export default function Index() {
           </form>
         </CardContent>
         <CardFooter className="flex justify-end">
-          {/* <Button className={settings.table_text_size} variant="ghost">{t('cancel')}</Button> */}
-          <Button className={'bg-primary ' + settings.table_text_size} id="login-btn" onClick={login} >
+          {/* <Button className={table_text_size} variant="ghost">{t('cancel')}</Button> */}
+          <Button className={'bg-primary ' + table_text_size} id="login-btn" onClick={login} >
             {t('login')}
           </Button>
         </CardFooter>
