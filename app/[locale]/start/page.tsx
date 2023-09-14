@@ -83,7 +83,7 @@ export default function Index(props: any) {
 
   return (
     <div className='container flex items-center justify-center ' style={{
-      backgroundImage: 'url(/img/bg-md.png)',
+      backgroundImage: 'url(/img/bg-start.png)',
       backgroundSize: 'cover', backgroundPosition: 'center',
       height: '91vh', width: '100%'
     }}>
