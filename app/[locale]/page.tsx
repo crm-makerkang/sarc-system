@@ -184,7 +184,7 @@ export default function Index() {
                   id="rfid_no"
                   value={user.rfid_no}
                   onChange={(e) => setUser({ ...user, rfid_no: e.target.value })}
-                  placeholder={t("rfid-msg")}
+                  placeholder={t("card-msg")}
                 />
               </div>
             </div> */}
@@ -238,7 +238,7 @@ export default function Index() {
                       setUser({ ...user, rfid_no: e.target.value, rfid_in_used: rfid });
                     }
                   }
-                  placeholder={t("rfid-msg")}
+                  placeholder={t("card-msg")}
                 />
               </div>
               {user.rfid_in_used != "" && (
@@ -286,7 +286,7 @@ export default function Index() {
                   id="rfid_no"
                   value={user.rfid_no}
                   onChange={(e) => setUser({ ...user, rfid_no: e.target.value })}
-                  placeholder={t("rfid-msg")}
+                  placeholder={t("card-msg")}
                 />
               </div>
             </div>

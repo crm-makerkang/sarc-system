@@ -90,7 +90,7 @@ export default function Index(props: any) {
       {showDataCard && (
         <Card className="w-[550px]">
           <CardHeader>
-            <CardTitle>{t('user-data')}</CardTitle>
+            <CardTitle>{t('user-data')} <span className="text-red-500 text-lg">{t('required-msg')}</span></CardTitle>
           </CardHeader>
           <CardContent>
             {/* <form> */}
@@ -171,7 +171,7 @@ export default function Index(props: any) {
 
             <div className="grid w-full items-center gap-4">
               <div className="flex flex-row space-y-1.5">
-                <Label className={"w-44 pt-3 " + table_text_size} htmlFor="gender">{t('bio-gender')}</Label>
+                <Label className={"w-44 pt-3 " + table_text_size} htmlFor="gender">{t('bio-gender')}*</Label>
                 <Select
                   value={t(user.gender)}
                   onValueChange={(value) => console.log(value)}
@@ -189,7 +189,7 @@ export default function Index(props: any) {
               </div>
 
               <div className="flex flex-row space-y-1.5">
-                <Label className={"w-44 pt-3 " + table_text_size} htmlFor="age">{t("age")}</Label>
+                <Label className={"w-44 pt-3 " + table_text_size} htmlFor="age">{t("age")}*</Label>
                 <Input className={table_text_size}
                   id="age"
                   value={user.age}
@@ -198,7 +198,7 @@ export default function Index(props: any) {
                 />
               </div>
               <div className="flex flex-row space-y-1.5">
-                <Label className={"w-44 pt-3 " + table_text_size} htmlFor="height">{t("height")}</Label>
+                <Label className={"w-44 pt-3 " + table_text_size} htmlFor="height">{t("height")}*</Label>
                 <Input className={table_text_size}
                   id="height"
                   value={user.height}
@@ -207,7 +207,7 @@ export default function Index(props: any) {
                 />
               </div>
               <div className="flex flex-row space-y-1.5">
-                <Label className={"w-44 pt-3 " + table_text_size} htmlFor="weight">{t("weight")}</Label>
+                <Label className={"w-44 pt-3 " + table_text_size} htmlFor="weight">{t("weight")}*</Label>
                 <Input className={table_text_size}
                   id="weight"
                   value={user.weight}
@@ -242,7 +242,7 @@ export default function Index(props: any) {
                   id="card_id"
                   value={user.card_id}
                   onChange={(e) => setUser({ ...user, card_id: e.target.value })}
-                  placeholder={t("rfid-msg")}
+                  placeholder={t("card-msg")}
                 />
               </div>
             </div> */}
@@ -298,7 +298,7 @@ export default function Index(props: any) {
                         setUser({ ...user, card_id: e.target.value });
                       }
                     }
-                    placeholder={t("rfid-msg")}
+                    placeholder={t("card-msg")}
                   />
                 </div>
                 {user.card_id != "" && (
@@ -348,7 +348,7 @@ export default function Index(props: any) {
                     id="card_id"
                     value={user.card_id}
                     onChange={(e) => setUser({ ...user, card_id: e.target.value })}
-                    placeholder={t("rfid-msg")}
+                    placeholder={t("card-msg")}
                   />
                 </div>
               </div>
