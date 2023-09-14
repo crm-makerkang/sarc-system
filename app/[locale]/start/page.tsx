@@ -120,7 +120,7 @@ export default function Index(props: any) {
                 />
                 {showSearch && matchedList.length > 0 && (
                   <ul
-                    className="absolute w-[380px] top-[350px] left-1/2 -translate-x-28 py-2 px-2 bg-white 
+                    className="absolute w-[380px] top-[335px] left-1/2 -translate-x-28 py-2 px-2 bg-white 
                             border border-gray-200 rounded-md ">
                     {matchedList.map((item, index) => {
                       return <li key={index}
