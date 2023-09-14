@@ -27,7 +27,7 @@ import { UserInfo } from "@/types/types"
 export const columns: ColumnDef<UserInfo>[] = [
   {
     id: "select",
-    accessorKey: "uuid",
+    accessorKey: "id",
     header: ({ table }) => (
       <Checkbox
         checked={table.getIsAllPageRowsSelected()}
@@ -159,7 +159,7 @@ export const columns: ColumnDef<UserInfo>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel></DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(UserInfo.uuid)}
+              onClick={() => navigator.clipboard.writeText(UserInfo.id)}
             >
               {/* Copy UserInfo ID */}
               <div className={table_text_size}>{t("delete")}</div>

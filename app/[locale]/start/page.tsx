@@ -38,6 +38,7 @@ export default function Index(props: any) {
 
   const t = useTranslations('sarc');
   const [user, setUser] = React.useState({
+    id: "",
     name: "",
     card_id: "",
     email: "",
@@ -236,11 +237,11 @@ export default function Index(props: any) {
             {/* <hr className='m-4'></hr>
             <div className="grid w-full items-center gap-4">
               <div className="flex flex-row space-y-1.5">
-                <Label className={"w-44 pt-3 " + table_text_size} htmlFor="rfid_no">ID {t("card-no")}</Label>
+                <Label className={"w-44 pt-3 " + table_text_size} htmlFor="card_id">ID {t("card-no")}</Label>
                 <Input className={table_text_size}
-                  id="rfid_no"
-                  value={user.rfid_no}
-                  onChange={(e) => setUser({ ...user, rfid_no: e.target.value })}
+                  id="card_id"
+                  value={user.card_id}
+                  onChange={(e) => setUser({ ...user, card_id: e.target.value })}
                   placeholder={t("rfid-msg")}
                 />
               </div>
@@ -280,10 +281,10 @@ export default function Index(props: any) {
             <CardContent>
               <div className="grid w-full items-center gap-4">
                 <div className="flex flex-row space-y-1.5">
-                  <Label className={"w-44 pt-3 " + table_text_size} htmlFor="rfid_no">ID {t("card-no")}</Label>
+                  <Label className={"w-44 pt-3 " + table_text_size} htmlFor="card_id">ID {t("card-no")}</Label>
                   <Input autoFocus className={table_text_size}
-                    id="rfid_no"
-                    value={user.rfid_no}
+                    id="card_id"
+                    value={user.card_id}
                     onChange={
                       (e) => {
                         let rfid: string = "";
@@ -294,14 +295,14 @@ export default function Index(props: any) {
                           rfid = e.target.value;
                           e.target.value = ""
                         }
-                        setUser({ ...user, rfid_no: e.target.value, rfid_in_used: rfid });
+                        setUser({ ...user, card_id: e.target.value });
                       }
                     }
                     placeholder={t("rfid-msg")}
                   />
                 </div>
-                {user.rfid_in_used != "" && (
-                  <div className={table_text_size}>已綁定卡號： {user.rfid_in_used}</div>
+                {user.card_id != "" && (
+                  <div className={table_text_size}>已綁定卡號： {user.card_id}</div>
                 )}
               </div>
             </CardContent>
@@ -312,7 +313,7 @@ export default function Index(props: any) {
                   setShowDataCard(true);
                   setshowBinding(false);
                   setshowParqCard(false);
-                  setUser({ ...user, rfid_in_used: "" });
+                  setUser({ ...user, card_id: "" });
                 }}
               >
                 {t("cancel")}
@@ -342,11 +343,11 @@ export default function Index(props: any) {
             <CardContent>
               <div className="grid w-full items-center gap-4">
                 <div className="flex flex-row space-y-1.5">
-                  <Label className={"w-44 pt-3 " + table_text_size} htmlFor="rfid_no">ID {t("card-no")}</Label>
+                  <Label className={"w-44 pt-3 " + table_text_size} htmlFor="card_id">ID {t("card-no")}</Label>
                   <Input className={table_text_size}
-                    id="rfid_no"
-                    value={user.rfid_no}
-                    onChange={(e) => setUser({ ...user, rfid_no: e.target.value })}
+                    id="card_id"
+                    value={user.card_id}
+                    onChange={(e) => setUser({ ...user, card_id: e.target.value })}
                     placeholder={t("rfid-msg")}
                   />
                 </div>
