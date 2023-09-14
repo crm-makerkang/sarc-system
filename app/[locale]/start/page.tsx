@@ -118,34 +118,38 @@ export default function Index(props: any) {
                   }
                   placeholder={t('your-name')}
                 />
-                {showSearch && matchedList.length > 0 && (
-                  <ul
-                    className="absolute w-[380px] top-[335px] left-1/2 -translate-x-28 py-2 px-2 bg-white 
-                            border border-gray-200 rounded-md ">
-                    {matchedList.map((item, index) => {
-                      return <li key={index}
-                        className={"py-2 cursor-pointer " + table_text_size}
-                        onClick={
-                          () => {
-
-                            for (let i = 0; i < userData.length; i++) {
-                              if (userData[i].name === item) {
-                                console.log(userData[i]);
-                                setUser(userData[i]);
-                              }
-                            }
-
-                            //setUser({ ...user, name: item });
-                            setShowSearch(false);
-                          }
-                        }
-                      >
-                        {item}
-                      </li>
-                    })}
-                  </ul>
-                )}
               </div>
+
+              {showSearch && matchedList.length > 0 && (
+              <div className="">
+                <ul
+                  className="absolute w-[360px] ml-32 -mt-4 py-2 px-8 bg-gray-200 
+                          border border-gray-200 rounded-md  ">
+                  {matchedList.map((item, index) => {
+                    return <li key={index}
+                      className={"py-2 cursor-pointer " + table_text_size}
+                      onClick={
+                        () => {
+
+                          for (let i = 0; i < userData.length; i++) {
+                            if (userData[i].name === item) {
+                              console.log(userData[i]);
+                              setUser(userData[i]);
+                            }
+                          }
+
+                          //setUser({ ...user, name: item });
+                          setShowSearch(false);
+                        }
+                      }
+                    >
+                      {item}
+                    </li>
+                  })}
+                </ul>
+              </div>
+              )}
+
               <div className="flex flex-row space-y-1.5">
                 <Label className={"w-44 pt-3 " + table_text_size} htmlFor="phone">{t('phone')}</Label>
                 <Input className={table_text_size}

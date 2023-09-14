@@ -52,7 +52,7 @@
     "card-no": "Card No.",
     "bind-msg": "This card is Associated to you, please proceed tests.",
     "card-msg": "User crad reder to get card no",
-    "required-msg": "* means Required"
+    "required-msg": "* Required"
   },
   "parq": {
     "p1q1": "Q1: Has your doctor ever said that you have a heart condition OR high blood pressure?",
