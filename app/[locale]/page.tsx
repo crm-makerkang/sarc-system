@@ -48,7 +48,7 @@ export default function Index() {
 
   })
   const [buttonDisabled, setButtonDisabled] = React.useState(false);
-  const [showDataCard, setshowDataCard] = React.useState(true);
+  const [showDataCard, setShowDataCard] = React.useState(true);
   const [showBinding, setshowBinding] = React.useState(false);
   const [showParqCard, setshowParqCard] = React.useState(false);
   const [parq_checked, setParq_checked] = React.useState(false);
@@ -168,7 +168,7 @@ export default function Index() {
               <Button className={'bg-primary justify-end ' + table_text_size}
                 onClick={async () => {
                   setParq_checked(!parq_checked);
-                  //setshowDataCard(false);
+                  //setShowDataCard(false);
                   setshowParqCard(true);
                 }}
               >
@@ -202,7 +202,7 @@ export default function Index() {
             <Button className={'bg-primary  ' + table_text_size}
               onClick={async () => {
                 alert("如果進行量測，您的個人資料和量測結果會被存入本機資料庫，但不會上傳到雲端。若有需要，您可以要求本機管理員刪除您的個人資料和量測結果");
-                setshowDataCard(false);
+                setShowDataCard(false);
                 setshowBinding(true);
                 setshowParqCard(false);
               }}
@@ -250,7 +250,7 @@ export default function Index() {
             <Button variant="outline" className={'flex ' + table_text_size}
               onClick={async () => {
                 //setParq_checked(!parq_checked);
-                setshowDataCard(true);
+                setShowDataCard(true);
                 setshowBinding(false);
                 setshowParqCard(false);
                 setUser({ ...user, rfid_in_used: "" });
@@ -262,7 +262,7 @@ export default function Index() {
               <Button className={'flex bg-primary  ' + table_text_size}
                 onClick={async () => {
                   setParq_checked(!parq_checked);
-                  //setshowDataCard(false);
+                  //setShowDataCard(false);
                   setshowParqCard(true);
                 }}
               >

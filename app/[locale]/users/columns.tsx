@@ -54,6 +54,14 @@ export const columns: ColumnDef<UserInfo>[] = [
     },
   },
   {
+    id: "card_id",
+    accessorKey: "card_id",
+    header: () => {
+      const t = useTranslations('sarc');
+      return <div>{t('card_id')}</div>
+    },
+  },
+  {
     accessorKey: "phone",
     header: ({ column }) => {
       const t = useTranslations('sarc');
@@ -102,13 +110,20 @@ export const columns: ColumnDef<UserInfo>[] = [
       )
     },
   },
-
   {
-    id: "remark",
-    accessorKey: "remark",
+    id: "height",
+    accessorKey: "height",
     header: () => {
       const t = useTranslations('sarc');
-      return <div className="w-48">{t('remark')}</div>
+      return <div>{t('height')}</div>
+    },
+  },
+  {
+    id: "weight",
+    accessorKey: "weight",
+    header: () => {
+      const t = useTranslations('sarc');
+      return <div>{t('weight')}</div>
     },
   },
   // {

@@ -39,29 +39,30 @@ export default function Index(props: any) {
   const t = useTranslations('sarc');
   const [user, setUser] = React.useState({
     name: "",
+    card_id: "",
     email: "",
     phone: "",
     gender: "",
     age: "",
     height: "",
     weight: "",
-    parq: "",
-    rfid_no: "",
-    rfid_in_used: ""
-
+    parq: false
   })
   const [buttonDisabled, setButtonDisabled] = React.useState(false);
-  const [showDataCard, setshowDataCard] = React.useState(true);
+  const [showSearch, setShowSearch] = React.useState(false);
+  const [showDataCard, setShowDataCard] = React.useState(true);
   const [showBinding, setshowBinding] = React.useState(false);
   const [showParqCard, setshowParqCard] = React.useState(false);
-  const [parq_checked, setParq_checked] = React.useState(false);
+  //const [parq_checked, setParq_checked] = React.useState(false);
 
-  var [data, setData] = React.useState<UserInfo[]>([])
+  const [matchedList, setMatchedList] = React.useState([]);
+
+  var [userData, setUserData] = React.useState<UserInfo[]>([])
 
   const getUsers = async () => {
     const res = await axios.get('/api/users/')
-    console.log(res.data);
-    setData(res.data);
+    //console.log(res.data);
+    setUserData(res.data);
     //simulate no data setData([]);
   }
 
@@ -69,15 +70,15 @@ export default function Index(props: any) {
     getUsers();
   }, [])
 
-  useEffect(() => {
-    if (user.name.length > 4) {
-      data.forEach(element => {
-        if (element.name.includes(user.name)) {
-          console.log(element.name);
-        }
-      });
-    }
-  }, [user])
+  // useEffect(() => {
+  //   if (user.name.length > 4) {
+  //     userData.forEach(element => {
+  //       if (element.name.includes(user.name)) {
+  //         console.log(element.name);
+  //       }
+  //     });
+  //   }
+  // }, [user])
 
   return (
     <div className='container flex items-center justify-center ' style={{
@@ -94,12 +95,63 @@ export default function Index(props: any) {
             {/* <form> */}
             <div className="grid w-full items-center gap-4">
               <div className="flex flex-row space-y-1.5">
-                <Label className={"w-44 pt-3 " + table_text_size} htmlFor="name">{t('name')}</Label>
+                <Label className={"w-44 pt-3 " + table_text_size} htmlFor="name">{t('name')}*</Label>
                 <Input className={table_text_size}
                   id="name"
                   value={user.name}
-                  onChange={(e) => setUser({ ...user, name: e.target.value })}
+                  onChange={
+                    (e) => {
+                      setUser({ ...user, name: e.target.value });
+                      setShowSearch(true);
+                      let matched = 0;
+                      let toMatchedList: any = [];
+                      userData.map((user, index) => {
+                        if ((matched < 5) && (user.name.includes(e.target.value))) {
+                          //console.log(item.name);
+                          toMatchedList[matched] = (user.name);
+                          setMatchedList(toMatchedList)
+                          matched++;
+                        }
+                      })
+                    }
+                  }
                   placeholder={t('your-name')}
+                />
+                {showSearch && matchedList.length > 0 && (
+                  <ul
+                    className="absolute w-[380px] top-[350px] left-1/2 -translate-x-28 py-2 px-2 bg-white 
+                            border border-gray-200 rounded-md ">
+                    {matchedList.map((item, index) => {
+                      return <li key={index}
+                        className={"py-2 cursor-pointer " + table_text_size}
+                        onClick={
+                          () => {
+
+                            for (let i = 0; i < userData.length; i++) {
+                              if (userData[i].name === item) {
+                                console.log(userData[i]);
+                                setUser(userData[i]);
+                              }
+                            }
+
+                            //setUser({ ...user, name: item });
+                            setShowSearch(false);
+                          }
+                        }
+                      >
+                        {item}
+                      </li>
+                    })}
+                  </ul>
+                )}
+              </div>
+              <div className="flex flex-row space-y-1.5">
+                <Label className={"w-44 pt-3 " + table_text_size} htmlFor="phone">{t('phone')}</Label>
+                <Input className={table_text_size}
+                  id="phone"
+                  value={user.phone}
+                  onChange={(e) => setUser({ ...user, phone: e.target.value })}
+                  placeholder={t('phone')}
                 />
               </div>
               <div className="flex flex-row space-y-1.5">
@@ -119,7 +171,10 @@ export default function Index(props: any) {
             <div className="grid w-full items-center gap-4">
               <div className="flex flex-row space-y-1.5">
                 <Label className={"w-44 pt-3 " + table_text_size} htmlFor="gender">{t('bio-gender')}</Label>
-                <Select onValueChange={(value) => console.log(value)}>
+                <Select
+                  value={t(user.gender)}
+                  onValueChange={(value) => console.log(value)}
+                >
                   <SelectTrigger className={"text-gray-500 " + table_text_size}>
                     <SelectValue placeholder={t("s-bio-gender")} />
                   </SelectTrigger>
@@ -164,13 +219,13 @@ export default function Index(props: any) {
             <hr className='m-4'></hr>
 
             <div className="flex justify-between space-x-2">
-              <Checkbox className="mt-2 w-6 h-6" id="parq_checkbox" checked={parq_checked} />
+              <Checkbox className="mt-2 w-6 h-6" id="parq_checkbox" checked={user.parq} />
               <Label className={"w-44 mt-2 " + table_text_size} htmlFor="parq_checkbox">PARQ+</Label>
 
               <Button className={'bg-primary justify-end ' + table_text_size}
                 onClick={async () => {
-                  setParq_checked(!parq_checked);
-                  //setshowDataCard(false);
+                  //setParq_checked(!parq_checked);
+                  //setShowDataCard(false);
                   setshowParqCard(true);
                 }}
               >
@@ -204,7 +259,7 @@ export default function Index(props: any) {
             <Button className={'bg-primary  ' + table_text_size}
               onClick={async () => {
                 alert("如果進行量測，您的個人資料和量測結果會被存入本機資料庫，但不會上傳到雲端。若有需要，您可以要求本機管理員刪除您的個人資料和量測結果");
-                setshowDataCard(false);
+                setShowDataCard(false);
                 setshowBinding(true);
                 setshowParqCard(false);
               }}
@@ -213,91 +268,96 @@ export default function Index(props: any) {
             </Button>
           </CardFooter>
         </Card>
-      )}
+      )
+      }
 
-      {showBinding && (
-        <Card className="w-[550px]">
-          <CardHeader>
-            <CardTitle>用戶：{user.name} 你好，請綁定卡號後進行量測</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid w-full items-center gap-4">
-              <div className="flex flex-row space-y-1.5">
-                <Label className={"w-44 pt-3 " + table_text_size} htmlFor="rfid_no">ID {t("card-no")}</Label>
-                <Input autoFocus className={table_text_size}
-                  id="rfid_no"
-                  value={user.rfid_no}
-                  onChange={
-                    (e) => {
-                      let rfid: string = "";
-                      console.log(e.target.value);
-                      if (e.target.value.length == 10) {
-                        console.log("10 digits detected");
+      {
+        showBinding && (
+          <Card className="w-[550px]">
+            <CardHeader>
+              <CardTitle>用戶：{user.name} 你好，請綁定卡號後進行量測</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid w-full items-center gap-4">
+                <div className="flex flex-row space-y-1.5">
+                  <Label className={"w-44 pt-3 " + table_text_size} htmlFor="rfid_no">ID {t("card-no")}</Label>
+                  <Input autoFocus className={table_text_size}
+                    id="rfid_no"
+                    value={user.rfid_no}
+                    onChange={
+                      (e) => {
+                        let rfid: string = "";
+                        console.log(e.target.value);
+                        if (e.target.value.length == 10) {
+                          console.log("10 digits detected");
 
-                        rfid = e.target.value;
-                        e.target.value = ""
+                          rfid = e.target.value;
+                          e.target.value = ""
+                        }
+                        setUser({ ...user, rfid_no: e.target.value, rfid_in_used: rfid });
                       }
-                      setUser({ ...user, rfid_no: e.target.value, rfid_in_used: rfid });
                     }
-                  }
-                  placeholder={t("rfid-msg")}
-                />
+                    placeholder={t("rfid-msg")}
+                  />
+                </div>
+                {user.rfid_in_used != "" && (
+                  <div className={table_text_size}>已綁定卡號： {user.rfid_in_used}</div>
+                )}
               </div>
-              {user.rfid_in_used != "" && (
-                <div className={table_text_size}>已綁定卡號： {user.rfid_in_used}</div>
-              )}
-            </div>
-          </CardContent>
-          <CardFooter className="flex items-center justify-between">
-            <Button variant="outline" className={'flex ' + table_text_size}
-              onClick={async () => {
-                //setParq_checked(!parq_checked);
-                setshowDataCard(true);
-                setshowBinding(false);
-                setshowParqCard(false);
-                setUser({ ...user, rfid_in_used: "" });
-              }}
-            >
-              {t("cancel")}
-            </Button>
-            {user.rfid_in_used != "" && (
-              <Button className={'flex bg-primary  ' + table_text_size}
+            </CardContent>
+            <CardFooter className="flex items-center justify-between">
+              <Button variant="outline" className={'flex ' + table_text_size}
                 onClick={async () => {
-                  setParq_checked(!parq_checked);
-                  //setshowDataCard(false);
-                  setshowParqCard(true);
+                  //setParq_checked(!parq_checked);
+                  setShowDataCard(true);
+                  setshowBinding(false);
+                  setshowParqCard(false);
+                  setUser({ ...user, rfid_in_used: "" });
                 }}
               >
-                綁定後開始量測
+                {t("cancel")}
               </Button>
-            )}
-          </CardFooter>
-        </Card>
-      )}
+              {user.card_id != "" && (
+                <Button className={'flex bg-primary  ' + table_text_size}
+                  onClick={async () => {
+                    //setParq_checked(!parq_checked);
+                    //setShowDataCard(false);
+                    setshowParqCard(true);
+                  }}
+                >
+                  綁定後開始量測
+                </Button>
+              )}
+            </CardFooter>
+          </Card>
+        )
+      }
 
-      {showParqCard && (
-        <Card className="w-[550px]">
-          <CardHeader>
-            <CardTitle>PARQ</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid w-full items-center gap-4">
-              <div className="flex flex-row space-y-1.5">
-                <Label className={"w-44 pt-3 " + table_text_size} htmlFor="rfid_no">ID {t("card-no")}</Label>
-                <Input className={table_text_size}
-                  id="rfid_no"
-                  value={user.rfid_no}
-                  onChange={(e) => setUser({ ...user, rfid_no: e.target.value })}
-                  placeholder={t("rfid-msg")}
-                />
+      {
+        showParqCard && (
+          <Card className="w-[550px]">
+            <CardHeader>
+              <CardTitle>PARQ</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid w-full items-center gap-4">
+                <div className="flex flex-row space-y-1.5">
+                  <Label className={"w-44 pt-3 " + table_text_size} htmlFor="rfid_no">ID {t("card-no")}</Label>
+                  <Input className={table_text_size}
+                    id="rfid_no"
+                    value={user.rfid_no}
+                    onChange={(e) => setUser({ ...user, rfid_no: e.target.value })}
+                    placeholder={t("rfid-msg")}
+                  />
+                </div>
               </div>
-            </div>
-          </CardContent>
-          <CardFooter className="flex justify-end">
+            </CardContent>
+            <CardFooter className="flex justify-end">
 
-          </CardFooter>
-        </Card>
-      )}
+            </CardFooter>
+          </Card>
+        )
+      }
     </div >
   );
 }

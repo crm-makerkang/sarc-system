@@ -16,6 +16,7 @@
     "columns": "欄位",
     "actions": "操作",
     "name": "姓名",
+    "card_id": "卡號",
     "email": "電子郵箱",
     "gender": "性別",
     "age": "年齡",

@@ -16,6 +16,7 @@
     "columns": "Columns",
     "actions": "Action",
     "name": "Name",
+    "card_id": "Card ID",
     "email": "Email",
     "gender": "Gender",
     "age": "Age",
