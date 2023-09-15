@@ -2,6 +2,7 @@
 
 // PARQ 參考 https://github.com/parqform/webform/blob/main/index.html
 
+import { useRouter } from "next/navigation";
 import { UserInfo } from "@/types/types"
 import { useTranslations } from 'next-intl';
 import { table_text_size } from "@/Settings/settings"
@@ -34,7 +35,8 @@ import {
 
 export default function Index(props: any) {
 
-  //console.log("xxx", props);
+  console.log("start", props);
+  const router = useRouter();
 
   const t = useTranslations('sarc');
   const [user, setUser] = React.useState({
@@ -53,7 +55,7 @@ export default function Index(props: any) {
   const [showSearch, setShowSearch] = React.useState(false);
   const [showDataCard, setShowDataCard] = React.useState(true);
   const [showBinding, setshowBinding] = React.useState(false);
-  const [showParqCard, setshowParqCard] = React.useState(false);
+
   //const [parq_checked, setParq_checked] = React.useState(false);
 
   const [matchedList, setMatchedList] = React.useState([]);
@@ -121,33 +123,33 @@ export default function Index(props: any) {
               </div>
 
               {showSearch && matchedList.length > 0 && (
-              <div className="">
-                <ul
-                  className="absolute w-[360px] ml-32 -mt-4 py-2 px-8 bg-gray-200 
+                <div className="">
+                  <ul
+                    className="absolute w-[360px] ml-32 -mt-4 py-2 px-8 bg-gray-200 
                           border border-gray-200 rounded-md  ">
-                  {matchedList.map((item, index) => {
-                    return <li key={index}
-                      className={"py-2 cursor-pointer " + table_text_size}
-                      onClick={
-                        () => {
+                    {matchedList.map((item, index) => {
+                      return <li key={index}
+                        className={"py-2 cursor-pointer " + table_text_size}
+                        onClick={
+                          () => {
 
-                          for (let i = 0; i < userData.length; i++) {
-                            if (userData[i].name === item) {
-                              console.log(userData[i]);
-                              setUser(userData[i]);
+                            for (let i = 0; i < userData.length; i++) {
+                              if (userData[i].name === item) {
+                                console.log(userData[i]);
+                                setUser(userData[i]);
+                              }
                             }
-                          }
 
-                          //setUser({ ...user, name: item });
-                          setShowSearch(false);
+                            //setUser({ ...user, name: item });
+                            setShowSearch(false);
+                          }
                         }
-                      }
-                    >
-                      {item}
-                    </li>
-                  })}
-                </ul>
-              </div>
+                      >
+                        {item}
+                      </li>
+                    })}
+                  </ul>
+                </div>
               )}
 
               <div className="flex flex-row space-y-1.5">
@@ -231,7 +233,7 @@ export default function Index(props: any) {
                 onClick={async () => {
                   //setParq_checked(!parq_checked);
                   //setShowDataCard(false);
-                  setshowParqCard(true);
+                  router.push("/parq-plus/?id=8afdf75e-5f4d-4dca-82bc-301cc2707961&name=paul kang");
                 }}
               >
                 {t("take-parq")}
@@ -263,10 +265,9 @@ export default function Index(props: any) {
             </Button>
             <Button className={'bg-primary  ' + table_text_size}
               onClick={async () => {
-                alert("如果進行量測，您的個人資料和量測結果會被存入本機資料庫，但不會上傳到雲端。若有需要，您可以要求本機管理員刪除您的個人資料和量測結果");
+                //alert("如果進行量測，您的個人資料和量測結果會被存入本機資料庫，但不會上傳到雲端。若有需要，您可以要求本機管理員刪除您的個人資料和量測結果");
                 setShowDataCard(false);
                 setshowBinding(true);
-                setshowParqCard(false);
               }}
             >
               進行量測
@@ -280,7 +281,7 @@ export default function Index(props: any) {
         showBinding && (
           <Card className="w-[550px]">
             <CardHeader>
-              <CardTitle>用戶：{user.name} 你好，請綁定卡號後進行量測</CardTitle>
+              <CardTitle>用戶：{user.name} 您好，請綁定卡號後進行量測</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid w-full items-center gap-4">
@@ -291,15 +292,16 @@ export default function Index(props: any) {
                     value={user.card_id}
                     onChange={
                       (e) => {
-                        let rfid: string = "";
+                        let card_id: string = "";
                         console.log(e.target.value);
                         if (e.target.value.length == 10) {
                           console.log("10 digits detected");
 
-                          rfid = e.target.value;
+                          card_id = e.target.value;
                           e.target.value = ""
                         }
                         setUser({ ...user, card_id: e.target.value });
+
                       }
                     }
                     placeholder={t("card-msg")}
@@ -316,7 +318,6 @@ export default function Index(props: any) {
                   //setParq_checked(!parq_checked);
                   setShowDataCard(true);
                   setshowBinding(false);
-                  setshowParqCard(false);
                   setUser({ ...user, card_id: "" });
                 }}
               >
@@ -327,7 +328,6 @@ export default function Index(props: any) {
                   onClick={async () => {
                     //setParq_checked(!parq_checked);
                     //setShowDataCard(false);
-                    setshowParqCard(true);
                   }}
                 >
                   綁定後開始量測
@@ -338,31 +338,6 @@ export default function Index(props: any) {
         )
       }
 
-      {
-        showParqCard && (
-          <Card className="w-[550px]">
-            <CardHeader>
-              <CardTitle>PARQ</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid w-full items-center gap-4">
-                <div className="flex flex-row space-y-1.5">
-                  <Label className={"w-44 pt-3 " + table_text_size} htmlFor="card_id">ID {t("card-no")}</Label>
-                  <Input className={table_text_size}
-                    id="card_id"
-                    value={user.card_id}
-                    onChange={(e) => setUser({ ...user, card_id: e.target.value })}
-                    placeholder={t("card-msg")}
-                  />
-                </div>
-              </div>
-            </CardContent>
-            <CardFooter className="flex justify-end">
-
-            </CardFooter>
-          </Card>
-        )
-      }
     </div >
   );
 }
