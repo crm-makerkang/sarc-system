@@ -53,9 +53,7 @@
     "card-no": "Card No.",
     "bind-msg": "This card is Associated to you, please proceed tests.",
     "card-msg": "User crad reader to get card no",
-    "required-msg": "* Required"
-  },
-  "parq": {
+    "required-msg": "* Required",
     "parq-desc": "Physical Activity Readiness Questionnaire",
     "gq-desc": "The Physical Activity Readiness Questionnaire for Everyone",
     "gq": "General Health Questions",

@@ -53,9 +53,7 @@
     "card-no": "卡號",
     "bind-msg": "此卡片已跟您綁定，請進行測量",
     "card-msg": "請嗶卡取得卡號",
-    "required-msg": "* 必填欄位"
-  },
-  "parq": {
+    "required-msg": "* 必填欄位",
     "parq-desc": "身體活動準備問卷",
     "gq-desc": "一般問題",
     "gq": "一般問題",

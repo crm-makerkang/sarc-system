@@ -26,42 +26,15 @@ import {
 import { useTranslations } from "next-intl"
 
 export default function ParqPlus(props: any) {
-
-  const router = useRouter();
-
   console.log("parq-plus", props);
-
-  const t = useTranslations('parq');
-
+  const router = useRouter();
+  const t = useTranslations('sarc');
   const [showAQ, setShowAQ] = React.useState(false);
-
   const [gq_answers, setGq_answers] = React.useState(
     [false, false, false, false, false, false, false]
-    // {
-    //   "gqq1": false,
-    //   "gqq2": false,
-    //   "gqq3": false,
-    //   "gqq4": false,
-    //   "gqq5": false,
-    //   "gqq6": false,
-    //   "gqq7": false
-    // }
   );
-
   const [aq_answers, setAq_answers] = React.useState(
     [false, false, false, false, false, false, false, false, false, false]
-    // {
-    //   aqq1: false,
-    //   aqq2: false,
-    //   aqq3: false,
-    //   aqq4: false,
-    //   aqq5: false,
-    //   aqq6: false,
-    //   aqq7: false,
-    //   aqq8: false,
-    //   aqq9: false,
-    //   aqq10: false
-    // }
   );
 
   const checkGQanswers = () => {
@@ -70,9 +43,7 @@ export default function ParqPlus(props: any) {
       needAQ ||= gq_answers[i];
     }
     console.log(needAQ, gq_answers);
-
     setShowAQ(needAQ ? true : false);
-
   }
 
   return (
@@ -283,7 +254,6 @@ export default function ParqPlus(props: any) {
           </div>
         </CardContent>
         <CardContent>
-
           {showAQ && (
             <div className="grid w-full items-center gap-4">
               <div className='text-red-500 font-bold'>{t("need-aq-msg")}</div>
@@ -550,7 +520,6 @@ export default function ParqPlus(props: any) {
               </div>
             </div>
           )}
-
         </CardContent>
         <CardFooter className="flex items-center justify-between">
           <Button variant="outline" className={table_text_size}

@@ -34,12 +34,10 @@ import {
 } from "@/components/ui/select"
 
 export default function Index(props: any) {
-
   console.log("start", props);
   const router = useRouter();
-
   const t = useTranslations('sarc');
-  const [user, setUser] = React.useState({
+  const [user, setUser] = React.useState<UserInfo>({
     id: "",
     name: "",
     card_id: "",
@@ -52,15 +50,23 @@ export default function Index(props: any) {
     parq: false
   })
   const [buttonDisabled, setButtonDisabled] = React.useState(false);
+
   const [showSearch, setShowSearch] = React.useState(false);
   const [showDataCard, setShowDataCard] = React.useState(true);
   const [showBinding, setshowBinding] = React.useState(false);
-
-  //const [parq_checked, setParq_checked] = React.useState(false);
+  const [showPARQ, setShowPARQ] = React.useState(false);
+  const [showAQ, setShowAQ] = React.useState(false);
 
   const [matchedList, setMatchedList] = React.useState([]);
+  const [userData, setUserData] = React.useState<UserInfo[]>([])
 
-  var [userData, setUserData] = React.useState<UserInfo[]>([])
+
+  const [gq_answers, setGq_answers] = React.useState(
+    [false, false, false, false, false, false, false]
+  );
+  const [aq_answers, setAq_answers] = React.useState(
+    [false, false, false, false, false, false, false, false, false, false]
+  );
 
   const getUsers = async () => {
     const res = await axios.get('/api/users/')
@@ -69,21 +75,21 @@ export default function Index(props: any) {
     //simulate no data setData([]);
   }
 
+  const checkGQanswers = () => {
+    let needAQ = false;
+    for (var i = 0; i < gq_answers.length; i++) {
+      needAQ ||= gq_answers[i];
+    }
+    console.log(needAQ, gq_answers);
+    setShowAQ(needAQ ? true : false);
+  }
+
   useEffect(() => {
     getUsers();
   }, [])
 
-  // useEffect(() => {
-  //   if (user.name.length > 4) {
-  //     userData.forEach(element => {
-  //       if (element.name.includes(user.name)) {
-  //         console.log(element.name);
-  //       }
-  //     });
-  //   }
-  // }, [user])
-
   return (
+    <>
     <div className='container flex items-center justify-center ' style={{
       backgroundImage: 'url(/img/bg-start.png)',
       backgroundSize: 'cover', backgroundPosition: 'center',
@@ -173,7 +179,7 @@ export default function Index(props: any) {
             </div>
 
             <hr className='m-4'></hr>
-            <div className={"mb-2 " + table_text_size}>{t('bio-msg')}</div>
+            <div className="mb-2 text-lg text-red-500 font-bold ">{t('bio-msg')}</div>
 
             <div className="grid w-full items-center gap-4">
               <div className="flex flex-row space-y-1.5">
@@ -226,14 +232,20 @@ export default function Index(props: any) {
             <hr className='m-4'></hr>
 
             <div className="flex justify-between space-x-2">
-              <Checkbox className="mt-2 w-6 h-6" id="parq_checkbox" checked={user.parq} />
-              <Label className={"w-44 mt-2 " + table_text_size} htmlFor="parq_checkbox">PARQ+</Label>
+              <div className="mt-2">
+                <Checkbox className=" w-4 h-4" id="parq_checkbox" checked={user.parq} />
+                <Label className={" ml-2   " + table_text_size} htmlFor="parq_checkbox">PARQ+</Label>
+                { showAQ && (
+                  <span className={" ml-2 " + table_text_size}> Need Attention</span>
+                  )
+                }
+              </div>
 
               <Button className={'bg-primary justify-end ' + table_text_size}
                 onClick={async () => {
-                  //setParq_checked(!parq_checked);
-                  //setShowDataCard(false);
-                  router.push("/parq-plus/?id=8afdf75e-5f4d-4dca-82bc-301cc2707961&name=paul kang");
+                  setShowPARQ(true);
+                  setShowDataCard(false);
+                  //router.push("/parq-plus/?id=8afdf75e-5f4d-4dca-82bc-301cc2707961&name=paul kang");
                 }}
               >
                 {t("take-parq")}
@@ -274,70 +286,1059 @@ export default function Index(props: any) {
             </Button>
           </CardFooter>
         </Card>
-      )
-      }
-
-      {
-        showBinding && (
-          <Card className="w-[550px]">
-            <CardHeader>
-              <CardTitle>用戶：{user.name} 您好，請綁定卡號後進行量測</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid w-full items-center gap-4">
-                <div className="flex flex-row space-y-1.5">
-                  <Label className={"w-44 pt-3 " + table_text_size} htmlFor="card_id">ID {t("card-no")}</Label>
-                  <Input autoFocus className={table_text_size}
-                    id="card_id"
-                    value={user.card_id}
-                    onChange={
-                      (e) => {
-                        let card_id: string = "";
-                        console.log(e.target.value);
-                        if (e.target.value.length == 10) {
-                          console.log("10 digits detected");
-
-                          card_id = e.target.value;
-                          e.target.value = ""
-                        }
-                        setUser({ ...user, card_id: e.target.value });
-
-                      }
-                    }
-                    placeholder={t("card-msg")}
-                  />
-                </div>
-                {user.card_id != "" && (
-                  <div className={table_text_size}>已綁定卡號： {user.card_id}</div>
-                )}
-              </div>
-            </CardContent>
-            <CardFooter className="flex items-center justify-between">
-              <Button variant="outline" className={'flex ' + table_text_size}
-                onClick={async () => {
-                  //setParq_checked(!parq_checked);
-                  setShowDataCard(true);
-                  setshowBinding(false);
-                  setUser({ ...user, card_id: "" });
-                }}
-              >
-                {t("cancel")}
-              </Button>
-              {user.card_id != "" && (
-                <Button className={'flex bg-primary  ' + table_text_size}
-                  onClick={async () => {
-                    //setParq_checked(!parq_checked);
-                    //setShowDataCard(false);
-                  }}
-                >
-                  綁定後開始量測
-                </Button>
-              )}
-            </CardFooter>
-          </Card>
         )
       }
 
-    </div >
+      {showBinding && (
+        <Card className="w-[550px]">
+          <CardHeader>
+            <CardTitle>用戶：{user.name} 您好，請綁定卡號後進行量測</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid w-full items-center gap-4">
+              <div className="flex flex-row space-y-1.5">
+                <Label className={"w-44 pt-3 " + table_text_size} htmlFor="card_id">ID {t("card-no")}</Label>
+                <Input autoFocus className={table_text_size}
+                  id="card_id"
+                  value={user.card_id}
+                  onChange={
+                    (e) => {
+                      let card_id: string = "";
+                      console.log(e.target.value);
+                      if (e.target.value.length == 10) {
+                        console.log("10 digits detected");
+
+                        card_id = e.target.value;
+                        e.target.value = ""
+                      }
+                      setUser({ ...user, card_id: e.target.value });
+
+                    }
+                  }
+                  placeholder={t("card-msg")}
+                />
+              </div>
+              {user.card_id != "" && (
+                <div className={table_text_size}>已綁定卡號： {user.card_id}</div>
+              )}
+            </div>
+          </CardContent>
+          <CardFooter className="flex items-center justify-between">
+            <Button variant="outline" className={'flex ' + table_text_size}
+              onClick={async () => {
+                //setParq_checked(!parq_checked);
+                setShowDataCard(true);
+                setshowBinding(false);
+                setUser({ ...user, card_id: "" });
+              }}
+            >
+              {t("cancel")}
+            </Button>
+            {user.card_id != "" && (
+              <Button className={'flex bg-primary  ' + table_text_size}
+                onClick={async () => {
+                  //setParq_checked(!parq_checked);
+                  //setShowDataCard(false);
+                }}
+              >
+                綁定後開始量測
+              </Button>
+            )}
+          </CardFooter>
+        </Card>         
+        )
+      }
+
+      {showPARQ && (
+        <div className=' absolute top-16 left-1/2 -translate-x-[500px] flex items-start justify-center '>
+          <Card className="w-[1000px] mt-16">
+            <CardHeader>
+              <CardTitle>PARQ+</CardTitle>
+              <CardContent>{t("parq-desc")}</CardContent>
+            </CardHeader>
+            <CardContent>
+              <div className="grid w-full items-center gap-4">
+                <Label className={table_text_size} htmlFor="name">{t("gq")}</Label>
+                <hr></hr>
+                <div className='flex flex-row'>
+                  <div className='mx-4 w-4'>{t("yes")}</div>
+                  <div className='mx-4 w-4'>{t("no")}</div>
+                </div>
+                <div >
+                  <ul  >
+                    <li className={"flex flex-row " + table_text_size}>
+                      <input className='mt-2 mx-4 w-4 self-start' type='radio' name='gqq1' value='Y'
+                        onClick={
+                          () => {
+                            let setNew = gq_answers;
+                            //console.log(gq_answers);
+                            setNew[0] = true
+                            setGq_answers(setNew);
+                            checkGQanswers()
+                          }
+                        }
+                      />
+                      <input className='mt-2 mx-4 w-4 self-start' type='radio' name='gqq1' value='N'
+                        onClick={
+                          () => {
+                            let setNew = gq_answers;
+                            //console.log(gq_answers);
+                            setNew[0] = false;
+                            setGq_answers(setNew);
+                            checkGQanswers();
+                          }
+                        }
+                      />
+                      <div className=''>{t("Q1")}</div>
+                      <div className='w-[760px] mb-4'>{t("gqq1")}</div>
+                    </li>
+                    <li className={"flex flex-row " + table_text_size}>
+                      <input className='mt-2 mx-4 w-4 self-start' type='radio' name='gqq2' value='Y'
+                        onClick={
+                          () => {
+                            let setNew = gq_answers;
+                            //console.log(gq_answers);
+                            setNew[1] = true
+                            setGq_answers(setNew);
+                            checkGQanswers()
+                          }
+                        }
+                      />
+                      <input className='mt-2 mx-4 w-4 self-start' type='radio' name='gqq2' value='N'
+                        onClick={
+                          () => {
+                            let setNew = gq_answers;
+                            //console.log(gq_answers);
+                            setNew[1] = false
+                            setGq_answers(setNew);
+                            checkGQanswers()
+                          }
+                        }
+                      />
+                      <div className=''>{t("Q2")}</div>
+                      <div className='w-[760px] mb-4'>{t("gqq2")}</div>
+                    </li>
+                    <li className={"flex flex-row " + table_text_size}>
+                      <input className='mt-2 mx-4 w-4 self-start' type='radio' name='gqq3' value='Y'
+                        onClick={
+                          () => {
+                            let setNew = gq_answers;
+                            //console.log(gq_answers);
+                            setNew[2] = true
+                            setGq_answers(setNew);
+                            checkGQanswers()
+                          }
+                        }
+                      />
+                      <input className='mt-2 mx-4 w-4 self-start' type='radio' name='gqq3' value='N'
+                        onClick={
+                          () => {
+                            let setNew = gq_answers;
+                            //console.log(gq_answers);
+                            setNew[2] = false
+                            setGq_answers(setNew);
+                            checkGQanswers()
+                          }
+                        }
+                      />
+                      <div className=''>{t("Q3")}</div>
+                      <div className='w-[760px] mb-4'>{t("gqq3")}</div>
+                    </li>
+                    <li className={"flex flex-row " + table_text_size}>
+                      <input className='mt-2 mx-4 w-4 self-start' type='radio' name='gqq4' value='Y'
+                        onClick={
+                          () => {
+                            let setNew = gq_answers;
+                            //console.log(gq_answers);
+                            setNew[3] = true
+                            setGq_answers(setNew);
+                            checkGQanswers()
+                          }
+                        }
+                      />
+                      <input className='mt-2 mx-4 w-4 self-start' type='radio' name='gqq4' value='N'
+                        onClick={
+                          () => {
+                            let setNew = gq_answers;
+                            //console.log(gq_answers);
+                            setNew[3] = false
+                            setGq_answers(setNew);
+                            checkGQanswers()
+                          }
+                        }
+                      />
+                      <div className=''>{t("Q4")}</div>
+                      <div className='w-[760px] mb-4'>{t("gqq4")}</div>
+                    </li>
+                    <li className={"flex flex-row " + table_text_size}>
+                      <input className='mt-2 mx-4 w-4 self-start' type='radio' name='gqq5' value='Y'
+                        onClick={
+                          () => {
+                            let setNew = gq_answers;
+                            //console.log(gq_answers);
+                            setNew[4] = true
+                            setGq_answers(setNew);
+                            checkGQanswers()
+                          }
+                        }
+                      />
+                      <input className='mt-2 mx-4 w-4 self-start' type='radio' name='gqq5' value='N'
+                        onClick={
+                          () => {
+                            let setNew = gq_answers;
+                            //console.log(gq_answers);
+                            setNew[4] = false
+                            setGq_answers(setNew);
+                            checkGQanswers()
+                          }
+                        }
+                      />
+                      <div className=''>{t("Q5")}</div>
+                      <div className='w-[760px] mb-4'>{t("gqq5")}</div>
+                    </li>
+                    <li className={"flex flex-row " + table_text_size}>
+                      <input className='mt-2 mx-4 w-4 self-start' type='radio' name='gqq6' value='Y'
+                        onClick={
+                          () => {
+                            let setNew = gq_answers;
+                            //console.log(gq_answers);
+                            setNew[5] = true
+                            setGq_answers(setNew);
+                            checkGQanswers()
+                          }
+                        } />
+                      <input className='mt-2 mx-4 w-4 self-start' type='radio' name='gqq6' value='N'
+                        onClick={
+                          () => {
+                            let setNew = gq_answers;
+                            //console.log(gq_answers);
+                            setNew[5] = false
+                            setGq_answers(setNew);
+                            checkGQanswers()
+                          }
+                        } />
+                      <div className=''>{t("Q6")}</div>
+                      <div className='w-[760px] mb-4'>{t("gqq6")}</div>
+                    </li>
+                    <li className={"flex flex-row " + table_text_size}>
+                      <input className='mt-2 mx-4 w-4 self-start' type='radio' name='gqq7' value='Y'
+                        onClick={
+                          () => {
+                            let setNew = gq_answers;
+                            //console.log(gq_answers);
+                            setNew[6] = true
+                            setGq_answers(setNew);
+                            checkGQanswers()
+                          }
+                        } />
+                      <input className='mt-2 mx-4 w-4 self-start' type='radio' name='gqq7' value='N'
+                        onClick={
+                          () => {
+                            let setNew = gq_answers;
+                            //console.log(gq_answers);
+                            setNew[6] = false
+                            setGq_answers(setNew);
+                            checkGQanswers()
+                          }
+                        } />
+                      <div className=''>{t("Q7")}</div>
+                      <div className='w-[760px] mb-4'>{t("gqq7")}</div>
+                    </li>
+                  </ul>
+                  <hr></hr>
+                </div>
+              </div>
+            </CardContent>
+            <CardContent>
+              {showAQ && (
+                <div className="grid w-full items-center gap-4">
+                  <div className='text-red-500 font-bold'>{t("need-aq-msg")}</div>
+                  <Label className={table_text_size} htmlFor="name">{t("aq")}</Label>
+                  <hr></hr>
+                  <div className='flex flex-row'>
+                    <div className='mx-4 w-4'>{t("yes")}</div>
+                    <div className='mx-4 w-4'>{t("no")}</div>
+                  </div>
+                  <div >
+                    <ul  >
+                      <li className={"flex flex-row " + table_text_size}>
+                        <input className='mt-2 mx-4 w-4 self-start' type='radio' name='aqq1' value='Y'
+                          onClick={
+                            () => {
+                              let setNew = aq_answers;
+                              //console.log(gq_answers);
+                              setNew[0] = true
+                              setAq_answers(setNew);
+                              //checkGQanswers()
+                            }
+                          }
+                        />
+                        <input className='mt-2 mx-4 w-4 self-start' type='radio' name='aqq1' value='N'
+                          onClick={
+                            () => {
+                              let setNew = aq_answers;
+                              //console.log(gq_answers);
+                              setNew[0] = false;
+                              setAq_answers(setNew);
+                              //checkGQanswers();
+                            }
+                          }
+                        />
+                        <div className=''>{t("Q1")}</div>
+                        <div className='w-[760px] mb-4'>{t("aqq1")}</div>
+                      </li>
+                      <li className={"flex flex-row " + table_text_size}>
+                        <input className='mt-2 mx-4 w-4 self-start' type='radio' name='aqq2' value='Y'
+                          onClick={
+                            () => {
+                              let setNew = aq_answers;
+                              //console.log(gq_answers);
+                              setNew[1] = true
+                              setAq_answers(setNew);
+                              //checkGQanswers()
+                            }
+                          }
+                        />
+                        <input className='mt-2 mx-4 w-4 self-start' type='radio' name='aqq2' value='N'
+                          onClick={
+                            () => {
+                              let setNew = aq_answers;
+                              //console.log(gq_answers);
+                              setNew[1] = false
+                              setAq_answers(setNew);
+                              //checkGQanswers()
+                            }
+                          }
+                        />
+                        <div className=''>{t("Q2")}</div>
+                        <div className='w-[760px] mb-4'>{t("aqq2")}</div>
+                      </li>
+                      <li className={"flex flex-row " + table_text_size}>
+                        <input className='mt-2 mx-4 w-4 self-start' type='radio' name='aqq3' value='Y'
+                          onClick={
+                            () => {
+                              let setNew = aq_answers;
+                              //console.log(gq_answers);
+                              setNew[2] = true
+                              setAq_answers(setNew);
+                              //checkGQanswers()
+                            }
+                          }
+                        />
+                        <input className='mt-2 mx-4 w-4 self-start' type='radio' name='aqq3' value='N'
+                          onClick={
+                            () => {
+                              let setNew = aq_answers;
+                              //console.log(gq_answers);
+                              setNew[2] = false
+                              setAq_answers(setNew);
+                              // checkGQanswers()
+                            }
+                          }
+                        />
+                        <div className=''>{t("Q3")}</div>
+                        <div className='w-[760px] mb-4'>{t("aqq3")}</div>
+                      </li>
+                      <li className={"flex flex-row " + table_text_size}>
+                        <input className='mt-2 mx-4 w-4 self-start' type='radio' name='aqq4' value='Y'
+                          onClick={
+                            () => {
+                              let setNew = aq_answers;
+                              //console.log(gq_answers);
+                              setNew[3] = true
+                              setAq_answers(setNew);
+                              // checkGQanswers()
+                            }
+                          }
+                        />
+                        <input className='mt-2 mx-4 w-4 self-start' type='radio' name='aqq4' value='N'
+                          onClick={
+                            () => {
+                              let setNew = aq_answers;
+                              //console.log(gq_answers);
+                              setNew[3] = false
+                              setAq_answers(setNew);
+                              // checkGQanswers()
+                            }
+                          }
+                        />
+                        <div className=''>{t("Q4")}</div>
+                        <div className='w-[760px] mb-4'>{t("aqq4")}</div>
+                      </li>
+                      <li className={"flex flex-row " + table_text_size}>
+                        <input className='mt-2 mx-4 w-4 self-start' type='radio' name='aqq5' value='Y'
+                          onClick={
+                            () => {
+                              let setNew = aq_answers;
+                              //console.log(gq_answers);
+                              setNew[4] = true
+                              setAq_answers(setNew);
+                              checkGQanswers()
+                            }
+                          }
+                        />
+                        <input className='mt-2 mx-4 w-4 self-start' type='radio' name='aqq5' value='N'
+                          onClick={
+                            () => {
+                              let setNew = aq_answers;
+                              //console.log(gq_answers);
+                              setNew[4] = false
+                              setAq_answers(setNew);
+                              // checkGQanswers()
+                            }
+                          }
+                        />
+                        <div className=''>{t("Q5")}</div>
+                        <div className='w-[760px] mb-4'>{t("aqq5")}</div>
+                      </li>
+                      <li className={"flex flex-row " + table_text_size}>
+                        <input className='mt-2 mx-4 w-4 self-start' type='radio' name='aqq6' value='Y'
+                          onClick={
+                            () => {
+                              let setNew = aq_answers;
+                              //console.logaq_answers);
+                              setNew[5] = true
+                              setAq_answers(setNew);
+                              // checkGQanswers()
+                            }
+                          } />
+                        <input className='mt-2 mx-4 w-4 self-start' type='radio' name='aqq6' value='N'
+                          onClick={
+                            () => {
+                              let setNew = aq_answers;
+                              //console.logaq_answers);
+                              setNew[5] = false
+                              setAq_answers(setNew);
+                              // checkGQanswers()
+                            }
+                          } />
+                        <div className=''>{t("Q6")}</div>
+                        <div className='w-[760px] mb-4'>{t("aqq6")}</div>
+                      </li>
+                      <li className={"flex flex-row " + table_text_size}>
+                        <input className='mt-2 mx-4 w-4 self-start' type='radio' name='aqq7' value='Y'
+                          onClick={
+                            () => {
+                              let setNew = aq_answers;
+                              //console.logaq_answers);
+                              setNew[6] = true
+                              setAq_answers(setNew);
+                              // checkGQanswers()
+                            }
+                          } />
+                        <input className='mt-2 mx-4 w-4 self-start' type='radio' name='aqq7' value='N'
+                          onClick={
+                            () => {
+                              let setNew = aq_answers;
+                              //console.logaq_answers);
+                              setNew[6] = false
+                              setAq_answers(setNew);
+                              // checkGQanswers()
+                            }
+                          } />
+                        <div className=''>{t("Q7")}</div>
+                        <div className='w-[760px] mb-4'>{t("aqq7")}</div>
+                      </li>
+                      <li className={"flex flex-row " + table_text_size}>
+                        <input className='mt-2 mx-4 w-4 self-start' type='radio' name='aqq8' value='Y'
+                          onClick={
+                            () => {
+                              let setNew = aq_answers;
+                              //console.logaq_answers);
+                              setNew[7] = true
+                              setAq_answers(setNew);
+                              // checkGQanswers()
+                            }
+                          } />
+                        <input className='mt-2 mx-4 w-4 self-start' type='radio' name='aqq8' value='N'
+                          onClick={
+                            () => {
+                              let setNew = aq_answers;
+                              //console.logaq_answers);
+                              setNew[7] = false
+                              setAq_answers(setNew);
+                              // checkGQanswers()
+                            }
+                          } />
+                        <div className=''>{t("Q8")}</div>
+                        <div className='w-[760px] mb-4'>{t("aqq8")}</div>
+                      </li>
+                      <li className={"flex flex-row " + table_text_size}>
+                        <input className='mt-2 mx-4 w-4 self-start' type='radio' name='aqq9' value='Y'
+                          onClick={
+                            () => {
+                              let setNew = aq_answers;
+                              //console.logaq_answers);
+                              setNew[8] = true
+                              setAq_answers(setNew);
+                              // checkGQanswers()
+                            }
+                          } />
+                        <input className='mt-2 mx-4 w-4 self-start' type='radio' name='aqq9' value='N'
+                          onClick={
+                            () => {
+                              let setNew = aq_answers;
+                              //console.logaq_answers);
+                              setNew[8] = false
+                              setAq_answers(setNew);
+                              // checkGQanswers()
+                            }
+                          } />
+                        <div className=''>{t("Q7")}</div>
+                        <div className='w-[760px] mb-4'>{t("aqq9")}</div>
+                      </li>
+                      <li className={"flex flex-row " + table_text_size}>
+                        <input className='mt-2 mx-4 w-4 self-start' type='radio' name='aqq10' value='Y'
+                          onClick={
+                            () => {
+                              let setNew = aq_answers;
+                              //console.logaq_answers);
+                              setNew[9] = true
+                              setAq_answers(setNew);
+                              // checkGQanswers()
+                            }
+                          } />
+                        <input className='mt-2 mx-4 w-4 self-start' type='radio' name='aqq10' value='N'
+                          onClick={
+                            () => {
+                              let setNew = aq_answers;
+                              //console.logaq_answers);
+                              setNew[9] = false
+                              setAq_answers(setNew);
+                              // checkGQanswers()
+                            }
+                          } />
+                        <div className=''>{t("Q10")}</div>
+                        <div className='w-[760px] mb-4'>{t("aqq10")}</div>
+                      </li>
+                    </ul>
+                    <hr></hr>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+            <CardFooter className="flex items-center justify-between">
+              <Button variant="outline" className={table_text_size}
+                onClick={async () => {
+                  setShowPARQ(false);
+                  setShowDataCard(true);
+                }}
+              >
+                Cancel and Back
+              </Button>
+              <Button className={'bg-primary  ' + table_text_size}
+                onClick={
+                  async () => {
+                    //router.push("/start/?id=12345&GQ=" + "NNNNNNN" + "&AQ=" + "NNNNNNNNNN");
+                    // window.location.href = '/start'; 
+
+                  }
+                }
+              >
+                NEXT
+              </Button>
+            </CardFooter>
+          </Card>
+        </div>
+        )
+      }
+    </div>
+
+    
+    {/* <div className='container flex items-start justify-center '>
+      {showPARQ && (
+        <Card className="w-[1000px] mt-16">
+          <CardHeader>
+            <CardTitle>PARQ+</CardTitle>
+            <CardContent>{t("parq-desc")}</CardContent>
+          </CardHeader>
+          <CardContent>
+            <div className="grid w-full items-center gap-4">
+              <Label className={table_text_size} htmlFor="name">{t("gq")}</Label>
+              <hr></hr>
+              <div className='flex flex-row'>
+                <div className='mx-4 w-4'>{t("yes")}</div>
+                <div className='mx-4 w-4'>{t("no")}</div>
+              </div>
+              <div >
+                <ul  >
+                  <li className={"flex flex-row " + table_text_size}>
+                    <input className='mt-2 mx-4 w-4 self-start' type='radio' name='gqq1' value='Y'
+                      onClick={
+                        () => {
+                          let setNew = gq_answers;
+                          //console.log(gq_answers);
+                          setNew[0] = true
+                          setGq_answers(setNew);
+                          checkGQanswers()
+                        }
+                      }
+                    />
+                    <input className='mt-2 mx-4 w-4 self-start' type='radio' name='gqq1' value='N'
+                      onClick={
+                        () => {
+                          let setNew = gq_answers;
+                          //console.log(gq_answers);
+                          setNew[0] = false;
+                          setGq_answers(setNew);
+                          checkGQanswers();
+                        }
+                      }
+                    />
+                    <div className=''>{t("Q1")}</div>
+                    <div className='w-[760px] mb-4'>{t("gqq1")}</div>
+                  </li>
+                  <li className={"flex flex-row " + table_text_size}>
+                    <input className='mt-2 mx-4 w-4 self-start' type='radio' name='gqq2' value='Y'
+                      onClick={
+                        () => {
+                          let setNew = gq_answers;
+                          //console.log(gq_answers);
+                          setNew[1] = true
+                          setGq_answers(setNew);
+                          checkGQanswers()
+                        }
+                      }
+                    />
+                    <input className='mt-2 mx-4 w-4 self-start' type='radio' name='gqq2' value='N'
+                      onClick={
+                        () => {
+                          let setNew = gq_answers;
+                          //console.log(gq_answers);
+                          setNew[1] = false
+                          setGq_answers(setNew);
+                          checkGQanswers()
+                        }
+                      }
+                    />
+                    <div className=''>{t("Q2")}</div>
+                    <div className='w-[760px] mb-4'>{t("gqq2")}</div>
+                  </li>
+                  <li className={"flex flex-row " + table_text_size}>
+                    <input className='mt-2 mx-4 w-4 self-start' type='radio' name='gqq3' value='Y'
+                      onClick={
+                        () => {
+                          let setNew = gq_answers;
+                          //console.log(gq_answers);
+                          setNew[2] = true
+                          setGq_answers(setNew);
+                          checkGQanswers()
+                        }
+                      }
+                    />
+                    <input className='mt-2 mx-4 w-4 self-start' type='radio' name='gqq3' value='N'
+                      onClick={
+                        () => {
+                          let setNew = gq_answers;
+                          //console.log(gq_answers);
+                          setNew[2] = false
+                          setGq_answers(setNew);
+                          checkGQanswers()
+                        }
+                      }
+                    />
+                    <div className=''>{t("Q3")}</div>
+                    <div className='w-[760px] mb-4'>{t("gqq3")}</div>
+                  </li>
+                  <li className={"flex flex-row " + table_text_size}>
+                    <input className='mt-2 mx-4 w-4 self-start' type='radio' name='gqq4' value='Y'
+                      onClick={
+                        () => {
+                          let setNew = gq_answers;
+                          //console.log(gq_answers);
+                          setNew[3] = true
+                          setGq_answers(setNew);
+                          checkGQanswers()
+                        }
+                      }
+                    />
+                    <input className='mt-2 mx-4 w-4 self-start' type='radio' name='gqq4' value='N'
+                      onClick={
+                        () => {
+                          let setNew = gq_answers;
+                          //console.log(gq_answers);
+                          setNew[3] = false
+                          setGq_answers(setNew);
+                          checkGQanswers()
+                        }
+                      }
+                    />
+                    <div className=''>{t("Q4")}</div>
+                    <div className='w-[760px] mb-4'>{t("gqq4")}</div>
+                  </li>
+                  <li className={"flex flex-row " + table_text_size}>
+                    <input className='mt-2 mx-4 w-4 self-start' type='radio' name='gqq5' value='Y'
+                      onClick={
+                        () => {
+                          let setNew = gq_answers;
+                          //console.log(gq_answers);
+                          setNew[4] = true
+                          setGq_answers(setNew);
+                          checkGQanswers()
+                        }
+                      }
+                    />
+                    <input className='mt-2 mx-4 w-4 self-start' type='radio' name='gqq5' value='N'
+                      onClick={
+                        () => {
+                          let setNew = gq_answers;
+                          //console.log(gq_answers);
+                          setNew[4] = false
+                          setGq_answers(setNew);
+                          checkGQanswers()
+                        }
+                      }
+                    />
+                    <div className=''>{t("Q5")}</div>
+                    <div className='w-[760px] mb-4'>{t("gqq5")}</div>
+                  </li>
+                  <li className={"flex flex-row " + table_text_size}>
+                    <input className='mt-2 mx-4 w-4 self-start' type='radio' name='gqq6' value='Y'
+                      onClick={
+                        () => {
+                          let setNew = gq_answers;
+                          //console.log(gq_answers);
+                          setNew[5] = true
+                          setGq_answers(setNew);
+                          checkGQanswers()
+                        }
+                      } />
+                    <input className='mt-2 mx-4 w-4 self-start' type='radio' name='gqq6' value='N'
+                      onClick={
+                        () => {
+                          let setNew = gq_answers;
+                          //console.log(gq_answers);
+                          setNew[5] = false
+                          setGq_answers(setNew);
+                          checkGQanswers()
+                        }
+                      } />
+                    <div className=''>{t("Q6")}</div>
+                    <div className='w-[760px] mb-4'>{t("gqq6")}</div>
+                  </li>
+                  <li className={"flex flex-row " + table_text_size}>
+                    <input className='mt-2 mx-4 w-4 self-start' type='radio' name='gqq7' value='Y'
+                      onClick={
+                        () => {
+                          let setNew = gq_answers;
+                          //console.log(gq_answers);
+                          setNew[6] = true
+                          setGq_answers(setNew);
+                          checkGQanswers()
+                        }
+                      } />
+                    <input className='mt-2 mx-4 w-4 self-start' type='radio' name='gqq7' value='N'
+                      onClick={
+                        () => {
+                          let setNew = gq_answers;
+                          //console.log(gq_answers);
+                          setNew[6] = false
+                          setGq_answers(setNew);
+                          checkGQanswers()
+                        }
+                      } />
+                    <div className=''>{t("Q7")}</div>
+                    <div className='w-[760px] mb-4'>{t("gqq7")}</div>
+                  </li>
+                </ul>
+                <hr></hr>
+              </div>
+            </div>
+          </CardContent>
+          <CardContent>
+            {showAQ && (
+              <div className="grid w-full items-center gap-4">
+                <div className='text-red-500 font-bold'>{t("need-aq-msg")}</div>
+                <Label className={table_text_size} htmlFor="name">{t("aq")}</Label>
+                <hr></hr>
+                <div className='flex flex-row'>
+                  <div className='mx-4 w-4'>{t("yes")}</div>
+                  <div className='mx-4 w-4'>{t("no")}</div>
+                </div>
+                <div >
+                  <ul  >
+                    <li className={"flex flex-row " + table_text_size}>
+                      <input className='mt-2 mx-4 w-4 self-start' type='radio' name='aqq1' value='Y'
+                        onClick={
+                          () => {
+                            let setNew = aq_answers;
+                            //console.log(gq_answers);
+                            setNew[0] = true
+                            setAq_answers(setNew);
+                            //checkGQanswers()
+                          }
+                        }
+                      />
+                      <input className='mt-2 mx-4 w-4 self-start' type='radio' name='aqq1' value='N'
+                        onClick={
+                          () => {
+                            let setNew = aq_answers;
+                            //console.log(gq_answers);
+                            setNew[0] = false;
+                            setAq_answers(setNew);
+                            //checkGQanswers();
+                          }
+                        }
+                      />
+                      <div className=''>{t("Q1")}</div>
+                      <div className='w-[760px] mb-4'>{t("aqq1")}</div>
+                    </li>
+                    <li className={"flex flex-row " + table_text_size}>
+                      <input className='mt-2 mx-4 w-4 self-start' type='radio' name='aqq2' value='Y'
+                        onClick={
+                          () => {
+                            let setNew = aq_answers;
+                            //console.log(gq_answers);
+                            setNew[1] = true
+                            setAq_answers(setNew);
+                            //checkGQanswers()
+                          }
+                        }
+                      />
+                      <input className='mt-2 mx-4 w-4 self-start' type='radio' name='aqq2' value='N'
+                        onClick={
+                          () => {
+                            let setNew = aq_answers;
+                            //console.log(gq_answers);
+                            setNew[1] = false
+                            setAq_answers(setNew);
+                            //checkGQanswers()
+                          }
+                        }
+                      />
+                      <div className=''>{t("Q2")}</div>
+                      <div className='w-[760px] mb-4'>{t("aqq2")}</div>
+                    </li>
+                    <li className={"flex flex-row " + table_text_size}>
+                      <input className='mt-2 mx-4 w-4 self-start' type='radio' name='aqq3' value='Y'
+                        onClick={
+                          () => {
+                            let setNew = aq_answers;
+                            //console.log(gq_answers);
+                            setNew[2] = true
+                            setAq_answers(setNew);
+                            //checkGQanswers()
+                          }
+                        }
+                      />
+                      <input className='mt-2 mx-4 w-4 self-start' type='radio' name='aqq3' value='N'
+                        onClick={
+                          () => {
+                            let setNew = aq_answers;
+                            //console.log(gq_answers);
+                            setNew[2] = false
+                            setAq_answers(setNew);
+                            // checkGQanswers()
+                          }
+                        }
+                      />
+                      <div className=''>{t("Q3")}</div>
+                      <div className='w-[760px] mb-4'>{t("aqq3")}</div>
+                    </li>
+                    <li className={"flex flex-row " + table_text_size}>
+                      <input className='mt-2 mx-4 w-4 self-start' type='radio' name='aqq4' value='Y'
+                        onClick={
+                          () => {
+                            let setNew = aq_answers;
+                            //console.log(gq_answers);
+                            setNew[3] = true
+                            setAq_answers(setNew);
+                            // checkGQanswers()
+                          }
+                        }
+                      />
+                      <input className='mt-2 mx-4 w-4 self-start' type='radio' name='aqq4' value='N'
+                        onClick={
+                          () => {
+                            let setNew = aq_answers;
+                            //console.log(gq_answers);
+                            setNew[3] = false
+                            setAq_answers(setNew);
+                            // checkGQanswers()
+                          }
+                        }
+                      />
+                      <div className=''>{t("Q4")}</div>
+                      <div className='w-[760px] mb-4'>{t("aqq4")}</div>
+                    </li>
+                    <li className={"flex flex-row " + table_text_size}>
+                      <input className='mt-2 mx-4 w-4 self-start' type='radio' name='aqq5' value='Y'
+                        onClick={
+                          () => {
+                            let setNew = aq_answers;
+                            //console.log(gq_answers);
+                            setNew[4] = true
+                            setAq_answers(setNew);
+                            checkGQanswers()
+                          }
+                        }
+                      />
+                      <input className='mt-2 mx-4 w-4 self-start' type='radio' name='aqq5' value='N'
+                        onClick={
+                          () => {
+                            let setNew = aq_answers;
+                            //console.log(gq_answers);
+                            setNew[4] = false
+                            setAq_answers(setNew);
+                            // checkGQanswers()
+                          }
+                        }
+                      />
+                      <div className=''>{t("Q5")}</div>
+                      <div className='w-[760px] mb-4'>{t("aqq5")}</div>
+                    </li>
+                    <li className={"flex flex-row " + table_text_size}>
+                      <input className='mt-2 mx-4 w-4 self-start' type='radio' name='aqq6' value='Y'
+                        onClick={
+                          () => {
+                            let setNew = aq_answers;
+                            //console.logaq_answers);
+                            setNew[5] = true
+                            setAq_answers(setNew);
+                            // checkGQanswers()
+                          }
+                        } />
+                      <input className='mt-2 mx-4 w-4 self-start' type='radio' name='aqq6' value='N'
+                        onClick={
+                          () => {
+                            let setNew = aq_answers;
+                            //console.logaq_answers);
+                            setNew[5] = false
+                            setAq_answers(setNew);
+                            // checkGQanswers()
+                          }
+                        } />
+                      <div className=''>{t("Q6")}</div>
+                      <div className='w-[760px] mb-4'>{t("aqq6")}</div>
+                    </li>
+                    <li className={"flex flex-row " + table_text_size}>
+                      <input className='mt-2 mx-4 w-4 self-start' type='radio' name='aqq7' value='Y'
+                        onClick={
+                          () => {
+                            let setNew = aq_answers;
+                            //console.logaq_answers);
+                            setNew[6] = true
+                            setAq_answers(setNew);
+                            // checkGQanswers()
+                          }
+                        } />
+                      <input className='mt-2 mx-4 w-4 self-start' type='radio' name='aqq7' value='N'
+                        onClick={
+                          () => {
+                            let setNew = aq_answers;
+                            //console.logaq_answers);
+                            setNew[6] = false
+                            setAq_answers(setNew);
+                            // checkGQanswers()
+                          }
+                        } />
+                      <div className=''>{t("Q7")}</div>
+                      <div className='w-[760px] mb-4'>{t("aqq7")}</div>
+                    </li>
+                    <li className={"flex flex-row " + table_text_size}>
+                      <input className='mt-2 mx-4 w-4 self-start' type='radio' name='aqq8' value='Y'
+                        onClick={
+                          () => {
+                            let setNew = aq_answers;
+                            //console.logaq_answers);
+                            setNew[7] = true
+                            setAq_answers(setNew);
+                            // checkGQanswers()
+                          }
+                        } />
+                      <input className='mt-2 mx-4 w-4 self-start' type='radio' name='aqq8' value='N'
+                        onClick={
+                          () => {
+                            let setNew = aq_answers;
+                            //console.logaq_answers);
+                            setNew[7] = false
+                            setAq_answers(setNew);
+                            // checkGQanswers()
+                          }
+                        } />
+                      <div className=''>{t("Q8")}</div>
+                      <div className='w-[760px] mb-4'>{t("aqq8")}</div>
+                    </li>
+                    <li className={"flex flex-row " + table_text_size}>
+                      <input className='mt-2 mx-4 w-4 self-start' type='radio' name='aqq9' value='Y'
+                        onClick={
+                          () => {
+                            let setNew = aq_answers;
+                            //console.logaq_answers);
+                            setNew[8] = true
+                            setAq_answers(setNew);
+                            // checkGQanswers()
+                          }
+                        } />
+                      <input className='mt-2 mx-4 w-4 self-start' type='radio' name='aqq9' value='N'
+                        onClick={
+                          () => {
+                            let setNew = aq_answers;
+                            //console.logaq_answers);
+                            setNew[8] = false
+                            setAq_answers(setNew);
+                            // checkGQanswers()
+                          }
+                        } />
+                      <div className=''>{t("Q7")}</div>
+                      <div className='w-[760px] mb-4'>{t("aqq9")}</div>
+                    </li>
+                    <li className={"flex flex-row " + table_text_size}>
+                      <input className='mt-2 mx-4 w-4 self-start' type='radio' name='aqq10' value='Y'
+                        onClick={
+                          () => {
+                            let setNew = aq_answers;
+                            //console.logaq_answers);
+                            setNew[9] = true
+                            setAq_answers(setNew);
+                            // checkGQanswers()
+                          }
+                        } />
+                      <input className='mt-2 mx-4 w-4 self-start' type='radio' name='aqq10' value='N'
+                        onClick={
+                          () => {
+                            let setNew = aq_answers;
+                            //console.logaq_answers);
+                            setNew[9] = false
+                            setAq_answers(setNew);
+                            // checkGQanswers()
+                          }
+                        } />
+                      <div className=''>{t("Q10")}</div>
+                      <div className='w-[760px] mb-4'>{t("aqq10")}</div>
+                    </li>
+                  </ul>
+                  <hr></hr>
+                </div>
+              </div>
+            )}
+          </CardContent>
+          <CardFooter className="flex items-center justify-between">
+            <Button variant="outline" className={table_text_size}
+              onClick={async () => {
+                setShowPARQ(false);
+                setShowDataCard(true);
+              }}
+            >
+              Cancel and Back
+            </Button>
+            <Button className={'bg-primary  ' + table_text_size}
+              onClick={
+                async () => {
+                  //router.push("/start/?id=12345&GQ=" + "NNNNNNN" + "&AQ=" + "NNNNNNNNNN");
+                  // window.location.href = '/start'; 
+
+                }
+              }
+            >
+              NEXT
+            </Button>
+          </CardFooter>
+        </Card>
+        )
+      }
+    </div> */}
+
+    </>
   );
 }
