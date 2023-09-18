@@ -34,7 +34,7 @@ import {
 } from "@/components/ui/select"
 
 export default function Index(props: any) {
-  console.log("start", props);
+  //console.log("start", props);
   const router = useRouter();
   const t = useTranslations('sarc');
   const [user, setUser] = React.useState<UserInfo>({
@@ -43,11 +43,10 @@ export default function Index(props: any) {
     card_id: "",
     email: "",
     phone: "",
-    gender: "",
+    gender: "male",
     age: "",
     height: "",
-    weight: "",
-    parq: false
+    weight: ""
   })
   const [buttonDisabled, setButtonDisabled] = React.useState(false);
 
@@ -69,6 +68,11 @@ export default function Index(props: any) {
   useEffect(() => {
     getUsers();
   }, [])
+
+  useEffect(() => {
+    // @ts-ignore // 實在沒辦法，粗暴的解法
+    document.getElementById("gender_select").value = t(user.gender);
+  }, [user])
 
   return (
     <>
@@ -93,10 +97,11 @@ export default function Index(props: any) {
                     onChange={
                       (e) => {
                         setUser({ ...user, name: e.target.value });
-                        setShowSearch(true);
+                        setShowSearch(false);
                         let matched = 0;
                         let toMatchedList: any = [];
                         userData.map((user, index) => {
+                          //console.log("aaa", user.name, e.target.value, user.name.includes(e.target.value));
                           if ((matched < 5) && (user.name.includes(e.target.value))) {
                             //console.log(item.name);
                             toMatchedList[matched] = (user.name);
@@ -104,6 +109,12 @@ export default function Index(props: any) {
                             matched++;
                           }
                         })
+                        if (matched > 0) {
+                          setShowSearch(true);
+                        } else {
+                          //不好處理，先不處理
+                        }
+
                       }
                     }
                     placeholder={t('your-name')}
@@ -166,8 +177,10 @@ export default function Index(props: any) {
               <div className="grid w-full items-center gap-4">
                 <div className="flex flex-row space-y-1.5">
                   <Label className={"w-44 pt-3 " + table_text_size} htmlFor="gender">{t('bio-gender')}*</Label>
+
+                  {/*                   
                   <Select
-                    value={t(user.gender)}
+                    defaultValue={t(user.gender)}
                     onValueChange={(value) => console.log(value)}
                   >
                     <SelectTrigger className={"text-gray-500 " + table_text_size}>
@@ -179,7 +192,17 @@ export default function Index(props: any) {
                         <SelectItem className={"text-gray-500 " + table_text_size} value={t("female")}>{t("female")}</SelectItem>
                       </SelectGroup>
                     </SelectContent>
-                  </Select>
+                  </Select> 
+                  */}
+
+                  <select id="gender_select" className={
+                    "w-24 -ml-12 p-1 border rounded-md text-gray-500 " +
+                    "focus:border-gray-500 focus:outline-none focus:border-2 focus:rounded-xl " +
+                    table_text_size}
+                  >
+                    <option value={t("male")}>{t("male")}</option>
+                    <option value={t("female")}>{t("female")}</option>
+                  </select>
                 </div>
 
                 <div className="flex flex-row space-y-1.5">

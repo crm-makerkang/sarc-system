@@ -7,6 +7,5 @@ export type UserInfo = {
   gender: string,
   age: string,
   height: string,
-  weight: string,
-  parq: boolean
+  weight: string
 }

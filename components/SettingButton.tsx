@@ -89,12 +89,13 @@ function SettingButton() {
         >
           简体中文
         </DropdownMenuItem>
-        <DropdownMenuItem
+
+        {/* <DropdownMenuItem
           onClick={() => { window.location.href = "/ja/start" }}
           className={"cursor-pointer " + settings.table_text_size}
         >
           日本語
-        </DropdownMenuItem>
+        </DropdownMenuItem> */}
 
         {/* <DropdownMenuSeparator className="w-full h-0.5 bg-gray-300 border-0" /> */}
 
