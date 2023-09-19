@@ -115,7 +115,7 @@ export function DataTable<TData, TValue>({
   return (
     <div>
       <div className="flex items-center py-4">
-        <Button id="userUpdateButton" className="ml-4 bg-primary text-xl"
+        <Button id="addNewUserButton" className="ml-4 bg-primary text-xl"
           onClick={() => {
 
           }}
