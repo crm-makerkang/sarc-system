@@ -1,7 +1,7 @@
 [
   {
     "name": "Alice",
-    "card_id": "1234567890",
+    "card_no": "1234567890",
     "email": "alice@example.com",
     "phone": "123-456-7890",
     "age": "23",
@@ -12,7 +12,7 @@
   },
   {
     "name": "Bob",
-    "card_id": "2345678901",
+    "card_no": "2345678901",
     "email": "bob@example.com",
     "phone": "234-567-8901",
     "age": "25",
@@ -23,7 +23,7 @@
   },
   {
     "name": "Chris",
-    "card_id": "3456789012",
+    "card_no": "3456789012",
     "email": "chris@example.com",
     "phone": "345-678-9012",
     "age": "20",
@@ -34,7 +34,7 @@
   },
   {
     "name": "David",
-    "card_id": "4567890123",
+    "card_no": "4567890123",
     "email": "david@example.com",
     "phone": "456-789-0123",
     "age": "35",
@@ -45,7 +45,7 @@
   },
   {
     "name": "Fred",
-    "card_id": "5678901234",
+    "card_no": "5678901234",
     "email": "fred@example.com",
     "phone": "567-890-1234",
     "age": "52",
