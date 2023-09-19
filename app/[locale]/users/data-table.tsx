@@ -115,6 +115,14 @@ export function DataTable<TData, TValue>({
   return (
     <div>
       <div className="flex items-center py-4">
+        <Button id="userUpdateButton" className="ml-4 bg-primary text-xl"
+          onClick={() => {
+
+          }}
+        >
+          {"新增使用者"}
+        </Button>
+
         <Input
           placeholder={t("filter-names")}
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
@@ -123,7 +131,7 @@ export function DataTable<TData, TValue>({
               table.getColumn("name")?.setFilterValue(event.target.value)
             }
           }
-          className={"max-w-sm border-black " + table_text_size}
+          className={"ml-4 max-w-sm border-black " + table_text_size}
         />
         <Switch
           className="ml-24 text-xl"
@@ -153,6 +161,8 @@ export function DataTable<TData, TValue>({
           {t("manualUpdate")}
         </Button>
 
+
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className={"ml-auto border-black " + table_text_size}>
@@ -178,12 +188,14 @@ export function DataTable<TData, TValue>({
                   > <div className={table_text_size}>
                       {/* {t(column.id)} next-intl not works */}
                       {i == 0 ? t("name") : null}
-                      {i == 1 ? t("email") : null}
+                      {i == 1 ? t("card-no") : null}
                       {i == 2 ? t("phone") : null}
-                      {i == 3 ? t("gender") : null}
-                      {i == 4 ? t("age") : null}
-                      {i == 5 ? t("remark") : null}
-                      {i == 6 ? t("actions") : null}
+                      {i == 3 ? t("email") : null}
+                      {i == 4 ? t("gender") : null}
+                      {i == 5 ? t("age") : null}
+                      {i == 6 ? t("height").substring(0, t("height").length - 5) : null}
+                      {i == 7 ? t("weight").substring(0, t("weight").length - 5) : null}
+                      {i == 8 ? t("actions") : null}
                       {/* {column.id} */}
                     </div>
                   </DropdownMenuCheckboxItem>

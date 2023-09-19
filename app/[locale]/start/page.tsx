@@ -40,7 +40,7 @@ export default function Index(props: any) {
   const [user, setUser] = React.useState<UserInfo>({
     id: "",
     name: "",
-    card_id: "",
+    card_no: "",
     email: "",
     phone: "",
     gender: "male",
@@ -55,7 +55,9 @@ export default function Index(props: any) {
   const [showBinding, setshowBinding] = React.useState(false);
 
   const [matchedList, setMatchedList] = React.useState([]);
-  const [userData, setUserData] = React.useState<UserInfo[]>([])
+  const [userData, setUserData] = React.useState<UserInfo[]>([]);
+
+  const [dataModified, setDataModified] = React.useState(false);
 
 
   const getUsers = async () => {
@@ -70,7 +72,7 @@ export default function Index(props: any) {
   }, [])
 
   useEffect(() => {
-    // @ts-ignore // 實在沒辦法，粗暴的解法
+    // @ts-ignore // 實在沒辦法，只好用粗暴的解法
     document.getElementById("gender_select").value = t(user.gender);
   }, [user])
 
@@ -87,8 +89,8 @@ export default function Index(props: any) {
               <CardTitle>{t('user-data')} <span className="text-red-500 text-lg">{t('required-msg')}</span></CardTitle>
             </CardHeader>
             <CardContent>
-              {/* <form> */}
               <div className="grid w-full items-center gap-4">
+
                 <div className="flex flex-row space-y-1.5">
                   <Label className={"w-44 pt-3 " + table_text_size} htmlFor="name">{t('name')}*</Label>
                   <Input className={table_text_size}
@@ -96,6 +98,7 @@ export default function Index(props: any) {
                     value={user.name}
                     onChange={
                       (e) => {
+                        setDataModified(true);
                         setUser({ ...user, name: e.target.value });
                         setShowSearch(false);
                         let matched = 0;
@@ -131,11 +134,11 @@ export default function Index(props: any) {
                           className={"py-2 cursor-pointer " + table_text_size}
                           onClick={
                             () => {
-
                               for (let i = 0; i < userData.length; i++) {
                                 if (userData[i].name === item) {
                                   console.log(userData[i]);
                                   setUser(userData[i]);
+                                  setDataModified(false);
                                 }
                               }
 
@@ -152,11 +155,27 @@ export default function Index(props: any) {
                 )}
 
                 <div className="flex flex-row space-y-1.5">
+                  <Label className={"w-44 pt-3 " + table_text_size} htmlFor="card_no">{t("card-no")}*</Label>
+                  <Input className={table_text_size}
+                    id="card_no"
+                    value={user.card_no}
+                    onChange={(e) => {
+                      setUser({ ...user, card_no: e.target.value });
+                      setDataModified(true);
+                    }}
+                    placeholder={t("card-no")}
+                  />
+                </div>
+
+                <div className="flex flex-row space-y-1.5">
                   <Label className={"w-44 pt-3 " + table_text_size} htmlFor="phone">{t('phone')}</Label>
                   <Input className={table_text_size}
                     id="phone"
                     value={user.phone}
-                    onChange={(e) => setUser({ ...user, phone: e.target.value })}
+                    onChange={(e) => {
+                      setUser({ ...user, phone: e.target.value });
+                      setDataModified(true);
+                    }}
                     placeholder={t('phone')}
                   />
                 </div>
@@ -165,7 +184,10 @@ export default function Index(props: any) {
                   <Input className={table_text_size}
                     id="email"
                     value={user.email}
-                    onChange={(e) => setUser({ ...user, email: e.target.value })}
+                    onChange={(e) => {
+                      setUser({ ...user, email: e.target.value });
+                      setDataModified(true);
+                    }}
                     placeholder={t('email')}
                   />
                 </div>
@@ -178,7 +200,7 @@ export default function Index(props: any) {
                 <div className="flex flex-row space-y-1.5">
                   <Label className={"w-44 pt-3 " + table_text_size} htmlFor="gender">{t('bio-gender')}*</Label>
 
-                  {/*                   
+                  {/*  don't know how to set Shadcn's Select value                  
                   <Select
                     defaultValue={t(user.gender)}
                     onValueChange={(value) => console.log(value)}
@@ -199,6 +221,10 @@ export default function Index(props: any) {
                     "w-24 -ml-12 p-1 border rounded-md text-gray-500 " +
                     "focus:border-gray-500 focus:outline-none focus:border-2 focus:rounded-xl " +
                     table_text_size}
+                    onChange={(e) => {
+                      setUser({ ...user, gender: e.target.value == t("male") ? "male" : "female" });
+                      setDataModified(true);
+                    }}
                   >
                     <option value={t("male")}>{t("male")}</option>
                     <option value={t("female")}>{t("female")}</option>
@@ -210,7 +236,10 @@ export default function Index(props: any) {
                   <Input className={table_text_size}
                     id="age"
                     value={user.age}
-                    onChange={(e) => setUser({ ...user, age: e.target.value })}
+                    onChange={(e) => {
+                      setUser({ ...user, age: e.target.value });
+                      setDataModified(true);
+                    }}
                     placeholder={t("age")}
                   />
                 </div>
@@ -219,7 +248,10 @@ export default function Index(props: any) {
                   <Input className={table_text_size}
                     id="height"
                     value={user.height}
-                    onChange={(e) => setUser({ ...user, height: e.target.value })}
+                    onChange={(e) => {
+                      setUser({ ...user, height: e.target.value });
+                      setDataModified(true);
+                    }}
                     placeholder={t("height")}
                   />
                 </div>
@@ -228,7 +260,10 @@ export default function Index(props: any) {
                   <Input className={table_text_size}
                     id="weight"
                     value={user.weight}
-                    onChange={(e) => setUser({ ...user, weight: e.target.value })}
+                    onChange={(e) => {
+                      setUser({ ...user, weight: e.target.value });
+                      setDataModified(true);
+                    }}
                     placeholder={t("weight")}
                   />
                 </div>
@@ -242,17 +277,99 @@ export default function Index(props: any) {
                   window.location.reload();
                 }}
               >
-                清除資料
+                {t("clear-data")}
               </Button>
-              <Button className={'bg-primary  ' + table_text_size}
-                onClick={async () => {
-                  //alert("如果進行量測，您的個人資料和量測結果會被存入本機資料庫，但不會上傳到雲端。若有需要，您可以要求本機管理員刪除您的個人資料和量測結果");
-                  setShowDataCard(false);
-                  setshowBinding(true);
-                }}
-              >
-                進行量測
-              </Button>
+
+              {dataModified && (
+                <Button className={'bg-primary  ' + table_text_size}
+                  onClick={async () => {
+                    //alert(t("save-msg"));
+
+                    // check data integrity
+                    const name_is_empty = user.name.length == 0;
+                    // name is valid, check if duplicated
+                    var name_is_duplicated = false;
+                    if (!name_is_empty) {
+                      for (let i = 0; i < userData.length; i++) {
+                        if (userData[i].name === user.name) {
+                          name_is_duplicated = true;
+                        }
+                      }
+                    }
+
+                    const card_no_is_invalid = !(/^\d{10}$/.test(user.card_no));
+
+                    const age_is_NaN = isNaN(parseInt(user.age));
+                    const age_out_range = (!age_is_NaN) && ((parseInt(user.age) < 20) || (parseInt(user.age) > 80));
+
+                    const height_is_NaN = isNaN(parseInt(user.height));
+                    const height_out_range = (!height_is_NaN) && ((parseInt(user.height) < 80) || (parseInt(user.height) > 210));
+
+                    const weight_is_NaN = isNaN(parseInt(user.weight));
+                    const weight_out_range = (!weight_is_NaN) && ((parseInt(user.weight) < 40) || (parseInt(user.weight) > 200));
+
+                    var data_err_msg = t("data-err-msg") + ":\n";
+                    data_err_msg = data_err_msg + ((!name_is_empty) ? "" : " - " + t("name-is-empty") + "\n");
+                    data_err_msg = data_err_msg + ((!name_is_duplicated) ? "" : " - " + t("name-is-duplicated") + "\n");
+                    data_err_msg = data_err_msg + ((!card_no_is_invalid) ? "" : " - " + t("card-no-is-invalid") + "\n");
+                    data_err_msg = data_err_msg + ((!age_is_NaN) ? "" : " - " + t("age-is-NaN") + "\n");
+                    data_err_msg = data_err_msg + ((!age_out_range) ? "" : " - " + t("age-out-range") + "\n");
+                    data_err_msg = data_err_msg + ((!height_is_NaN) ? "" : " - " + t("height-is-NaN") + "\n");
+                    data_err_msg = data_err_msg + ((!height_out_range) ? "" : " - " + t("height-out-range") + "\n");
+                    data_err_msg = data_err_msg + ((!weight_is_NaN) ? "" : " - " + t("weight-is-NaN") + "\n");
+                    data_err_msg = data_err_msg + ((!weight_out_range) ? "" : " - " + t("weight-out-range") + "\n");
+
+                    if (data_err_msg != (t("data-err-msg") + ":\n")) {
+                      alert(data_err_msg);
+                      return;
+                    }
+
+                    // simulate res for test
+                    // const res = {
+                    //   data: {
+                    //     message: "POST successful:",
+                    //     success: true,
+                    //   }
+                    // }
+
+                    const res = await axios.post('/api/users/',
+                      {
+                        "name": user.name,
+                        "card_no": user.card_no,
+                        "email": user.email,
+                        "phone": user.phone,
+                        "age": user.age,
+                        "gender": user.gender,
+                        "height": user.height,
+                        "weight": user.weight
+                      })
+
+                    console.log(res.data);
+                    if (res.data.success) {
+                      console.log("Save OK");
+                      alert(t('save-ok-msg'));
+                      setDataModified(false);
+                    } else {
+                      console.log("Save failed");
+                      alert(t('save-failed-msg'));
+                    }
+                  }}
+                >
+                  {t("save-data")}
+                </Button>
+              )}
+
+              {!dataModified && (
+                <Button className={'bg-primary  ' + table_text_size}
+                  onClick={async () => {
+                    //alert("如果進行量測，您的個人資料和量測結果會被存入本機資料庫，但不會上傳到雲端。若有需要，您可以要求本機管理員刪除您的個人資料和量測結果");
+                    setShowDataCard(false);
+                    setshowBinding(true);
+                  }}
+                >
+                  {t("start-measure")}
+                </Button>
+              )}
             </CardFooter>
           </Card>
         )
@@ -266,29 +383,29 @@ export default function Index(props: any) {
             <CardContent>
               <div className="grid w-full items-center gap-4">
                 <div className="flex flex-row space-y-1.5">
-                  <Label className={"w-44 pt-3 " + table_text_size} htmlFor="card_id">ID {t("card-no")}</Label>
+                  <Label className={"w-44 pt-3 " + table_text_size} htmlFor="card_no">ID {t("card-no")}</Label>
                   <Input autoFocus className={table_text_size}
-                    id="card_id"
-                    value={user.card_id}
+                    id="card_no"
+                    value={user.card_no}
                     onChange={
                       (e) => {
-                        let card_id: string = "";
+                        let card_no: string = "";
                         console.log(e.target.value);
                         if (e.target.value.length == 10) {
                           console.log("10 digits detected");
 
-                          card_id = e.target.value;
+                          card_no = e.target.value;
                           e.target.value = ""
                         }
-                        setUser({ ...user, card_id: e.target.value });
+                        setUser({ ...user, card_no: e.target.value });
 
                       }
                     }
                     placeholder={t("card-msg")}
                   />
                 </div>
-                {user.card_id != "" && (
-                  <div className={table_text_size}>已綁定卡號： {user.card_id}</div>
+                {user.card_no != "" && (
+                  <div className={table_text_size}>已綁定卡號： {user.card_no}</div>
                 )}
               </div>
             </CardContent>
@@ -298,12 +415,12 @@ export default function Index(props: any) {
                   //setParq_checked(!parq_checked);
                   setShowDataCard(true);
                   setshowBinding(false);
-                  setUser({ ...user, card_id: "" });
+                  setUser({ ...user, card_no: "" });
                 }}
               >
                 {t("cancel")}
               </Button>
-              {user.card_id != "" && (
+              {user.card_no != "" && (
                 <Button className={'flex bg-primary  ' + table_text_size}
                   onClick={async () => {
                     //setParq_checked(!parq_checked);
@@ -314,11 +431,11 @@ export default function Index(props: any) {
                 </Button>
               )}
             </CardFooter>
-          </Card>
+          </Card >
         )
         }
 
-      </div>
+      </div >
 
 
 

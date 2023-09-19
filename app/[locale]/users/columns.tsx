@@ -54,11 +54,11 @@ export const columns: ColumnDef<UserInfo>[] = [
     },
   },
   {
-    id: "card_id",
-    accessorKey: "card_id",
+    id: "card_no",
+    accessorKey: "card_no",
     header: () => {
       const t = useTranslations('sarc');
-      return <div>{t('card_id')}</div>
+      return <div>{t("card-no")}</div>
     },
   },
   {
@@ -159,7 +159,12 @@ export const columns: ColumnDef<UserInfo>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel></DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(UserInfo.id)}
+              onClick={() => {
+                //navigator.clipboard.writeText(UserInfo.id);
+                console.log(UserInfo.id)
+
+                // TODO: use axios.delete to delete user with the id
+              }}
             >
               {/* Copy UserInfo ID */}
               <div className={table_text_size}>{t("delete")}</div>

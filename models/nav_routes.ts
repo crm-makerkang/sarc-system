@@ -10,10 +10,10 @@ export const nav_routes =
     {
       href: "/measurements",
     },
-    // {
-    //   href: "/sarc-form",
-    // },
-    // {
-    //   href: "/sppb-form",
-    // },
+    {
+      href: "/sarc-form",
+    },
+    {
+      href: "/sppb-form",
+    },
   ];

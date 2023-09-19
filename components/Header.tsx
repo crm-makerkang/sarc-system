@@ -47,7 +47,7 @@ export default function Header(test: any) {
             </div>
           </div>
 
-          <nav className="w-[500px] mx-6 flex items-center space-x-4 lg:space-x-6  md:block">
+          <nav className="mx-6 flex items-center space-x-4 lg:space-x-6  md:block">
             {nav_routes.map((route, i) => (
               <Button variant={"ghost"} key={i} onClick={() => { window.location.href = route.href }}
                 className={baseStyle + (tab == route.href ? underlineStyle : "")}
