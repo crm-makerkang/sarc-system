@@ -58,18 +58,13 @@ export default function Index() {
   }
 
   return (
-    <div className='container flex items-center justify-center' style={{
-      backgroundImage: 'url(/img/bg-start.png)',
-      backgroundSize: 'cover', backgroundPosition: 'center',
-      height: '91vh', width: '100%'
-    }}>
-
-      {/* <span className='float h-1/2 w-1/2 bg-red-500 opacity-50 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'>
-        <div className='flex items-center justify-center align-center'>
-          <Loader2 className="animate-spin  -ml-2 mr-2 h-32 w-32 opacity-75 "></Loader2>
-          AAA
-        </div>
-      </span> */}
+    <div className='container flex items-center justify-center' 
+      style={{
+        // backgroundImage: 'url(/img/bg-start-credit.png)',
+        // backgroundSize: 'cover', backgroundPosition: 'top',
+        height: '91vh', width: '100%'
+      }}
+    >
 
       <Card className="w-[550px]">
         <CardHeader>

@@ -6,6 +6,7 @@ import { Languages, Settings } from "lucide-react"
 import { useTranslations } from "next-intl"
 //import type { NextRequest } from 'next/server'
 
+
 import * as React from "react"
 import axios from "axios"
 
@@ -28,11 +29,12 @@ function SettingButton() {
     rows_per_page: "",
   })
 
+  const [ipaddress, setIpaddress] = React.useState("");
 
   useEffect(() => {
     const getSettings = async () => {
       const res = await axios.get('/api/settings/')
-      console.log(res.data);
+      console.log("settings", res.data);
       setSettings({
         table_text_size: JSON.parse(res.data.message).table_text_size,
         rows_per_page: JSON.parse(res.data.message).rows_per_page
@@ -40,7 +42,14 @@ function SettingButton() {
 
     }
 
+    const getIP = async () => {
+      const res = await axios.get('/api/get_ip/')
+      console.log("ip", res.data);
+      setIpaddress(res.data);
+    }
+
     getSettings();
+    getIP();
 
   }, [])
 
@@ -53,6 +62,10 @@ function SettingButton() {
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
+        <DropdownMenuItem className={"cursor-none " + settings.table_text_size} >
+           IP: {ipaddress}
+        </DropdownMenuItem>
+
         <DropdownMenuSeparator />
         {/* 以下 route 若用 router.push 會有不 reload 的奇怪行為，改用 window.location.href */}
         <DropdownMenuItem

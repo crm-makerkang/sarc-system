@@ -40,10 +40,9 @@ export default function Home() {
   return (
     // <Container> use my Container in components/Container.tsx
     <div className="container mx-auto"> {/*Tailwind's container class */}
-      {/* <div className='text-xl'> {t("users")}</div> */}
-      <div>
+        <div className="mt-12 p-12 rounded-xl bg-white opacity-95">
         <DataTable columns={columns} data={data} getUsers={getUsers} />
-      </div>
+        </div>
     </div >
 
     // </Container>

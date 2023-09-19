@@ -22,11 +22,11 @@ export default function Header(test: any) {
 
   const t = useTranslations('sarc');
 
-  const baseStyle = "text-xl font-medium transition-colors text-primary "
+  const baseStyle = "text-xl font-medium transition-colors text-primary font-bold " 
   const underlineStyle = " underline underline-offset-4"
 
   return (
-    <div className="sm:flex sm:justify-between py3 px-4 border-b">
+    <div className="sm:flex sm:justify-between py3 px-4 border-b ">
       <Container>
         <div className="relative px-4 sm:px-6 lg:px-8 flex h-16 
                         items-center justify-between w-full">
@@ -52,11 +52,9 @@ export default function Header(test: any) {
               <Button variant={"ghost"} key={i} onClick={() => { window.location.href = route.href }}
                 className={baseStyle + (tab == route.href ? underlineStyle : "")}
               >
-                {/* <Link key={i} href={route.href} id={route.href}
-              //   className="text-xl font-medium transition-colors text-primary"
-            // > */}
+
                 {t(route.href.substring(1))}
-                {/* </Link> */}
+
               </Button>
 
             ))}

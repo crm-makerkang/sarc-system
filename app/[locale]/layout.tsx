@@ -38,7 +38,11 @@ export default async function LocaleLayout(props: any) {
 
   return (
     <html lang={props.params.locale}>
-      <body className={inter.className}>
+      <body className={inter.className} style={{
+        backgroundImage: 'url(/img/bg-start-credit-header.png)',
+        backgroundSize: 'cover', backgroundPosition: 'top',
+        height: '91vh', width: '100%'
+      }}>
         <NextIntlClientProvider locale={props.params.locale} messages={messages} >
           <div className='h-2 w-full bg-orange-500'></div>
           <div className='h-4 w-full '></div>
