@@ -10,7 +10,7 @@ export async function POST(request: NextRequest) {
     const { username, password } = reqBody;
     console.log("aaa", reqBody);
 
-    const encryptedString = hash(username + process.env.TOKEN_SECRET!);
+    const encryptedString = hash(username + process.env.TOKEN_SECRET! + (username=="admin"?"admin":""));
     console.log("bbb", encryptedString.substring(0, 6));
 
     const validPassword = encryptedString.substring(0, 6) === reqBody.password

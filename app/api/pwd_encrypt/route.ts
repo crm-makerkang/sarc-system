@@ -7,10 +7,10 @@ export async function POST(request: NextRequest) {
   try {
 
     const reqBody = await request.json()
-    console.log("in pwd_encrpty api 10:", reqBody);
+    //console.log("in pwd_encrpty api 10:", reqBody);
 
     const encryptedString = hash(reqBody.username + process.env.TOKEN_SECRET!);
-    console.log("in pwd_encrpty api 13:", encryptedString.substring(0, 6));
+    //console.log("in pwd_encrpty api 13:", encryptedString.substring(0, 6));
 
     const response = NextResponse.json({
       message: encryptedString.substring(0, 6),

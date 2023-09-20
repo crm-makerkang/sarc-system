@@ -53,11 +53,8 @@ export default function Index(props: any) {
   const [showBinding, setshowBinding] = React.useState(false);
 
   const [matchedList, setMatchedList] = React.useState([]);
-  const [employee1, seteEmployee1] = React.useState("");
-  const [employee2, seteEmployee2] = React.useState("");
-  const [employee3, seteEmployee3] = React.useState("");
-  const [employee4, seteEmployee4] = React.useState("");
-  const [employee5, seteEmployee5] = React.useState("");
+  const [employees, seteEmployees] = React.useState<string[]>([]);
+
 
   const [passwords, setePasswords] = React.useState<string[]>([]);
 
@@ -70,25 +67,21 @@ export default function Index(props: any) {
 
     const getEmployees = async () => {
       const res = await axios.get('/api/employees/')
-      console.log(res.data);
-      const employees = res.data;
+      console.log("in management page 70:", res.data);
+      const return_employees = res.data;
   
-      seteEmployee1((employees[0] == undefined) ? "" : employees[0]);
-      seteEmployee2((employees[1] == undefined) ? "" : employees[1]);
-      seteEmployee3((employees[2] == undefined) ? "" : employees[2]);
-      seteEmployee4((employees[3] == undefined) ? "" : employees[3]);
-      seteEmployee5((employees[4] == undefined) ? "" : employees[4]);
+      seteEmployees(return_employees);
 
       var pwd_encrypt=[];
       for (var i=0; i<5 ; i++) {
-        if (employees[i]!="" && employees[i]!=undefined) {
-          console.log("in management page 89:", employees[i]);   
+        if (return_employees[i]!="" && return_employees[i]!=undefined) {
+          //console.log("in management page 78:", employees[i]);   
           const res = await axios.post('/api/pwd_encrypt/',
             {
-              username: employees[i]
+              username: return_employees[i]
             })
           pwd_encrypt.push(res.data.message);
-          console.log("in management page 97:", res.data.message);
+          //console.log("in management page 84:", res.data.message);
         } else {
           pwd_encrypt.push("");
         }
@@ -100,6 +93,30 @@ export default function Index(props: any) {
     getEmployees();
 
   }, [])
+
+  useEffect(() => {
+    //console.log("in management page 98:", employees);
+    const updatePwd = async () => {
+      var pwd_encrypt=[];
+      for (var i=0; i<5 ; i++) {
+        if (employees[i]!="" && employees[i]!=undefined) {
+          //console.log("in management page 103:", employees[i]);   
+          const res = await axios.post('/api/pwd_encrypt/',
+            {
+              username: employees[i]
+            })
+          pwd_encrypt.push(res.data.message);
+          //console.log("in management page 109:", res.data.message);
+        } else {
+          pwd_encrypt.push("");
+        }
+      }
+      setePasswords(pwd_encrypt);
+    }
+
+    updatePwd();
+
+  }, [employees])
 
   return (
     <>
@@ -121,11 +138,16 @@ export default function Index(props: any) {
               <div className="flex flex-row w-full space-y-1.5">
                 <Input className={"flex flex-row w-1/2 justify-start " + table_text_size}
                   id="name"
-                  value={employee1}
+                  value={employees[0]}
                   onChange={
                     (e) => {
                       setDataModified(true);
-                      seteEmployee1(e.target.value);
+                      var newEmployees = [];
+                      for (var i=0; i<5 ; i++) {
+                        newEmployees.push(employees[i])
+                      }
+                      newEmployees[0] = e.target.value;
+                      seteEmployees(newEmployees);
                     }
                   }
                   placeholder={t('employee-name')}
@@ -138,11 +160,16 @@ export default function Index(props: any) {
               <div className="flex flex-row w-full space-y-1.5">
                 <Input className={"flex flex-row w-1/2 justify-start " + table_text_size}
                   id="name"
-                  value={employee2}
+                  value={employees[1]}
                   onChange={
                     (e) => {
                       setDataModified(true);
-                      seteEmployee2(e.target.value);
+                      var newEmployees = [];
+                      for (var i=0; i<5 ; i++) {
+                        newEmployees.push(employees[i])
+                      }
+                      newEmployees[1] = e.target.value;
+                      seteEmployees(newEmployees);
                     }
                   }
                   placeholder={t('employee-name')}
@@ -155,11 +182,16 @@ export default function Index(props: any) {
               <div className="flex flex-row w-full space-y-1.5">
                 <Input className={"flex flex-row w-1/2 justify-start " + table_text_size}
                   id="name"
-                  value={employee3}
+                  value={employees[2]}
                   onChange={
                     (e) => {
                       setDataModified(true);
-                      seteEmployee3(e.target.value);
+                      var newEmployees = [];
+                      for (var i=0; i<5 ; i++) {
+                        newEmployees.push(employees[i])
+                      }
+                      newEmployees[2] = e.target.value;
+                      seteEmployees(newEmployees);
                     }
                   }
                   placeholder={t('employee-name')}
@@ -172,28 +204,38 @@ export default function Index(props: any) {
               <div className="flex flex-row w-full space-y-1.5">
                 <Input className={"flex flex-row w-1/2 justify-start " + table_text_size}
                   id="name"
-                  value={employee4}
+                  value={employees[3]}
                   onChange={
                     (e) => {
                       setDataModified(true);
-                      seteEmployee4(e.target.value);
+                      var newEmployees = [];
+                      for (var i=0; i<5 ; i++) {
+                        newEmployees.push(employees[i])
+                      }
+                      newEmployees[3] = e.target.value;
+                      seteEmployees(newEmployees);
                     }
                   }
                   placeholder={t('employee-name')}
                 />
                 <div className={"flex flex-row w-1/2 ml-10 " + table_text_size}>
-                  {t('password') + " : " + passwords[4]}
+                  {t('password') + " : " + passwords[3]}
                 </div>
               </div>
 
               <div className="flex flex-row w-full space-y-1.5">
                 <Input className={"flex flex-row w-1/2 justify-start " + table_text_size}
                   id="name"
-                  value={employee5}
+                  value={employees[4]}
                   onChange={
                     (e) => {
                       setDataModified(true);
-                      seteEmployee5(e.target.value);
+                      var newEmployees = [];
+                      for (var i=0; i<5 ; i++) {
+                        newEmployees.push(employees[i])
+                      }
+                      newEmployees[4] = e.target.value;
+                      seteEmployees(newEmployees);
                     }
                   }
                   placeholder={t('employee-name')}
