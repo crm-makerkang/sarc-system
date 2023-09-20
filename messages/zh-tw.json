@@ -2,6 +2,7 @@
   "sarc": {
     "": "",
     "language": "繁體中文",
+    "guide": "說明",
     "start": "開始",
     "users": "用戶",
     "measurements": "量測資料",
@@ -67,6 +68,15 @@
     "height-is-NaN": "身高不是數字",
     "height-out-range": "身高超出範圍",
     "weight-is-NaN": "體重不是數字",
-    "weight-out-range": "體重超出範圍"
+    "weight-out-range": "體重超出範圍",
+    "guide-1-title": "既有用戶使用已綁定卡號",
+    "guide-2-title": "既有用戶使用新卡號",
+    "guide-3-title": "新用戶",
+    "guide-1-msg": "請直接到量測站，嗶卡進行量測",
+    "guide-2-1-msg": "點擊頁面上方的「開始」",
+    "guide-2-2-msg": "在「姓名」輸入名字，點擊搜尋到既有用戶的名字",
+    "guide-2-3-msg": "清空「卡號」，在讀卡機上嗶新卡片，新卡號輸入後，點擊右下角「儲存資料」按鈕",
+    "guide-2-4-msg": "儲存成功後，請拿新卡片到量測站，嗶卡進行量測",
+    "guide-3-2-msg": "填寫必填資料"
   }
 }

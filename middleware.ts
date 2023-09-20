@@ -72,7 +72,7 @@ export async function middleware(request: NextRequest) {
 
   if (!isProtected) {
     if (loginToken) {
-      return NextResponse.redirect(new URL('/start', request.nextUrl))
+      return NextResponse.redirect(new URL('/guide', request.nextUrl))
     }
   }
 

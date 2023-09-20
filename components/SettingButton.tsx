@@ -63,7 +63,7 @@ function SettingButton() {
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem className={"cursor-none " + settings.table_text_size} >
-           IP: {ipaddress}
+          IP: {ipaddress}
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />
@@ -75,7 +75,7 @@ function SettingButton() {
                 {
                   locale: "en",
                 });
-              window.location.href = "/en/start";
+              window.location.href = "/en/guide";
             }
           }
           className={"cursor-pointer " + settings.table_text_size}
@@ -89,7 +89,7 @@ function SettingButton() {
                 {
                   locale: "zh-tw",
                 });
-              window.location.href = "/zh-tw/start"
+              window.location.href = "/zh-tw/guide"
             }
           }
           className={"cursor-pointer " + settings.table_text_size}
@@ -97,14 +97,14 @@ function SettingButton() {
           繁體中文
         </DropdownMenuItem>
         <DropdownMenuItem
-          onClick={() => { window.location.href = "/zh-cn/start" }}
+          onClick={() => { window.location.href = "/zh-cn/guide" }}
           className={"cursor-pointer " + settings.table_text_size}
         >
           简体中文
         </DropdownMenuItem>
 
         {/* <DropdownMenuItem
-          onClick={() => { window.location.href = "/ja/start" }}
+          onClick={() => { window.location.href = "/ja/guide" }}
           className={"cursor-pointer " + settings.table_text_size}
         >
           日本語
@@ -211,7 +211,7 @@ function SettingButton() {
           onClick={
             async () => {
               await axios.get('/api/logout/');
-              window.location.href = "/start";
+              window.location.href = "/guide";
             }
           }
         >

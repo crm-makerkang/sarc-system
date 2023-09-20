@@ -78,12 +78,12 @@ export default function Index(props: any) {
 
   return (
     <>
-      <div className='container flex items-center justify-center ' 
-      style={{
-        // backgroundImage: 'url(/img/bg-start-credit.png)',
-        // backgroundSize: 'cover', backgroundPosition: 'top',
-        height: '91vh', width: '100%'
-      }}
+      <div className='container flex items-start mt-12 justify-center '
+        style={{
+          // backgroundImage: 'url(/img/bg-start-credit.png)',
+          // backgroundSize: 'cover', backgroundPosition: 'top',
+          //height: '91vh', width: '100%'
+        }}
       >
         {showDataCard && (
           <Card className="w-[550px]">

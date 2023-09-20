@@ -48,7 +48,7 @@ export default function Index() {
       })
     console.log(res.data);
     if (res.data.success) {
-      window.location.href = "/start";
+      window.location.href = "/guide";
     } else {
       console.log("login failed");
       alert(t('login-failed-msg'));
@@ -58,7 +58,7 @@ export default function Index() {
   }
 
   return (
-    <div className='container flex items-center justify-center' 
+    <div className='container flex items-center justify-center'
       style={{
         // backgroundImage: 'url(/img/bg-start-credit.png)',
         // backgroundSize: 'cover', backgroundPosition: 'top',
