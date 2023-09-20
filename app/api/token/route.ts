@@ -6,7 +6,13 @@ var loginData = {
   privilege: 0
 };
 export async function GET(request: NextRequest) {
-  console.log("in token api 9", loginData);
+  if (request.nextUrl.searchParams.get("clear") != null) {
+    loginData = {
+      username: "",
+      privilege: 0
+    };
+  }
+
   const response = NextResponse.json(loginData);
   return response;
 }

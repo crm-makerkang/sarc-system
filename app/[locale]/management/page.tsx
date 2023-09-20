@@ -1,78 +1,276 @@
-// Ref: https://www.youtube.com/watch?v=DTGRIaAJYIo
+'use client';
 
-'use client'
-import Image from 'next/image'
-import { Button } from '@/components/ui/button'
-import Header from '@/components/Header'
-import Container from '@/components/Container'
-import { ShoppingCart, ShoppingBag } from 'lucide-react'
-// import ProductList from '@/components/productlist'
+import { useRouter } from "next/navigation";
+import { UserInfo } from "@/types/types"
+import { useTranslations } from 'next-intl';
+import { table_text_size } from "@/Settings/settings"
+import { Checkbox } from '@/components/ui/checkbox';
+import * as React from "react"
+import { useEffect } from "react";
 
-const products = [
-  {
-    id: "1",
-    category: "Camera",
-    name: "Sony FX3",
-    price: "$3,999.00",
-    images: ["/img/products/FX3.png"],
-  },
-  {
-    id: "2",
-    category: "Camera",
-    name: "Sony A7S III",
-    price: "$3,499.00",
-    images: ["/img/products/7SIII.png"],
-  },
-  {
-    id: "3",
-    category: "Camera",
-    name: "Sony A7C",
-    price: "$1,599.00",
-    images: ["/img/products/7C.png"],
-  },
-  {
-    id: "4",
-    category: "Camera",
-    name: "Sony A7 IV",
-    price: "$2,399.00",
-    images: ["/img/products/7IV.png"],
-  },
-  {
-    id: "5",
-    category: "Camera",
-    name: "Sony A7R III",
-    price: "$2,499.00",
-    images: ["/img/products/7RIII.png"],
-  },
-  {
-    id: "6",
-    category: "Camera",
-    name: "Sony A7R V",
-    price: "$3,899.00",
-    images: ["/img/products/7RV.png"],
-  },
-  {
-    id: "7",
-    category: "Camera",
-    name: "Sony A6700",
-    price: "$1,799.00",
-    images: ["/img/products/6700.png"],
-  },
-  {
-    id: "8",
-    category: "Camera",
-    name: "Sony AZV-E10",
-    price: "$699.00",
-    images: ["/img/products/ZVE10.png"],
-  },
-];
+import axios from "axios";
 
-export default function Home() {
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+
+export default function Index(props: any) {
+  //console.log("start", props);
+  const router = useRouter();
+  const t = useTranslations('sarc');
+  const [user, setUser] = React.useState<UserInfo>({
+    id: "",
+    name: "",
+    card_no: "",
+    email: "",
+    phone: "",
+    gender: "male",
+    age: "",
+    height: "",
+    weight: ""
+  })
+  const [buttonDisabled, setButtonDisabled] = React.useState(false);
+
+  const [showSearch, setShowSearch] = React.useState(false);
+  const [showDataCard, setShowDataCard] = React.useState(true);
+  const [showBinding, setshowBinding] = React.useState(false);
+
+  const [matchedList, setMatchedList] = React.useState([]);
+  const [employee1, seteEmployee1] = React.useState("");
+  const [employee2, seteEmployee2] = React.useState("");
+  const [employee3, seteEmployee3] = React.useState("");
+  const [employee4, seteEmployee4] = React.useState("");
+  const [employee5, seteEmployee5] = React.useState("");
+
+  const [dataModified, setDataModified] = React.useState(true);
+
+
+  const getEmployees = async () => {
+    const res = await axios.get('/api/employees/')
+    console.log(res.data);
+    const employees = res.data;
+
+    seteEmployee1((employees[0] == undefined) ? "" : employees[0]);
+    seteEmployee2((employees[1] == undefined) ? "" : employees[1]);
+    seteEmployee3((employees[2] == undefined) ? "" : employees[2]);
+    seteEmployee4((employees[3] == undefined) ? "" : employees[3]);
+    seteEmployee5((employees[4] == undefined) ? "" : employees[4]);
+
+  }
+
+  useEffect(() => {
+    getEmployees();
+  }, [])
+
   return (
-    // <Container> use my Container in components/Container.tsx
-    <div className="container mx-auto"> {/*Tailwind's container class */}
-      Maagement
-    </div>
-    // </Container>
+    <>
+      <div className='container flex items-start mt-12 justify-center '>
+        <Card className="w-[550px]">
+          <CardHeader>
+            <CardTitle>員工密碼管理</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <hr></hr>
+            <ul className="list-disc pl-4 pt-2 py-2">
+              <li> 員工姓名最好都是小寫，不要有空白及特殊符號 </li>
+              <li> 密碼會隨姓名更改而改變 </li>
+              <li> 修改後要按 儲存資料 按鈕，才會生效 </li>
+              <li> 修改後最好先登出，再重新登入 </li>
+            </ul>
+
+            <div className="grid w-full items-center gap-4 mt-4">
+              <div className="flex flex-row w-full space-y-1.5">
+                <Input className={"flex flex-row w-1/2 justify-start " + table_text_size}
+                  id="name"
+                  value={employee1}
+                  onChange={
+                    (e) => {
+                      setDataModified(true);
+                      seteEmployee1(e.target.value);
+                    }
+                  }
+                  placeholder="員工姓名"
+                />
+                <div className={"flex flex-row w-1/2 ml-24 " + table_text_size}>
+                  密碼: 123456
+                </div>
+              </div>
+
+              <div className="flex flex-row w-full space-y-1.5">
+                <Input className={"flex flex-row w-1/2 justify-start " + table_text_size}
+                  id="name"
+                  value={employee2}
+                  onChange={
+                    (e) => {
+                      setDataModified(true);
+                      seteEmployee2(e.target.value);
+                    }
+                  }
+                  placeholder="員工姓名"
+                />
+                <div className={"flex flex-row w-1/2 ml-24 " + table_text_size}>
+                  密碼: 123456
+                </div>
+              </div>
+
+              <div className="flex flex-row w-full space-y-1.5">
+                <Input className={"flex flex-row w-1/2 justify-start " + table_text_size}
+                  id="name"
+                  value={employee3}
+                  onChange={
+                    (e) => {
+                      setDataModified(true);
+                      seteEmployee3(e.target.value);
+                    }
+                  }
+                  placeholder="員工姓名"
+                />
+                <div className={"flex flex-row w-1/2 ml-24 " + table_text_size}>
+                  密碼: 123456
+                </div>
+              </div>
+
+              <div className="flex flex-row w-full space-y-1.5">
+                <Input className={"flex flex-row w-1/2 justify-start " + table_text_size}
+                  id="name"
+                  value={employee4}
+                  onChange={
+                    (e) => {
+                      setDataModified(true);
+                      seteEmployee4(e.target.value);
+                    }
+                  }
+                  placeholder="員工姓名"
+                />
+                <div className={"flex flex-row w-1/2 ml-24 " + table_text_size}>
+                  密碼: 123456
+                </div>
+              </div>
+
+              <div className="flex flex-row w-full space-y-1.5">
+                <Input className={"flex flex-row w-1/2 justify-start " + table_text_size}
+                  id="name"
+                  value={employee5}
+                  onChange={
+                    (e) => {
+                      setDataModified(true);
+                      seteEmployee5(e.target.value);
+                    }
+                  }
+                  placeholder="員工姓名"
+                />
+                <div className={"flex flex-row w-1/2 ml-24 " + table_text_size}>
+                  密碼: 123456
+                </div>
+              </div>
+
+            </div>
+          </CardContent>
+          <CardFooter className="flex items-center justify-end">
+
+            {dataModified && (
+              <Button className={'bg-primary  ' + table_text_size}
+              // onClick={async () => {
+              //   //alert(t("save-msg"));
+
+              //   // check data integrity
+              //   const name_is_empty = user.name.length == 0;
+              //   // name is valid, check if duplicated
+              //   var name_is_duplicated = false;
+              //   if (!name_is_empty) {
+              //     for (let i = 0; i < userData.length; i++) {
+              //       if (userData[i].name === user.name) {
+              //         name_is_duplicated = true;
+              //       }
+              //     }
+              //   }
+
+              //   const card_no_is_invalid = !(/^\d{10}$/.test(user.card_no));
+
+              //   const age_is_NaN = isNaN(parseInt(user.age));
+              //   const age_out_range = (!age_is_NaN) && ((parseInt(user.age) < 20) || (parseInt(user.age) > 80));
+
+              //   const height_is_NaN = isNaN(parseInt(user.height));
+              //   const height_out_range = (!height_is_NaN) && ((parseInt(user.height) < 80) || (parseInt(user.height) > 210));
+
+              //   const weight_is_NaN = isNaN(parseInt(user.weight));
+              //   const weight_out_range = (!weight_is_NaN) && ((parseInt(user.weight) < 40) || (parseInt(user.weight) > 200));
+
+              //   var data_err_msg = t("data-err-msg") + ":\n";
+              //   data_err_msg = data_err_msg + ((!name_is_empty) ? "" : " - " + t("name-is-empty") + "\n");
+              //   data_err_msg = data_err_msg + ((!name_is_duplicated) ? "" : " - " + t("name-is-duplicated") + "\n");
+              //   data_err_msg = data_err_msg + ((!card_no_is_invalid) ? "" : " - " + t("card-no-is-invalid") + "\n");
+              //   data_err_msg = data_err_msg + ((!age_is_NaN) ? "" : " - " + t("age-is-NaN") + "\n");
+              //   data_err_msg = data_err_msg + ((!age_out_range) ? "" : " - " + t("age-out-range") + "\n");
+              //   data_err_msg = data_err_msg + ((!height_is_NaN) ? "" : " - " + t("height-is-NaN") + "\n");
+              //   data_err_msg = data_err_msg + ((!height_out_range) ? "" : " - " + t("height-out-range") + "\n");
+              //   data_err_msg = data_err_msg + ((!weight_is_NaN) ? "" : " - " + t("weight-is-NaN") + "\n");
+              //   data_err_msg = data_err_msg + ((!weight_out_range) ? "" : " - " + t("weight-out-range") + "\n");
+
+              //   if (data_err_msg != (t("data-err-msg") + ":\n")) {
+              //     alert(data_err_msg);
+              //     return;
+              //   }
+
+              //   // simulate res for test
+              //   // const res = {
+              //   //   data: {
+              //   //     message: "POST successful:",
+              //   //     success: true,
+              //   //   }
+              //   // }
+
+              //   const res = await axios.post('/api/users/',
+              //     {
+              //       "name": user.name,
+              //       "card_no": user.card_no,
+              //       "email": user.email,
+              //       "phone": user.phone,
+              //       "age": user.age,
+              //       "gender": user.gender,
+              //       "height": user.height,
+              //       "weight": user.weight
+              //     })
+
+              //   console.log(res.data);
+              //   if (res.data.success) {
+              //     console.log("Save OK");
+              //     alert(t('save-ok-msg'));
+              //     setDataModified(false);
+              //   } else {
+              //     console.log("Save failed");
+              //     alert(t('save-failed-msg'));
+              //   }
+              // }}
+              >
+                {t("save-data")}
+              </Button>
+            )}
+
+          </CardFooter>
+        </Card>
+
+      </div >
+
+
+
+    </>
   );
 }

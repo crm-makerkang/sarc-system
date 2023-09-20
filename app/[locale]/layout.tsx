@@ -44,7 +44,7 @@ export default async function LocaleLayout(props: any) {
         height: '91vh', width: '100%'
       }}>
         <NextIntlClientProvider locale={props.params.locale} messages={messages} >
-          <div className='h-2 w-full bg-orange-500'></div>
+          <div className='h-1 w-full bg-orange-500'></div>
           <div className='h-4 w-full '></div>
           <Header forTest />
           {props.children}
