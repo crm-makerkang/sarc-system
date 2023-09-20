@@ -50,6 +50,10 @@ export async function middleware(request: NextRequest) {
 
   console.log(path, "is protedted:", isProtected);
 
+  // const isManagement = path.includes("/management");
+
+  // console.log(path, "is management:", isManagement);
+
   if (loginToken) {
     // Error: The edge runtime does not support Node.js 'crypto' module. for both jwt and cryptr
     // axios doesn't support runtime, too. Use fetch instead

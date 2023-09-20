@@ -59,24 +59,46 @@ export default function Index(props: any) {
   const [employee4, seteEmployee4] = React.useState("");
   const [employee5, seteEmployee5] = React.useState("");
 
+  const [passwords, setePasswords] = React.useState<string[]>([]);
+
   const [dataModified, setDataModified] = React.useState(true);
 
 
-  const getEmployees = async () => {
-    const res = await axios.get('/api/employees/')
-    console.log(res.data);
-    const employees = res.data;
 
-    seteEmployee1((employees[0] == undefined) ? "" : employees[0]);
-    seteEmployee2((employees[1] == undefined) ? "" : employees[1]);
-    seteEmployee3((employees[2] == undefined) ? "" : employees[2]);
-    seteEmployee4((employees[3] == undefined) ? "" : employees[3]);
-    seteEmployee5((employees[4] == undefined) ? "" : employees[4]);
-
-  }
 
   useEffect(() => {
+
+    const getEmployees = async () => {
+      const res = await axios.get('/api/employees/')
+      console.log(res.data);
+      const employees = res.data;
+  
+      seteEmployee1((employees[0] == undefined) ? "" : employees[0]);
+      seteEmployee2((employees[1] == undefined) ? "" : employees[1]);
+      seteEmployee3((employees[2] == undefined) ? "" : employees[2]);
+      seteEmployee4((employees[3] == undefined) ? "" : employees[3]);
+      seteEmployee5((employees[4] == undefined) ? "" : employees[4]);
+
+      var pwd_encrypt=[];
+      for (var i=0; i<5 ; i++) {
+        if (employees[i]!="" && employees[i]!=undefined) {
+          console.log("in management page 89:", employees[i]);   
+          const res = await axios.post('/api/pwd_encrypt/',
+            {
+              username: employees[i]
+            })
+          pwd_encrypt.push(res.data.message);
+          console.log("in management page 97:", res.data.message);
+        } else {
+          pwd_encrypt.push("");
+        }
+      }
+      setePasswords(pwd_encrypt);
+  
+    }
+
     getEmployees();
+
   }, [])
 
   return (
@@ -84,15 +106,15 @@ export default function Index(props: any) {
       <div className='container flex items-start mt-12 justify-center '>
         <Card className="w-[550px]">
           <CardHeader>
-            <CardTitle>員工密碼管理</CardTitle>
+            <CardTitle>{t('management-title')}</CardTitle>
           </CardHeader>
           <CardContent>
             <hr></hr>
             <ul className="list-disc pl-4 pt-2 py-2">
-              <li> 員工姓名最好都是小寫，不要有空白及特殊符號 </li>
-              <li> 密碼會隨姓名更改而改變 </li>
-              <li> 修改後要按 儲存資料 按鈕，才會生效 </li>
-              <li> 修改後最好先登出，再重新登入 </li>
+              <li> {t('management-note1')} </li>
+              <li> {t('management-note2')} </li>
+              <li> {t('management-note3')} </li>
+              <li> {t('management-note4')} </li>
             </ul>
 
             <div className="grid w-full items-center gap-4 mt-4">
@@ -106,10 +128,10 @@ export default function Index(props: any) {
                       seteEmployee1(e.target.value);
                     }
                   }
-                  placeholder="員工姓名"
+                  placeholder={t('employee-name')}
                 />
-                <div className={"flex flex-row w-1/2 ml-24 " + table_text_size}>
-                  密碼: 123456
+                <div className={"flex flex-row w-1/2 ml-10 " + table_text_size}>
+                  {t('password') + " : " + passwords[0]}
                 </div>
               </div>
 
@@ -123,10 +145,10 @@ export default function Index(props: any) {
                       seteEmployee2(e.target.value);
                     }
                   }
-                  placeholder="員工姓名"
+                  placeholder={t('employee-name')}
                 />
-                <div className={"flex flex-row w-1/2 ml-24 " + table_text_size}>
-                  密碼: 123456
+                <div className={"flex flex-row w-1/2 ml-10 " + table_text_size}>
+                  {t('password') + " : " + passwords[1]}
                 </div>
               </div>
 
@@ -140,10 +162,10 @@ export default function Index(props: any) {
                       seteEmployee3(e.target.value);
                     }
                   }
-                  placeholder="員工姓名"
+                  placeholder={t('employee-name')}
                 />
-                <div className={"flex flex-row w-1/2 ml-24 " + table_text_size}>
-                  密碼: 123456
+                <div className={"flex flex-row w-1/2 ml-10 " + table_text_size}>
+                  {t('password') + " : " + passwords[2]}
                 </div>
               </div>
 
@@ -157,10 +179,10 @@ export default function Index(props: any) {
                       seteEmployee4(e.target.value);
                     }
                   }
-                  placeholder="員工姓名"
+                  placeholder={t('employee-name')}
                 />
-                <div className={"flex flex-row w-1/2 ml-24 " + table_text_size}>
-                  密碼: 123456
+                <div className={"flex flex-row w-1/2 ml-10 " + table_text_size}>
+                  {t('password') + " : " + passwords[4]}
                 </div>
               </div>
 
@@ -174,10 +196,10 @@ export default function Index(props: any) {
                       seteEmployee5(e.target.value);
                     }
                   }
-                  placeholder="員工姓名"
+                  placeholder={t('employee-name')}
                 />
-                <div className={"flex flex-row w-1/2 ml-24 " + table_text_size}>
-                  密碼: 123456
+                <div className={"flex flex-row w-1/2 ml-10 " + table_text_size}>
+                  {t('password') + " : " + passwords[4]}
                 </div>
               </div>
 

@@ -76,13 +76,20 @@ export default function Header(test: any) {
             </Button>
 
           ))}
-          {privilege && (
-            <Button variant={"ghost"} onClick={() => { window.location.href = "/management" }}
-              className={baseStyle + (tab == "/management" ? underlineStyle : "")}
-            >
-              {t("management")}
-            </Button>
-          )}
+
+          <Button variant={"ghost"} 
+            onClick={() => {
+              if (privilege == true) {
+                window.location.href = "/management" 
+              } else {
+                alert(t("no-privilege"))
+              }
+            }}
+            className={baseStyle + (tab == "/management" ? underlineStyle : "")}
+          >
+            {t("management")}
+          </Button>
+
         </nav>
 
         <div className='flex flex-row text-xl'>

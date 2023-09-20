@@ -78,6 +78,13 @@
     "guide-2-2-msg": "Input your name, click the matched user name.",
     "guide-2-3-msg": "In the Card No. field, use the card reader to read the new card. Click Save Data button.",
     "guide-2-4-msg": "Please take the new registered card to the test stations, when all tests are done, come back to check the Measurements.",
-    "guide-3-2-msg": "Fill all the reguired information."
+    "guide-3-2-msg": "Fill all the reguired information.",
+    "no-privilege": "Only administrator can access Management",
+    "management-title": "Management",
+    "management-note1": "Names should be all lower case letters, without space, nor special characters.",
+    "management-note2": "Password will change along with the name.",
+    "management-note3": "Changes will take effect after clicking the Save Data button.",
+    "management-note4": "Please logout then login again after anu change.",
+    "employee-name": "Employee Name"
   }
 }

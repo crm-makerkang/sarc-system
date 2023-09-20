@@ -40,7 +40,7 @@ export default function Index(props: any) {
   return (
 
     <div className="flex flex-row h-full items-center justify-evenly">
-      <Card className="w-1/4 h-5/6 xl:h-4/6">
+      <Card className="w-1/4 h-5/6 xl:h-5/6">
         <CardHeader>
           <CardTitle>{t('guide-1-title')}</CardTitle>
         </CardHeader>
@@ -59,7 +59,7 @@ export default function Index(props: any) {
         </CardFooter>
       </Card>
 
-      <Card className="w-1/4 h-5/6 xl:h-4/6">
+      <Card className="w-1/4 h-5/6 xl:h-5/6">
         <CardHeader>
           <CardTitle>{t('guide-2-title')}</CardTitle>
         </CardHeader>
@@ -95,7 +95,7 @@ export default function Index(props: any) {
         </CardFooter>
       </Card>
 
-      <Card className="w-1/4 h-5/6 xl:h-4/6">
+      <Card className="w-1/4 h-5/6 xl:h-5/6">
         <CardHeader>
           <CardTitle>{t('guide-3-title')}</CardTitle>
         </CardHeader>
