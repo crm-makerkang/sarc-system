@@ -27,7 +27,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-export default function Index() {
+export default function Index(props: any) {
+  console.log("in guide", props);
   const t = useTranslations('sarc');
   const router = useRouter();
 
@@ -51,6 +52,7 @@ export default function Index() {
                 {t('guide-1-msg')}
               </div>
             </div>
+            <img src="/img/ibox-beep.jpg" className="rounded-2xl mt-12"></img>
           </div>
         </CardContent>
         <CardFooter className="flex items-center justify-between">
@@ -67,22 +69,22 @@ export default function Index() {
             <div className="flex flex-row space-y-1.5">
               <div className={" " + table_text_size} >
                 <div className="mt-4 flex flex-row justify-start">
-                  <div className="w-[20px]">1.</div>
-                  <div>{t('guide-2-1-msg')}</div>
+                  <div className="]">1.</div>
+                  <div className="ml-3">{t('guide-2-1-msg')}</div>
                 </div>
                 <div className="mt-4 flex flex-row justify-start">
-                  <div className="w-[24px]">2.</div>
-                  <div>{t('guide-2-2-msg')}</div>
+                  <div className="">2.</div>
+                  <div className="ml-2">{t('guide-2-2-msg')}</div>
                 </div>
                 <img src="/img/guide-2-1.png"></img>
                 <div className="mt-4 flex flex-row justify-start">
-                  <div className="w-[24px]">3.</div>
-                  <div>{t('guide-2-3-msg')}</div>
+                  <div className="">3.</div>
+                  <div className="ml-2">{t('guide-2-3-msg')}</div>
                 </div>
                 <img src="/img/guide-2-2.png"></img>
                 <div className="mt-4 flex flex-row justify-start">
-                  <div className="w-[24px]">4.</div>
-                  <div>{t('guide-2-4-msg')}</div>
+                  <div className="">4.</div>
+                  <div className="ml-2">{t('guide-2-4-msg')}</div>
                 </div>
 
               </div>
@@ -104,19 +106,19 @@ export default function Index() {
               <div className={" " + table_text_size} >
                 <div className="mt-4 flex flex-row justify-start">
                   <div className="">1.</div>
-                  <div>{t('guide-2-1-msg')}</div>
+                  <div className="ml-3">{t('guide-2-1-msg')}</div>
                 </div>
                 <div className="mt-4 flex flex-row justify-start">
                   <div className="">2.</div>
-                  <div>{t('guide-3-2-msg')}</div>
+                  <div className="ml-2">{t('guide-3-2-msg')}</div>
                 </div>
                 <div className="mt-4 flex flex-row justify-start">
                   <div className="">3.</div>
-                  <div>{t('guide-2-3-msg')}</div>
+                  <div className="ml-2">{t('guide-2-3-msg')}</div>
                 </div>
                 <div className="mt-4 flex flex-row justify-start">
                   <div className="">4.</div>
-                  <div>{t('guide-2-4-msg')}</div>
+                  <div className="ml-2">{t('guide-2-4-msg')}</div>
                 </div>
 
               </div>

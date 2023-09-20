@@ -22,7 +22,7 @@ export function generateStaticParams() {
 
 // export default async function LocaleLayout({ children, params: { locale } }: any) {
 export default async function LocaleLayout(props: any) {
-  //console.log(props);
+  //console.log("in layout", props);
 
   // props.params.table_text_size=table_text_size;
   // props.params.rows_per_page=rows_per_page

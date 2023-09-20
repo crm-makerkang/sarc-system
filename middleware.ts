@@ -54,15 +54,16 @@ export async function middleware(request: NextRequest) {
     // Error: The edge runtime does not support Node.js 'crypto' module. for both jwt and cryptr
     // axios doesn't support runtime, too. Use fetch instead
 
-    const res = await fetch(`http://localhost:8089/api/get_token`, {
+    const res = await fetch(`http://localhost:8089/api/token`, {
       method: 'POST',
       body: JSON.stringify({ loginToken: loginToken })
     })
     const response = await res.json();
-    const loginTokenDate = JSON.parse(response.message);
+    const loginTokenJSON = JSON.parse(response.message);
+    console.log("in middleware, privilege:", loginTokenJSON.privilege);
 
-    console.log(loginTokenDate.expireAT);
-    if (new Date().getTime() > loginTokenDate.expireAT) {
+    console.log(loginTokenJSON.expireAT);
+    if (new Date().getTime() > loginTokenJSON.expireAT) {
       console.log("Login token has expired");
       request.cookies.set('loginToken', '');
       loginToken = '';

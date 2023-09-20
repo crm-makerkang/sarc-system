@@ -38,8 +38,10 @@ export async function POST(request: NextRequest) {
     }
 
     //create token data
+    const privilege = (username == "admin") ? 100 : 1;
     const loginTokenData = {
       username: username,
+      privilege: privilege,
       expireAT: new Date().getTime() + 1000 * 60 * 60 * 23  // 1hr
     }
     const cryptr = new Cryptr(process.env.TOKEN_SECRET!);
@@ -49,6 +51,8 @@ export async function POST(request: NextRequest) {
 
     const loginToken = cryptr.encrypt(JSON.stringify(loginTokenData));
 
+
+    console.log("login api", privilege);
     const response = NextResponse.json({
       message: "Login successful",
       success: true,
