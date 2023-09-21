@@ -59,7 +59,7 @@ export default function Index(props: any) {
         </CardFooter>
       </Card>
 
-      <Card className="w-1/4 h-5/6 xl:h-5/6">
+      <Card className="w-1/3 h-5/6 xl:h-5/6">
         <CardHeader>
           <CardTitle>{t('guide-2-title')}</CardTitle>
         </CardHeader>
@@ -76,12 +76,12 @@ export default function Index(props: any) {
                   <div className="">2.</div>
                   <div className="ml-2">{t('guide-2-2-msg')}</div>
                 </div>
-                <img src="/img/guide-2-1.png"></img>
+                <img src="/img/guide-2-1.png" className="w-5/6"></img>
                 <div className="mt-4 flex flex-row justify-start">
                   <div className="">3.</div>
                   <div className="ml-2">{t('guide-2-3-msg')}</div>
                 </div>
-                <img src="/img/guide-2-2.png"></img>
+                <img src="/img/guide-2-2.png" className="w-5/6"></img>
                 <div className="mt-4 flex flex-row justify-start">
                   <div className="">4.</div>
                   <div className="ml-2">{t('guide-2-4-msg')}</div>
