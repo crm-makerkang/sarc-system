@@ -48,7 +48,7 @@ export async function middleware(request: NextRequest) {
   const isProtected = !path.includes("/login");
   // const isProtected = !isLoginUrl;
 
-  console.log(path, "is protedted:", isProtected);
+  console.log("in middleware 51:", path, "is protedted:", isProtected);
 
   // const isManagement = path.includes("/management");
 
@@ -64,7 +64,7 @@ export async function middleware(request: NextRequest) {
     })
     const response = await res.json();
     const loginTokenJSON = JSON.parse(response.message);
-    console.log("in middleware, privilege:", loginTokenJSON.privilege);
+    console.log("in middleware 68:, privilege:", loginTokenJSON.privilege);
 
     console.log(loginTokenJSON.expireAT);
     if (new Date().getTime() > loginTokenJSON.expireAT) {

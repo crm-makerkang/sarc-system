@@ -55,13 +55,9 @@ export default function Index(props: any) {
   const [matchedList, setMatchedList] = React.useState([]);
   const [employees, seteEmployees] = React.useState<string[]>([]);
 
-
   const [passwords, setePasswords] = React.useState<string[]>([]);
 
-  const [dataModified, setDataModified] = React.useState(true);
-
-
-
+  const [dataModified, setDataModified] = React.useState(false);
 
   useEffect(() => {
 
@@ -69,12 +65,12 @@ export default function Index(props: any) {
       const res = await axios.get('/api/employees/')
       console.log("in management page 70:", res.data);
       const return_employees = res.data;
-  
+
       seteEmployees(return_employees);
 
-      var pwd_encrypt=[];
-      for (var i=0; i<5 ; i++) {
-        if (return_employees[i]!="" && return_employees[i]!=undefined) {
+      var pwd_encrypt = [];
+      for (var i = 0; i < 5; i++) {
+        if (return_employees[i] != "" && return_employees[i] != undefined) {
           //console.log("in management page 78:", employees[i]);   
           const res = await axios.post('/api/pwd_encrypt/',
             {
@@ -87,7 +83,7 @@ export default function Index(props: any) {
         }
       }
       setePasswords(pwd_encrypt);
-  
+
     }
 
     getEmployees();
@@ -97,9 +93,9 @@ export default function Index(props: any) {
   useEffect(() => {
     //console.log("in management page 98:", employees);
     const updatePwd = async () => {
-      var pwd_encrypt=[];
-      for (var i=0; i<5 ; i++) {
-        if (employees[i]!="" && employees[i]!=undefined) {
+      var pwd_encrypt = [];
+      for (var i = 0; i < 5; i++) {
+        if (employees[i] != "" && employees[i] != undefined) {
           //console.log("in management page 103:", employees[i]);   
           const res = await axios.post('/api/pwd_encrypt/',
             {
@@ -121,8 +117,58 @@ export default function Index(props: any) {
   return (
     <>
       <div className='container flex items-start mt-12 justify-center '>
+
         <Card className="w-[550px]">
           <CardHeader>
+            <CardTitle>資料管理</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <hr></hr>
+            <div className="mt-4 flex flex-row items-center justify-around">
+              <div className={"font-bold " + table_text_size}>
+                客戶資料:
+              </div>
+              <Button className={'bg-primary  ' + table_text_size}>
+                備份
+              </Button>
+              <Button className={'bg-primary  ' + table_text_size}>
+                回復
+              </Button>
+              <Button className={'bg-primary  ' + table_text_size}>
+                匯出
+              </Button>
+              <Button className={'bg-primary  ' + table_text_size}>
+                匯入
+              </Button>
+              <Button className={'bg-red-500  ' + table_text_size}>
+                刪除
+              </Button>
+            </div>
+            <div className="mt-4 flex flex-row items-center justify-around">
+              <div className={"font-bold " + table_text_size}>
+                量測資料:
+              </div>
+              <Button className={'bg-primary  ' + table_text_size}>
+                備份
+              </Button>
+              <Button className={'bg-primary  ' + table_text_size}>
+                回復
+              </Button>
+              <Button className={'bg-primary  ' + table_text_size}>
+                匯出
+              </Button>
+              <Button className={'bg-primary  ' + table_text_size}>
+                匯入
+              </Button>
+              <Button className={'bg-red-500  ' + table_text_size}>
+                刪除
+              </Button>
+            </div>
+            <hr className="mt-4"></hr>
+            <hr className="mt-1"></hr>
+          </CardContent>
+
+          <CardHeader className="-mt-4">
             <CardTitle>{t('management-title')}</CardTitle>
           </CardHeader>
           <CardContent>
@@ -143,7 +189,7 @@ export default function Index(props: any) {
                     (e) => {
                       setDataModified(true);
                       var newEmployees = [];
-                      for (var i=0; i<5 ; i++) {
+                      for (var i = 0; i < 5; i++) {
                         newEmployees.push(employees[i])
                       }
                       newEmployees[0] = e.target.value;
@@ -165,7 +211,7 @@ export default function Index(props: any) {
                     (e) => {
                       setDataModified(true);
                       var newEmployees = [];
-                      for (var i=0; i<5 ; i++) {
+                      for (var i = 0; i < 5; i++) {
                         newEmployees.push(employees[i])
                       }
                       newEmployees[1] = e.target.value;
@@ -187,7 +233,7 @@ export default function Index(props: any) {
                     (e) => {
                       setDataModified(true);
                       var newEmployees = [];
-                      for (var i=0; i<5 ; i++) {
+                      for (var i = 0; i < 5; i++) {
                         newEmployees.push(employees[i])
                       }
                       newEmployees[2] = e.target.value;
@@ -209,7 +255,7 @@ export default function Index(props: any) {
                     (e) => {
                       setDataModified(true);
                       var newEmployees = [];
-                      for (var i=0; i<5 ; i++) {
+                      for (var i = 0; i < 5; i++) {
                         newEmployees.push(employees[i])
                       }
                       newEmployees[3] = e.target.value;
@@ -231,7 +277,7 @@ export default function Index(props: any) {
                     (e) => {
                       setDataModified(true);
                       var newEmployees = [];
-                      for (var i=0; i<5 ; i++) {
+                      for (var i = 0; i < 5; i++) {
                         newEmployees.push(employees[i])
                       }
                       newEmployees[4] = e.target.value;
@@ -247,82 +293,31 @@ export default function Index(props: any) {
 
             </div>
           </CardContent>
-          <CardFooter className="flex items-center justify-end">
+          <CardFooter className="flex items-center justify-between">
+            <Button variant="outline" className={table_text_size}
+              onClick={async () => {
+                window.location.reload();
+              }}
+            >
+              {t("reload-data")}
+            </Button>
 
             {dataModified && (
               <Button className={'bg-primary  ' + table_text_size}
-              // onClick={async () => {
-              //   //alert(t("save-msg"));
-
-              //   // check data integrity
-              //   const name_is_empty = user.name.length == 0;
-              //   // name is valid, check if duplicated
-              //   var name_is_duplicated = false;
-              //   if (!name_is_empty) {
-              //     for (let i = 0; i < userData.length; i++) {
-              //       if (userData[i].name === user.name) {
-              //         name_is_duplicated = true;
-              //       }
-              //     }
-              //   }
-
-              //   const card_no_is_invalid = !(/^\d{10}$/.test(user.card_no));
-
-              //   const age_is_NaN = isNaN(parseInt(user.age));
-              //   const age_out_range = (!age_is_NaN) && ((parseInt(user.age) < 20) || (parseInt(user.age) > 80));
-
-              //   const height_is_NaN = isNaN(parseInt(user.height));
-              //   const height_out_range = (!height_is_NaN) && ((parseInt(user.height) < 80) || (parseInt(user.height) > 210));
-
-              //   const weight_is_NaN = isNaN(parseInt(user.weight));
-              //   const weight_out_range = (!weight_is_NaN) && ((parseInt(user.weight) < 40) || (parseInt(user.weight) > 200));
-
-              //   var data_err_msg = t("data-err-msg") + ":\n";
-              //   data_err_msg = data_err_msg + ((!name_is_empty) ? "" : " - " + t("name-is-empty") + "\n");
-              //   data_err_msg = data_err_msg + ((!name_is_duplicated) ? "" : " - " + t("name-is-duplicated") + "\n");
-              //   data_err_msg = data_err_msg + ((!card_no_is_invalid) ? "" : " - " + t("card-no-is-invalid") + "\n");
-              //   data_err_msg = data_err_msg + ((!age_is_NaN) ? "" : " - " + t("age-is-NaN") + "\n");
-              //   data_err_msg = data_err_msg + ((!age_out_range) ? "" : " - " + t("age-out-range") + "\n");
-              //   data_err_msg = data_err_msg + ((!height_is_NaN) ? "" : " - " + t("height-is-NaN") + "\n");
-              //   data_err_msg = data_err_msg + ((!height_out_range) ? "" : " - " + t("height-out-range") + "\n");
-              //   data_err_msg = data_err_msg + ((!weight_is_NaN) ? "" : " - " + t("weight-is-NaN") + "\n");
-              //   data_err_msg = data_err_msg + ((!weight_out_range) ? "" : " - " + t("weight-out-range") + "\n");
-
-              //   if (data_err_msg != (t("data-err-msg") + ":\n")) {
-              //     alert(data_err_msg);
-              //     return;
-              //   }
-
-              //   // simulate res for test
-              //   // const res = {
-              //   //   data: {
-              //   //     message: "POST successful:",
-              //   //     success: true,
-              //   //   }
-              //   // }
-
-              //   const res = await axios.post('/api/users/',
-              //     {
-              //       "name": user.name,
-              //       "card_no": user.card_no,
-              //       "email": user.email,
-              //       "phone": user.phone,
-              //       "age": user.age,
-              //       "gender": user.gender,
-              //       "height": user.height,
-              //       "weight": user.weight
-              //     })
-
-              //   console.log(res.data);
-              //   if (res.data.success) {
-              //     console.log("Save OK");
-              //     alert(t('save-ok-msg'));
-              //     setDataModified(false);
-              //   } else {
-              //     console.log("Save failed");
-              //     alert(t('save-failed-msg'));
-              //   }
-              // }}
+                onClick={async () => {
+                  const save_confirm = confirm(t("confirm-to-save-msg"));
+                  console.log("in management page 302:", save_confirm);
+                  if (save_confirm) {
+                    const res = await axios.post('/api/employees/', {
+                      "employees": employees
+                    });
+                    if (res.data.success) {
+                      alert(t("save-ok-msg"));
+                    } else {
+                      alert(t("save-fail-msg"));
+                    }
+                  }
+                }}
               >
                 {t("save-data")}
               </Button>

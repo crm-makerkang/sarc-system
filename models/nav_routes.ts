@@ -14,6 +14,9 @@ export const nav_routes =
       href: "/measurements",
     },
     {
+      href: "/assessments",
+    },
+    {
       href: "/sarc-form",
     },
     {

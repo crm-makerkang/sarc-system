@@ -6,6 +6,7 @@
     "start": "開始",
     "users": "用戶",
     "measurements": "量測資料",
+    "assessments": "評估",
     "sarc-form": "SARC-CalF",
     "sppb-form": "SPPB",
     "management": "管理",
@@ -56,9 +57,10 @@
     "required-msg": "* 必填欄位",
     "save-data": "儲存資料",
     "clear-data": "清除資料",
+    "reload-data": "重新載入資料",
     "start-measure": "進行量測",
     "save-msg": "您的個人資料和量測結果會被存入本機資料庫，但不會上傳到雲端。若有需要，您可以要求本機管理員刪除您的個人資料和量測結果",
-    "save-ok-msg": "您的個人資料儲存成功!",
+    "save-ok-msg": "資料儲存成功!",
     "save-failed-msg": "資料儲存失敗，請再試一次。若多次嘗試仍然失敗，請聯絡管理員。",
     "data-err-msg": "資料錯誤",
     "name-is-empty": "名字為空白",
@@ -85,6 +87,10 @@
     "management-note2": "密碼會隨姓名更改而改變",
     "management-note3": "修改後要按 儲存資料 按鈕，才會生效",
     "management-note4": "修改後最好先登出，再重新登入",
-    "employee-name": "員工姓名"
+    "employee-name": "員工姓名",
+    "new-user": "新增用戶",
+    "admin-login-msg": "管理者有強大的權限，一小時後會自動登出。若不需管理功能，請用員工帳號登入",
+    "employee-not-found-msg": "無此員工帳號",
+    "confirm-to-save-msg": "確認要儲存資料?"
   }
 }

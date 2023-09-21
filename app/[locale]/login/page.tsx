@@ -48,10 +48,13 @@ export default function Index() {
       })
     console.log(res.data);
     if (res.data.success) {
+      if (user.name == "admin") alert(t("admin-login-msg"));
       window.location.href = "/guide";
     } else {
+      console.log("in login Page 54:", res.data.message);
       console.log("login failed");
-      alert(t('login-failed-msg'));
+      if (res.data.message == "emplyee name is not found") alert(t('employee-not-found-msg'));
+      if (res.data.message == "Incorrect password") alert(t('login-failed-msg'));
       setLogining(false);
       // toast not working here, don't know why: toast(res.data.message);
     }

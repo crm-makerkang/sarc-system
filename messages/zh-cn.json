@@ -9,6 +9,7 @@
     "sarc-form": "SARC-CalF",
     "sppb-form": "SPPB",
     "management": "管理",
+    "assessments": "评估",
     "status": "状态",
     "amount": "金额",
     "copyUserInfoID": "复制 UserInfo ID 到剪贴簿",
@@ -56,9 +57,10 @@
     "required-msg": "* 必填栏位",
     "save-data": "储存资料",
     "clear-data": "清除资料",
+    "reload-data": "重新加载资料",
     "start-measure": "进行量测",
     "save-msg": "您的个人资料和量测结果会被存入本机资料库，但不会上传到云端。若有需要，您可以要求本机管理员删除您的个人资料和量测结果",
-    "save-ok-msg": "您的个人资料储存成功!",
+    "save-ok-msg": "资料储存成功!",
     "save-failed-msg": "资料储存失败，请再试一次。若多次尝试仍然失败，请联络管理员。",
     "data-err-msg": "资料错误",
     "name-is-empty": "名字为空白",
@@ -85,6 +87,10 @@
     "management-note2": "密码会随姓名更改而改变",
     "management-note3": "修改后要按 储存资料 按钮，才会生效",
     "management-note4": "修改后最好先登出，再重新登入",
-    "employee-name": "员工姓名"
+    "employee-name": "员工姓名",
+    "new-user": "新增用户",
+    "admin-login-msg": "管理员有强大的权限，一小时后会自动登出。若不需要管理功能，请用员工帐号登入",
+    "employee-not-found-msg": "无此员工帐号",
+    "confirm-to-save-msg": "确定要保存修改吗?"
   }
 }

@@ -7,7 +7,7 @@ function readEmployees() {
     var data = fs.readFileSync(json_employees_filename, 'utf8');
     try {
       const employees = JSON.parse(data);
-      console.log("in employee api 14:", employees)
+      console.log("in employee api 10:", employees)
       return employees;
     } catch (error: any) {
       return [];
@@ -18,7 +18,7 @@ function readEmployees() {
   }
 }
 
-var employees = [];
+var employees = [""];
 export async function GET(request: NextRequest) {
   console.log("Employees GET method");
 
@@ -36,16 +36,11 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   console.log("Employees POST Mewthod");
 
-  employees = [];
-
   try {
-    employees = readEmployees();
-
     try {
       const reqBody = await request.json();
 
-
-      employees.push(reqBody.name);
+      employees = reqBody.employees;
       console.log(employees.length, employees);
 
     } catch (error) {

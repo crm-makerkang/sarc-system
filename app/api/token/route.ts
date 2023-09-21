@@ -26,8 +26,9 @@ export async function POST(request: NextRequest) {
       const reqBody = await request.json()
       const cryptr = new Cryptr(process.env.TOKEN_SECRET!);
       loginTokenString = cryptr.decrypt(reqBody.loginToken);
-      console.log("in token api 23:", JSON.parse(loginTokenString));
+      console.log("in token api 29:", JSON.parse(loginTokenString));
       loginData = JSON.parse(loginTokenString);
+      console.log("in token api 31:", loginData);
 
     } catch (error) {
       console.log("get_token POST reqBody err");

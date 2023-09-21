@@ -6,6 +6,7 @@
     "start": "Start",
     "users": "Users",
     "measurements": "Measurements",
+    "assessments": "Assessments",
     "sarc-form": "SARC-CalF",
     "sppb-form": "SPPB",
     "management": "Management",
@@ -56,10 +57,11 @@
     "required-msg": "* Required",
     "save-data": "Save Data",
     "clear-data": "Clear Data",
+    "reload-data": "Reload Data",
     "start-measure": "Start Measurements",
     "save-msg": "Your information and measurments will be saved locally, but not to cloud. You can request the administrator to delete your local information and measurment.",
-    "save-ok-msg": "Your information is saved successfully!",
-    "save-failed-msg": "Failed to save your information. Please try again, or contact teh administrator.",
+    "save-ok-msg": "Data is saved successfully!",
+    "save-failed-msg": "Failed to save data. Please try again, or contact teh administrator.",
     "data-err-msg": "Data Error",
     "name-is-empty": "Name is empty",
     "name-is-duplicated": "Name is duplicated",
@@ -82,9 +84,13 @@
     "no-privilege": "Only administrator can access Management",
     "management-title": "Management",
     "management-note1": "Names should be all lower case letters, without space, nor special characters.",
-    "management-note2": "Password will change along with the name.",
+    "management-note2": "Password will be changed along with the name changed.",
     "management-note3": "Changes will take effect after clicking the Save Data button.",
-    "management-note4": "Please logout then login again after anu change.",
-    "employee-name": "Employee Name"
+    "management-note4": "Please logout then login again after any change.",
+    "employee-name": "Employee Name",
+    "new-user": "New user",
+    "admin-login-msg": "Admin has great power, will logout after 1 hour automatically. If not for management purpose, please login with employee acount.",
+    "employee-not-found-msg": "Employee not found",
+    "confirm-to-save-msg": "Are you sure to save the changes?"
   }
 }

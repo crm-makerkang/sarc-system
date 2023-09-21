@@ -115,12 +115,10 @@ export function DataTable<TData, TValue>({
   return (
     <div>
       <div className="flex items-center py-4">
-        <Button id="addNewUserButton" className="ml-4 bg-primary text-xl"
-          onClick={() => {
-
-          }}
+        <Button id="addNewUserButton" className="bg-primary text-xl"
+          onClick={() => window.location.href = "/start"}
         >
-          {"新增使用者"}
+          {t("new-user")}
         </Button>
 
         <Input

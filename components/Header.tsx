@@ -25,9 +25,10 @@ export default function Header(test: any) {
 
 
   useEffect(() => {
+    console.log("in Hedaer 28:");
     const get_privilege = async () => {
       const res = await axios.get('/api/token/')
-      console.log("in Hedaer", res.data, typeof res.data);
+      console.log("in Hedaer 31:", res.data, typeof res.data);
       setUsername(res.data.username);
       setPrivilege((res.data.privilege == 100) ? true : false);
     }
@@ -77,10 +78,10 @@ export default function Header(test: any) {
 
           ))}
 
-          <Button variant={"ghost"} 
+          <Button variant={"ghost"}
             onClick={() => {
               if (privilege == true) {
-                window.location.href = "/management" 
+                window.location.href = "/management"
               } else {
                 alert(t("no-privilege"))
               }

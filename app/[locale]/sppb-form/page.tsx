@@ -70,7 +70,7 @@ const products = [
 export default function Home() {
   return (
     // <Container> use my Container in components/Container.tsx
-    <div className="container mx-auto"> {/*Tailwind's container class */}
+    <div className="flex items-center justify-center text-red-500 text-2xl mt-4"> {/*Tailwind's container class */}
       SPPB
     </div>
     // </Container>

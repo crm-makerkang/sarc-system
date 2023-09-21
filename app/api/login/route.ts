@@ -2,18 +2,32 @@ import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import Cryptr from "cryptr";
 import hash from "@/lib/hash";
+import axios from "axios";
 
 export async function POST(request: NextRequest) {
+
   try {
 
     const reqBody = await request.json()
     const { username, password } = reqBody;
-    console.log("aaa", reqBody);
 
-    const encryptedString = hash(username + process.env.TOKEN_SECRET! + (username=="admin"?"admin":""));
-    console.log("bbb", encryptedString.substring(0, 6));
+    // check if employee name is exist in the list
+    // axios.get and fetch all working with http://.... 
+    // const res = await fetch('http://localhost:8089/api/employees/')
+    const res = await axios.get('http://localhost:8089/api/employees/')
+    console.log("in login api 18:", res.data);
+    if (!res.data.includes(username) && username != "admin") {
+      const response = NextResponse.json({
+        message: "emplyee name is not found",
+        success: false,
+      })
+      return response;
+    }
 
-    const validPassword = encryptedString.substring(0, 6) === reqBody.password
+    const encryptedString = hash(username + process.env.TOKEN_SECRET! + (username == "admin" ? "admin" : ""));
+    console.log("in login api 20:", encryptedString.substring(0, 6));
+
+    const validPassword = encryptedString.substring(0, 6) === password
 
     if (!validPassword) {
       return NextResponse.json({
@@ -31,13 +45,9 @@ export async function POST(request: NextRequest) {
     }
     const cryptr = new Cryptr(process.env.TOKEN_SECRET!);
 
-    //create token
-    // const token = await jwt.sign(tokenData, process.env.TOKEN_SECRET!, { expiresIn: "1d" })
-
     const loginToken = cryptr.encrypt(JSON.stringify(loginTokenData));
 
-
-    console.log("login api", privilege);
+    console.log("login api 42:", privilege);
     const response = NextResponse.json({
       message: "Login successful",
       success: true,

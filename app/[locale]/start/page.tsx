@@ -361,7 +361,7 @@ export default function Index(props: any) {
                 </Button>
               )}
 
-              {!dataModified && (
+              {/* {!dataModified && (
                 <Button className={'bg-primary  ' + table_text_size}
                   onClick={async () => {
                     //alert("如果進行量測，您的個人資料和量測結果會被存入本機資料庫，但不會上傳到雲端。若有需要，您可以要求本機管理員刪除您的個人資料和量測結果");
@@ -371,7 +371,7 @@ export default function Index(props: any) {
                 >
                   {t("start-measure")}
                 </Button>
-              )}
+              )} */}
             </CardFooter>
           </Card>
         )
