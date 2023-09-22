@@ -46,7 +46,7 @@
     "rows-per-page": "列/每页",
     "male": "男",
     "female": "女",
-    "user-data": "填写资料",
+    "user-info": "填写资料",
     "bio-msg": "为准确进行评估，请填写以下资料",
     "bio-gender": "生理性别",
     "s-bio-gender": "生理性别",
@@ -94,6 +94,12 @@
     "employee-not-found-msg": "无此员工帐号",
     "confirm-to-save-msg": "确定要保存修改吗?",
     "no-privilege-to-delete-msg": "只有管理员可以进行删除",
-    "confirm-to-delete-msg": "确定要删除吗?"
+    "confirm-to-delete-msg": "确定要删除吗?",
+    "data-management": "数据管理",
+    "user-data": "用户资料",
+    "backup": "备份",
+    "recovery": "回复",
+    "import": "汇入",
+    "export": "汇出"
   }
 }

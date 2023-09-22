@@ -95,6 +95,13 @@ export const columns: ColumnDef<UserInfo>[] = [
       const t = useTranslations('sarc');
       return <div>{t('gender')}</div>
     },
+    cell: ({ row }) => {
+      const UserInfo = row.original
+      const t = useTranslations('sarc');
+      return (
+        <span >{t(UserInfo.gender)}</span>
+      )
+    }
   },
 
   {
@@ -128,22 +135,6 @@ export const columns: ColumnDef<UserInfo>[] = [
       return <div>{t('weight')}</div>
     },
   },
-  // {
-  //   accessorKey: "amount",
-  //   header: () => {
-  //     const t = useTranslations('sarc');
-  //     return <div className="text-right">{t('amount')}</div>
-  //   },
-  //   cell: ({ row }) => {
-  //     const amount = parseFloat(row.getValue("amount"))
-  //     const formatted = new Intl.NumberFormat("en-US", {
-  //       style: "currency",
-  //       currency: "USD",
-  //     }).format(amount)
-
-  //     return <div className="text-right font-medium">{formatted}</div>
-  //   },
-  // },
 
   {
     id: "actions",

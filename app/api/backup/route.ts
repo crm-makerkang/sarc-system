@@ -1,29 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
 import * as child from 'child_process';
 import os from 'os';
+import fs from 'fs';
 import axios from 'axios';
 
 export async function GET(request: NextRequest) {
   console.log("Backup GET method");
-  console.log("in backup api 7:", os.platform());
 
-  try {
-    child.exec("ls -al data", (error, stdout, stderr) => {
-      if (error) {
-        console.log(`in backup api 13: error: ${error.message}`);
-        return;
-      }
-      if (stderr) {
-        console.log(`in backup api 17: stderr: ${stderr}`);
-        return;
-      }
-      console.log(`in backup api 20: stdout: ${stdout}`);
-    })
+  const nowTimeStamp = new Date().getTime();
+  console.log("in backup api 14:", os.platform(), request.nextUrl.searchParams.get("cmd"), nowTimeStamp);
 
-    const response = NextResponse.json("OK");
-    return response;
+  if (request.nextUrl.searchParams.get("cmd") == "backup") {
+    try {
+      fs.copyFileSync("data/users.json", "data/users.json." + nowTimeStamp.toString());
 
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    } catch (error: any) {
+      return NextResponse.json({ error: error.message }, { status: 500 })
+    }
   }
+
+  const response = NextResponse.json("OK");
+  return response;
 }

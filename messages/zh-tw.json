@@ -46,7 +46,7 @@
     "rows-per-page": "列/每頁",
     "male": "男",
     "female": "女",
-    "user-data": "填寫資料",
+    "user-info": "填寫資料",
     "bio-msg": "為準確進行評估，請填寫以下資料",
     "bio-gender": "生理性別",
     "s-bio-gender": "生理性別",
@@ -94,6 +94,12 @@
     "employee-not-found-msg": "無此員工帳號",
     "confirm-to-save-msg": "確認要儲存資料?",
     "no-privilege-to-delete-msg": "只有管理員可以進行刪除",
-    "confirm-to-delete-msg": "確認要刪除?"
+    "confirm-to-delete-msg": "確認要刪除?",
+    "data-management": "資料管理",
+    "user-data": "用戶資料",
+    "backup": "備份",
+    "recovery": "回復",
+    "import": "匯入",
+    "export": "匯出"
   }
 }

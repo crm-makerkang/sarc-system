@@ -118,50 +118,50 @@ export default function Index(props: any) {
     <>
       <div className='container flex items-start mt-12 justify-center '>
 
-        <Card className="w-[550px]">
+        <Card className="w-[850px]">
           <CardHeader>
-            <CardTitle>資料管理</CardTitle>
+            <CardTitle>{t("data-management")}</CardTitle>
           </CardHeader>
           <CardContent>
             <hr></hr>
             <div className="mt-4 flex flex-row items-center justify-around">
-              <div className={"font-bold " + table_text_size}>
-                客戶資料:
+              <div className={"font-bold w-[200px] " + table_text_size}>
+                {t("user-data") + ": "}
               </div>
               <Button className={'bg-primary  ' + table_text_size}>
-                備份
+                {t("backup")}
               </Button>
               <Button className={'bg-primary  ' + table_text_size}>
-                回復
+                {t("recovery")}
               </Button>
               <Button className={'bg-primary  ' + table_text_size}>
-                匯出
+                {t("import")}
               </Button>
               <Button className={'bg-primary  ' + table_text_size}>
-                匯入
+                {t("export")}
               </Button>
               <Button className={'bg-red-500  ' + table_text_size}>
-                刪除
+                {t("delete")}
               </Button>
             </div>
             <div className="mt-4 flex flex-row items-center justify-around">
-              <div className={"font-bold " + table_text_size}>
-                量測資料:
+              <div className={"font-bold w-[200px] " + table_text_size}>
+                {t("measurements") + ": "}
               </div>
               <Button className={'bg-primary  ' + table_text_size}>
-                備份
+                {t("backup")}
               </Button>
               <Button className={'bg-primary  ' + table_text_size}>
-                回復
+                {t("recovery")}
               </Button>
               <Button className={'bg-primary  ' + table_text_size}>
-                匯出
+                {t("import")}
               </Button>
               <Button className={'bg-primary  ' + table_text_size}>
-                匯入
+                {t("export")}
               </Button>
               <Button className={'bg-red-500  ' + table_text_size}>
-                刪除
+                {t("delete")}
               </Button>
             </div>
             <hr className="mt-4"></hr>

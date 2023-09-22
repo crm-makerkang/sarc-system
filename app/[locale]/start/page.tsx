@@ -106,9 +106,9 @@ export default function Index(props: any) {
         }}
       >
         {showDataCard && (
-          <Card className="w-[550px]">
+          <Card className="w-[850px]">
             <CardHeader>
-              <CardTitle>{t('user-data')} <span className="text-red-500 text-lg">{t('required-msg')}</span></CardTitle>
+              <CardTitle>{t('user-info')} <span className="text-red-500 text-lg">{t('required-msg')}</span></CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid w-full items-center gap-4">
@@ -149,7 +149,7 @@ export default function Index(props: any) {
                 {showSearch && matchedList.length > 0 && (
                   <div className="">
                     <ul
-                      className="absolute w-[360px] ml-32 -mt-4 py-2 px-8 bg-gray-200 
+                      className="absolute w-[660px] ml-32 -mt-4 py-2 px-8 bg-gray-200 
                           border border-gray-200 rounded-md  ">
                       {matchedList.map((item, index) => {
                         return <li key={index}

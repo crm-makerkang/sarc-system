@@ -45,7 +45,7 @@
     "rows-per-page": "Rows/Page",
     "male": "Male",
     "female": "Female",
-    "user-data": "User Information",
+    "user-info": "User Information",
     "bio-msg": "Please provide the biological information for accurate assesment.",
     "bio-gender": "Bio. Gender",
     "s-bio-gender": "Select your bio. gender",
@@ -94,6 +94,12 @@
     "employee-not-found-msg": "Employee not found",
     "confirm-to-save-msg": "Are you sure to save the changes?",
     "no-privilege-to-delete-msg": "Only administrator can delete data.",
-    "confirm-to-delete-msg": "Are you sure to delete?"
+    "confirm-to-delete-msg": "Are you sure to delete?",
+    "data-management": "Data Management",
+    "user-data": "User data",
+    "backup": "Backup",
+    "recovery": "Recovery",
+    "import": "Import",
+    "export": "Export"
   }
 }
