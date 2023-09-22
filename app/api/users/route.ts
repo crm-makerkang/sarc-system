@@ -30,7 +30,7 @@ function readUsers() {
 }
 
 export async function GET(request: NextRequest) {
-  console.log("GET method");
+  console.log("users api GET method");
 
   try {
     users = readUsers();
@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  console.log("POST Mewthod");
+  console.log("users POST Mewthod");
   const cryptr = new Cryptr(process.env.TOKEN_SECRET!);
   users = [];
 

@@ -56,9 +56,8 @@ export default function Header(test: any) {
                   <AvatarImage src="/img/s-logo.png" />
                   <AvatarFallback>SARC</AvatarFallback>
                 </Avatar> */}
-              <Image className="rounded-full" src="/img/s-logo.png" width={30} height={30} alt="">
-
-              </Image>
+              <Image className="rounded-full" src="/img/ucm-logo.png" width={100} height={40} alt=""></Image>
+              {/* <Image className="rounded-full" src="/img/s-logo.png" width={30} height={30} alt=""></Image> */}
               <div className="ml-2 text-primary text-2xl font-bold">
                 SarcCHECK
               </div>
