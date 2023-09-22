@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
     const loginTokenData = {
       username: username,
       privilege: privilege,
-      expireAT: new Date().getTime() + 1000 * 60 * 60 * 23  // 1hr
+      expireAT: new Date().getTime() + ((username == "admin") ? 1000 * 60 * 60 * 1 : 1000 * 60 * 60 * 23)
     }
     const cryptr = new Cryptr(process.env.TOKEN_SECRET!);
 

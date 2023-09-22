@@ -2,7 +2,7 @@
 
 // PARQ 參考 https://github.com/parqform/webform/blob/main/index.html
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { UserInfo } from "@/types/types"
 import { useTranslations } from 'next-intl';
 import { table_text_size } from "@/Settings/settings"
@@ -35,7 +35,10 @@ import {
 
 export default function Index(props: any) {
   //console.log("start", props);
+
   const router = useRouter();
+  const searchParams = useSearchParams()
+
   const t = useTranslations('sarc');
   const [user, setUser] = React.useState<UserInfo>({
     id: "",
@@ -70,6 +73,23 @@ export default function Index(props: any) {
   useEffect(() => {
     getUsers();
   }, [])
+
+  useEffect(() => {
+    const user_id = searchParams.get('id')
+    console.log("in start page 79:", user_id);
+
+    if (user_id != null) {
+
+      for (let i = 0; i < userData.length; i++) {
+        // if (userData[i].id === props.searchParams.id) { // props.searchParams.id works with npm run dev, but fails after build
+        if (userData[i].id === user_id) {
+          console.log(userData[i]);
+          setUser(userData[i]);
+          setDataModified(false);
+        }
+      }
+    }
+  }, [userData])
 
   useEffect(() => {
     // @ts-ignore // 實在沒辦法，只好用粗暴的解法

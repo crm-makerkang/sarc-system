@@ -25,6 +25,7 @@
     "age": "Age",
     "phone": "Phone No.",
     "remark": "Remark",
+    "edit": "Edit",
     "delete": "Delete",
     "noData": "No Data",
     "loading-data": "Loading data",
@@ -91,6 +92,8 @@
     "new-user": "New user",
     "admin-login-msg": "Admin has great power, will logout after 1 hour automatically. If not for management purpose, please login with employee acount.",
     "employee-not-found-msg": "Employee not found",
-    "confirm-to-save-msg": "Are you sure to save the changes?"
+    "confirm-to-save-msg": "Are you sure to save the changes?",
+    "no-privilege-to-delete-msg": "Only administrator can delete data.",
+    "confirm-to-delete-msg": "Are you sure to delete?"
   }
 }

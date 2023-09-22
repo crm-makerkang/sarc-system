@@ -42,13 +42,13 @@ import {
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
-  getUsers: any
+  getData: any
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
-  getUsers,
+  getData,
 }: DataTableProps<TData, TValue>) {
   const t = useTranslations('sarc');
 
@@ -101,7 +101,7 @@ export function DataTable<TData, TValue>({
 
     if (userAutoUpdate) {
       const autoUpdateInterval = window.setInterval(() => {
-        getUsers()
+        getData()
       }, 3000)
       setUserAutoUpdateInterval(true)
     } else {
@@ -153,7 +153,7 @@ export function DataTable<TData, TValue>({
 
         <Button id="userUpdateButton" variant="outline" className="ml-4 text-xl"
           onClick={() => {
-            getUsers();
+            getData();
           }}
         >
           {t("manualUpdate")}

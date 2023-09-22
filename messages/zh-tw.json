@@ -26,6 +26,7 @@
     "age": "年齡",
     "phone": "電話號碼",
     "remark": "備註",
+    "edit": "修改",
     "delete": "刪除",
     "noData": "無資料",
     "loading-data": "資料下載中",
@@ -91,6 +92,8 @@
     "new-user": "新增用戶",
     "admin-login-msg": "管理者有強大的權限，一小時後會自動登出。若不需管理功能，請用員工帳號登入",
     "employee-not-found-msg": "無此員工帳號",
-    "confirm-to-save-msg": "確認要儲存資料?"
+    "confirm-to-save-msg": "確認要儲存資料?",
+    "no-privilege-to-delete-msg": "只有管理員可以進行刪除",
+    "confirm-to-delete-msg": "確認要刪除?"
   }
 }
