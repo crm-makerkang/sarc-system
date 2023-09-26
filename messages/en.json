@@ -100,6 +100,12 @@
     "backup": "Backup",
     "recovery": "Recovery",
     "import": "Import",
-    "export": "Export"
+    "export": "Export",
+    "privacy-policy": "Privacy Policy",
+    "agree-privacy-msg": "I agree to the ",
+    "sure-to-backup-msg": "Backup the current date/time database, are you sure?",
+    "backup-sucess-msg": "Backup successfully!",
+    "sure-to-recovery-msg": "Recovery will replace the existing database, are you sure?",
+    "recovery-sucess-msg": "Recovery successfully!"
   }
 }

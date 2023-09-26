@@ -100,6 +100,12 @@
     "backup": "備份",
     "recovery": "回復",
     "import": "匯入",
-    "export": "匯出"
+    "export": "匯出",
+    "privacy-policy": "隱私政策",
+    "agree-privacy-msg": "我同意 ",
+    "sure-to-backup-msg": "備份目前日期/時間資料庫，確認要進行備份?",
+    "backup-sucess-msg": "備份成功!",
+    "sure-to-recovery-msg": "回復會覆蓋現有資料庫，確認要進行回復?",
+    "recovery-sucess-msg": "回復成功!"
   }
 }

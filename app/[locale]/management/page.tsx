@@ -9,6 +9,7 @@ import * as React from "react"
 import { useEffect } from "react";
 
 import axios from "axios";
+import { DateTime } from "luxon";
 
 import { Button } from "@/components/ui/button"
 import {
@@ -35,24 +36,25 @@ export default function Index(props: any) {
   //console.log("start", props);
   const router = useRouter();
   const t = useTranslations('sarc');
-  const [user, setUser] = React.useState<UserInfo>({
-    id: "",
-    name: "",
-    card_no: "",
-    email: "",
-    phone: "",
-    gender: "male",
-    age: "",
-    height: "",
-    weight: ""
-  })
+  // const [user, setUser] = React.useState<UserInfo>({
+  //   id: "",
+  //   name: "",
+  //   card_no: "",
+  //   email: "",
+  //   phone: "",
+  //   gender: "male",
+  //   age: "",
+  //   height: "",
+  //   weight: ""
+  // })
   const [buttonDisabled, setButtonDisabled] = React.useState(false);
 
-  const [showSearch, setShowSearch] = React.useState(false);
+  const [showUsersFileList, setShowUsersFileList] = React.useState(false);
   const [showDataCard, setShowDataCard] = React.useState(true);
   const [showBinding, setshowBinding] = React.useState(false);
 
-  const [matchedList, setMatchedList] = React.useState([]);
+  const [userFileList, setUserFileList] = React.useState([]);
+  const [matchedUserList, setMatchedUserList] = React.useState([]);
   const [employees, seteEmployees] = React.useState<string[]>([]);
 
   const [passwords, setePasswords] = React.useState<string[]>([]);
@@ -125,27 +127,105 @@ export default function Index(props: any) {
           <CardContent>
             <hr></hr>
             <div className="mt-4 flex flex-row items-center justify-around">
-              <div className={"font-bold w-[200px] " + table_text_size}>
+              <div className={"font-bold w-1/2 " + table_text_size}>
                 {t("user-data") + ": "}
               </div>
-              <Button className={'bg-primary  ' + table_text_size}>
+              <Button className={'bg-primary  ' + table_text_size}
+                onClick={async () => {
+
+                  if (confirm(t("sure-to-backup-msg"))) {
+                    const res = await axios.get('/api/backup?cmd=backupUsers');
+                    console.log("in management page 137", res.data);
+                    if (res.data == "OK") {
+                      alert(t("backup-sucess-msg"));
+                    }
+                  }
+                }}
+              >
                 {t("backup")}
               </Button>
-              <Button className={'bg-primary  ' + table_text_size}>
+              <Button className={'bg-primary  ' + table_text_size}
+                onClick=
+                {async () => {
+                  if (showUsersFileList) {
+                    setShowUsersFileList(false);
+                    return
+                  }
+                  let matched = 0;
+                  let toMatchedList: any = [];
+
+                  const res = await axios.get('/api/backup?cmd=getFileList');
+                  const fileList: [] = res.data.userFileList;
+
+                  if (fileList.length < 2) {
+                    alert("No backup file found.");
+                    return
+                  }
+
+                  fileList.map((filename, index) => {
+                    toMatchedList[matched] = filename;
+                    matched++;
+                  })
+                  console.log("in management page 149", toMatchedList);
+                  setMatchedUserList(toMatchedList);
+                  setShowUsersFileList(true);
+                }}
+              >
                 {t("recovery")}
               </Button>
-              <Button className={'bg-primary  ' + table_text_size}>
+              {/* <Button className={'bg-primary  ' + table_text_size}>
                 {t("import")}
               </Button>
               <Button className={'bg-primary  ' + table_text_size}>
                 {t("export")}
-              </Button>
+              </Button> */}
               <Button className={'bg-red-500  ' + table_text_size}>
                 {t("delete")}
               </Button>
             </div>
+
+            {showUsersFileList && (
+              <div className="flex flex-col items-end">
+                <ul
+                  className="absolute w-[400px] py-2 px-8 bg-gray-200 
+                          border border-gray-200 rounded-md  ">
+                  {
+                    matchedUserList.map((item: string, index) => {
+                      if (item != "users.json") {
+                        const splitedName = item.split(".");
+                        // const fileTime = new Date(parseInt(splitedName[2]))
+                        // const fileTimeISO = fileTime.toISOString();
+                        const fileTime = DateTime.fromMillis(parseInt(splitedName[2]));
+                        const fileTimeISO = fileTime.toISO();
+                        const fileNameWithDate = "users.json : " + fileTimeISO!.substr(0, 10) + " " + fileTimeISO!.substr(11, 8);
+
+                        return <li key={index}
+                          className={"py-2 cursor-pointer " + table_text_size}
+                          onClick={async () => {
+                            if (confirm(t("sure-to-recovery-msg"))) {
+                              const res = await axios.get('/api/backup?cmd=recoverUsers&file=' + item);
+                              console.log("in management page 190", res.data);
+                              if (res.data == "OK") {
+                                alert(t("recovery-sucess-msg"));
+                              }
+                            }
+
+                            setShowUsersFileList(false);
+                          }
+                          }
+                        >
+                          {fileNameWithDate}
+                        </li>
+                      }
+                    })
+                  }
+                </ul>
+              </div>
+            )}
+
+
             <div className="mt-4 flex flex-row items-center justify-around">
-              <div className={"font-bold w-[200px] " + table_text_size}>
+              <div className={"font-bold w-1/2 " + table_text_size}>
                 {t("measurements") + ": "}
               </div>
               <Button className={'bg-primary  ' + table_text_size}>
@@ -154,12 +234,12 @@ export default function Index(props: any) {
               <Button className={'bg-primary  ' + table_text_size}>
                 {t("recovery")}
               </Button>
-              <Button className={'bg-primary  ' + table_text_size}>
+              {/* <Button className={'bg-primary  ' + table_text_size}>
                 {t("import")}
               </Button>
               <Button className={'bg-primary  ' + table_text_size}>
                 {t("export")}
-              </Button>
+              </Button> */}
               <Button className={'bg-red-500  ' + table_text_size}>
                 {t("delete")}
               </Button>

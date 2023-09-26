@@ -61,6 +61,7 @@ export default function Index(props: any) {
   const [userData, setUserData] = React.useState<UserInfo[]>([]);
 
   const [dataModified, setDataModified] = React.useState(false);
+  const [privacy, setPrivacy] = React.useState(false);
 
 
   const getUsers = async () => {
@@ -96,6 +97,75 @@ export default function Index(props: any) {
     document.getElementById("gender_select").value = t(user.gender);
   }, [user])
 
+  useEffect(() => {
+
+  }, [privacy])
+
+  const saveUser = async () => {
+    //alert(t("save-msg"));
+
+    // check data integrity
+    const name_is_empty = user.name.length == 0;
+    // name is valid, check if duplicated
+    var name_is_duplicated = false;
+    if (!name_is_empty) {
+      for (let i = 0; i < userData.length; i++) {
+        if (userData[i].name === user.name) {
+          name_is_duplicated = true;
+        }
+      }
+    }
+
+    const card_no_is_invalid = !(/^\d{10}$/.test(user.card_no));
+
+    const age_is_NaN = isNaN(parseInt(user.age));
+    const age_out_range = (!age_is_NaN) && ((parseInt(user.age) < 20) || (parseInt(user.age) > 80));
+
+    const height_is_NaN = isNaN(parseInt(user.height));
+    const height_out_range = (!height_is_NaN) && ((parseInt(user.height) < 80) || (parseInt(user.height) > 210));
+
+    const weight_is_NaN = isNaN(parseInt(user.weight));
+    const weight_out_range = (!weight_is_NaN) && ((parseInt(user.weight) < 40) || (parseInt(user.weight) > 200));
+
+    var data_err_msg = t("data-err-msg") + ":\n";
+    data_err_msg = data_err_msg + ((!name_is_empty) ? "" : " - " + t("name-is-empty") + "\n");
+    data_err_msg = data_err_msg + ((!name_is_duplicated) ? "" : " - " + t("name-is-duplicated") + "\n");
+    data_err_msg = data_err_msg + ((!card_no_is_invalid) ? "" : " - " + t("card-no-is-invalid") + "\n");
+    data_err_msg = data_err_msg + ((!age_is_NaN) ? "" : " - " + t("age-is-NaN") + "\n");
+    data_err_msg = data_err_msg + ((!age_out_range) ? "" : " - " + t("age-out-range") + "\n");
+    data_err_msg = data_err_msg + ((!height_is_NaN) ? "" : " - " + t("height-is-NaN") + "\n");
+    data_err_msg = data_err_msg + ((!height_out_range) ? "" : " - " + t("height-out-range") + "\n");
+    data_err_msg = data_err_msg + ((!weight_is_NaN) ? "" : " - " + t("weight-is-NaN") + "\n");
+    data_err_msg = data_err_msg + ((!weight_out_range) ? "" : " - " + t("weight-out-range") + "\n");
+
+    if (data_err_msg != (t("data-err-msg") + ":\n")) {
+      alert(data_err_msg);
+      return;
+    }
+
+    const res = await axios.post('/api/users/',
+      {
+        "name": user.name,
+        "card_no": user.card_no,
+        "email": user.email,
+        "phone": user.phone,
+        "age": user.age,
+        "gender": user.gender,
+        "height": user.height,
+        "weight": user.weight
+      })
+
+    console.log(res.data);
+    if (res.data.success) {
+      console.log("Save OK");
+      alert(t('save-ok-msg'));
+      setDataModified(false);
+    } else {
+      console.log("Save failed");
+      alert(t('save-failed-msg'));
+    }
+  }
+
   return (
     <>
       <div className='container flex items-start mt-12 justify-center '
@@ -126,14 +196,12 @@ export default function Index(props: any) {
                         let matched = 0;
                         let toMatchedList: any = [];
                         userData.map((user, index) => {
-                          //console.log("aaa", user.name, e.target.value, user.name.includes(e.target.value));
-                          if ((matched < 5) && (user.name.includes(e.target.value))) {
-                            //console.log(item.name);
+                          if ((matched < 10) && (user.name.includes(e.target.value))) {
                             toMatchedList[matched] = (user.name);
-                            setMatchedList(toMatchedList)
                             matched++;
                           }
                         })
+                        setMatchedList(toMatchedList);
                         if (matched > 0) {
                           setShowSearch(true);
                         } else {
@@ -222,23 +290,6 @@ export default function Index(props: any) {
                 <div className="flex flex-row space-y-1.5">
                   <Label className={"w-44 pt-3 " + table_text_size} htmlFor="gender">{t('bio-gender')}*</Label>
 
-                  {/*  don't know how to set Shadcn's Select value                  
-                  <Select
-                    defaultValue={t(user.gender)}
-                    onValueChange={(value) => console.log(value)}
-                  >
-                    <SelectTrigger className={"text-gray-500 " + table_text_size}>
-                      <SelectValue placeholder={t("s-bio-gender")} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectItem className={"text-gray-500 " + table_text_size} value={t("male")}>{t("male")}</SelectItem>
-                        <SelectItem className={"text-gray-500 " + table_text_size} value={t("female")}>{t("female")}</SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select> 
-                  */}
-
                   <select id="gender_select" className={
                     "w-24 -ml-12 p-1 border rounded-md text-gray-500 " +
                     "focus:border-gray-500 focus:outline-none focus:border-2 focus:rounded-xl " +
@@ -292,6 +343,16 @@ export default function Index(props: any) {
               </div>
 
               <hr className='m-4'></hr>
+
+              <input className="mx-4 " type="checkbox" id="privacy" name="privacy"
+                style={{ width: '20px', height: '20px' }}
+                // @ts-ignore // 實在沒辦法，只好用粗暴的解法
+                onClick={(e) => { e.target.checked ? setPrivacy(true) : setPrivacy(false) }}
+              />
+              <span className="align-top">{t('agree-privacy-msg')}
+                <a href="/privacy-policy" className="underline"> {t('privacy-policy')} </a>
+              </span>
+
             </CardContent>
             <CardFooter className="flex items-center justify-between">
               <Button variant="outline" className={table_text_size}
@@ -302,96 +363,13 @@ export default function Index(props: any) {
                 {t("clear-data")}
               </Button>
 
-              {dataModified && (
+              {dataModified && privacy && (
                 <Button className={'bg-primary  ' + table_text_size}
-                  onClick={async () => {
-                    //alert(t("save-msg"));
-
-                    // check data integrity
-                    const name_is_empty = user.name.length == 0;
-                    // name is valid, check if duplicated
-                    var name_is_duplicated = false;
-                    if (!name_is_empty) {
-                      for (let i = 0; i < userData.length; i++) {
-                        if (userData[i].name === user.name) {
-                          name_is_duplicated = true;
-                        }
-                      }
-                    }
-
-                    const card_no_is_invalid = !(/^\d{10}$/.test(user.card_no));
-
-                    const age_is_NaN = isNaN(parseInt(user.age));
-                    const age_out_range = (!age_is_NaN) && ((parseInt(user.age) < 20) || (parseInt(user.age) > 80));
-
-                    const height_is_NaN = isNaN(parseInt(user.height));
-                    const height_out_range = (!height_is_NaN) && ((parseInt(user.height) < 80) || (parseInt(user.height) > 210));
-
-                    const weight_is_NaN = isNaN(parseInt(user.weight));
-                    const weight_out_range = (!weight_is_NaN) && ((parseInt(user.weight) < 40) || (parseInt(user.weight) > 200));
-
-                    var data_err_msg = t("data-err-msg") + ":\n";
-                    data_err_msg = data_err_msg + ((!name_is_empty) ? "" : " - " + t("name-is-empty") + "\n");
-                    data_err_msg = data_err_msg + ((!name_is_duplicated) ? "" : " - " + t("name-is-duplicated") + "\n");
-                    data_err_msg = data_err_msg + ((!card_no_is_invalid) ? "" : " - " + t("card-no-is-invalid") + "\n");
-                    data_err_msg = data_err_msg + ((!age_is_NaN) ? "" : " - " + t("age-is-NaN") + "\n");
-                    data_err_msg = data_err_msg + ((!age_out_range) ? "" : " - " + t("age-out-range") + "\n");
-                    data_err_msg = data_err_msg + ((!height_is_NaN) ? "" : " - " + t("height-is-NaN") + "\n");
-                    data_err_msg = data_err_msg + ((!height_out_range) ? "" : " - " + t("height-out-range") + "\n");
-                    data_err_msg = data_err_msg + ((!weight_is_NaN) ? "" : " - " + t("weight-is-NaN") + "\n");
-                    data_err_msg = data_err_msg + ((!weight_out_range) ? "" : " - " + t("weight-out-range") + "\n");
-
-                    if (data_err_msg != (t("data-err-msg") + ":\n")) {
-                      alert(data_err_msg);
-                      return;
-                    }
-
-                    // simulate res for test
-                    // const res = {
-                    //   data: {
-                    //     message: "POST successful:",
-                    //     success: true,
-                    //   }
-                    // }
-
-                    const res = await axios.post('/api/users/',
-                      {
-                        "name": user.name,
-                        "card_no": user.card_no,
-                        "email": user.email,
-                        "phone": user.phone,
-                        "age": user.age,
-                        "gender": user.gender,
-                        "height": user.height,
-                        "weight": user.weight
-                      })
-
-                    console.log(res.data);
-                    if (res.data.success) {
-                      console.log("Save OK");
-                      alert(t('save-ok-msg'));
-                      setDataModified(false);
-                    } else {
-                      console.log("Save failed");
-                      alert(t('save-failed-msg'));
-                    }
-                  }}
+                  onClick={async () => { saveUser() }}
                 >
                   {t("save-data")}
                 </Button>
               )}
-
-              {/* {!dataModified && (
-                <Button className={'bg-primary  ' + table_text_size}
-                  onClick={async () => {
-                    //alert("如果進行量測，您的個人資料和量測結果會被存入本機資料庫，但不會上傳到雲端。若有需要，您可以要求本機管理員刪除您的個人資料和量測結果");
-                    setShowDataCard(false);
-                    setshowBinding(true);
-                  }}
-                >
-                  {t("start-measure")}
-                </Button>
-              )} */}
             </CardFooter>
           </Card>
         )
@@ -430,6 +408,7 @@ export default function Index(props: any) {
                   <div className={table_text_size}>已綁定卡號： {user.card_no}</div>
                 )}
               </div>
+
             </CardContent>
             <CardFooter className="flex items-center justify-between">
               <Button variant="outline" className={'flex ' + table_text_size}
