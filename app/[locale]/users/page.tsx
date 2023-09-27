@@ -26,7 +26,7 @@ export default function Home() {
 
   const getUsers = async () => {
     const res = await axios.get('/api/users/')
-    console.log(res.data);
+    //console.log(res.data);
     setData(res.data);
     //simulate no data setData([]);
   }
@@ -34,8 +34,6 @@ export default function Home() {
   useEffect(() => {
     getUsers();
   }, [])
-
-  console.log("page", process.env.DOMAIN);
 
   return (
     // <Container> use my Container in components/Container.tsx

@@ -8,6 +8,7 @@ import { Switch } from "@/components/ui/switch"
 import { useTranslations } from "next-intl"
 import { table_text_size } from "@/Settings/settings"
 import { rows_per_page } from "@/Settings/settings"
+import { Loader2, Settings } from "lucide-react"
 import axios from "axios"
 
 import {
@@ -86,13 +87,16 @@ export function DataTable<TData, TValue>({
 
   var autoUpdate = false
 
+  // React.useEffect(() => {
+  //   console.log("in users/data-table.tsx 90:", Object.keys(rowSelection).length, data);
+  // }, [rowSelection])
 
   // more pagination control, see https://github.com/TanStack/table/tree/main/examples/react/pagination-controlled
   React.useEffect(() => {
     table.setPageSize(rows_per_page);
     const interval = setTimeout(() => {
       setLoading(false)
-    }, 3000)
+    }, 2000)
 
   }, [])
 
@@ -114,8 +118,13 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
+      {loading && (
+        <div className='float h-16 w-16 absolute top-1/5 left-1/2 -translate-x-8 -translate-y-8'>
+          <Loader2 className="animate-spin  -ml-2 mr-2 h-16 w-16 opacity-75 "></Loader2>
+        </div>
+      )}
       <div className="flex items-center py-4">
-        <Button id="addNewUserButton" className="bg-primary text-xl"
+        <Button id="addNewUserButton" className="bg-primary text-xl "
           onClick={() => window.location.href = "/start"}
         >
           {t("new-user")}
@@ -159,7 +168,34 @@ export function DataTable<TData, TValue>({
           {t("manualUpdate")}
         </Button>
 
+        <Button id="deleteAllButton" className="ml-48 text-xl bg-red-500"
+          onClick={
+            async () => {
+              if (confirm(t("confirm-to-delete-msg"))) {
 
+                // console.log(table.getFilteredSelectedRowModel().rows.length);
+                setLoading(true);
+
+                // 不能用 map, map 會是 async, 用 await 就沒用了
+                for (var i = 0; i < table.getFilteredSelectedRowModel().rows.length; i++) {
+                  const del_config = {
+                    data: {
+                      id: table.getFilteredSelectedRowModel().rows[i].getValue('select')
+                    }
+                  }
+                  const res = await axios.delete('/api/users/', del_config);
+                  if (res.data.success) {
+                    alert(table.getFilteredSelectedRowModel().rows[i].getValue('name') + " " + t("delete-failed-msg"));
+                  }
+                }
+
+                window.location.reload();
+              }
+            }
+          }
+        >
+          {t("delet-selected-users")}
+        </Button>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -240,7 +276,7 @@ export function DataTable<TData, TValue>({
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                  {loading ? (<div className="text-xl">{t('loading-data')} ... </div>) : (<div className="text-xl">{t('noData')}</div>)}
+                  {/* {loading ? (<div className="text-xl">{t('loading-data')} ... </div>) : (<div className="text-xl">{t('noData')}</div>)} */}
                 </TableCell>
               </TableRow>
             )}
@@ -251,7 +287,7 @@ export function DataTable<TData, TValue>({
       <div className="flex items-center justify-end space-x-2 py-4">
 
         <div className={"flex-1 text-muted-foreground " + table_text_size}>
-          {table.getFilteredSelectedRowModel().rows.map((row) => (row.getValue('select')))} {" "}
+          {/* {table.getFilteredSelectedRowModel().rows.map((row) => (row.getValue('select') + "   "))} */}
           {table.getFilteredSelectedRowModel().rows.length}/{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
         </div>

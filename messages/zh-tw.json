@@ -106,6 +106,8 @@
     "sure-to-backup-msg": "備份目前日期/時間資料庫，確認要進行備份?",
     "backup-sucess-msg": "備份成功!",
     "sure-to-recovery-msg": "回復會覆蓋現有資料庫，確認要進行回復?",
-    "recovery-sucess-msg": "回復成功!"
+    "recovery-sucess-msg": "回復成功!",
+    "delet-selected-users": "刪除選定用戶",
+    "delete-failed-msg": "刪除資料失敗，請再試一次。若多次嘗試仍然失敗，請聯絡管理員。"
   }
 }

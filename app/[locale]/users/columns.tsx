@@ -175,9 +175,12 @@ export const columns: ColumnDef<UserInfo>[] = [
                         id: UserInfo.id
                       }
                     }
-                    await axios.delete('/api/users/', del_config);
-
-                    window.location.reload();
+                    const res = await axios.delete('/api/users/', del_config);
+                    if (!res.data.success) {
+                      window.location.reload();
+                    } else {
+                      alert(t("delete-failed-msg"));
+                    }
                   }
                 }
               }}

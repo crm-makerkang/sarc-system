@@ -61,6 +61,8 @@ export default function Index(props: any) {
 
   const [dataModified, setDataModified] = React.useState(false);
 
+  const [manegementAction, setManegementAction] = React.useState("");
+
   useEffect(() => {
 
     const getEmployees = async () => {
@@ -131,45 +133,56 @@ export default function Index(props: any) {
                 {t("user-data") + ": "}
               </div>
               <Button className={'bg-primary  ' + table_text_size}
-                onClick={async () => {
+                onClick={
+                  async () => {
+                    setShowUsersFileList(false);
 
-                  if (confirm(t("sure-to-backup-msg"))) {
-                    const res = await axios.get('/api/backup?cmd=backupUsers');
-                    console.log("in management page 137", res.data);
-                    if (res.data == "OK") {
-                      alert(t("backup-sucess-msg"));
-                    }
+                    // 使用 timeout 是避免 confirm 擋住前面 setShowUsersFileList(false); 執行
+                    setTimeout(async () => {
+                      if (confirm(t("sure-to-backup-msg"))) {
+                        const res = await axios.get('/api/backup?cmd=backupUsers');
+                        console.log("in management page 137", res.data);
+                        if (res.data == "OK") {
+                          alert(t("backup-sucess-msg"));
+                        }
+                      }
+                    }, 1)
+
                   }
-                }}
+                }
               >
                 {t("backup")}
               </Button>
               <Button className={'bg-primary  ' + table_text_size}
-                onClick=
-                {async () => {
-                  if (showUsersFileList) {
-                    setShowUsersFileList(false);
-                    return
+                onClick={
+                  async () => {
+                    if (showUsersFileList && manegementAction == "recovery") {
+                      setShowUsersFileList(false);
+                      setManegementAction("");
+                      return
+                    }
+
+                    setManegementAction("recovery");
+                    let matched = 0;
+                    let toMatchedList: any = [];
+
+                    const res = await axios.get('/api/backup?cmd=getFileList');
+                    const fileList: [] = res.data.userFileList;
+
+                    if (fileList.length < 2) {
+                      alert("No backup file found.");
+                      return
+                    }
+
+                    fileList.map((filename, index) => {
+                      toMatchedList[matched] = filename;
+                      matched++;
+                    })
+                    console.log("in management page 149", toMatchedList);
+                    setMatchedUserList(toMatchedList);
+                    setShowUsersFileList(true);
                   }
-                  let matched = 0;
-                  let toMatchedList: any = [];
-
-                  const res = await axios.get('/api/backup?cmd=getFileList');
-                  const fileList: [] = res.data.userFileList;
-
-                  if (fileList.length < 2) {
-                    alert("No backup file found.");
-                    return
-                  }
-
-                  fileList.map((filename, index) => {
-                    toMatchedList[matched] = filename;
-                    matched++;
-                  })
-                  console.log("in management page 149", toMatchedList);
-                  setMatchedUserList(toMatchedList);
-                  setShowUsersFileList(true);
-                }}
+                }
               >
                 {t("recovery")}
               </Button>
@@ -179,7 +192,37 @@ export default function Index(props: any) {
               <Button className={'bg-primary  ' + table_text_size}>
                 {t("export")}
               </Button> */}
-              <Button className={'bg-red-500  ' + table_text_size}>
+              <Button className={'bg-red-500  ' + table_text_size}
+                onClick={
+                  async () => {
+                    if (showUsersFileList && manegementAction == "delete") {
+                      setShowUsersFileList(false);
+                      setManegementAction("");
+                      return
+                    }
+
+                    setManegementAction("delete");
+                    let matched = 0;
+                    let toMatchedList: any = [];
+
+                    const res = await axios.get('/api/backup?cmd=getFileList');
+                    const fileList: [] = res.data.userFileList;
+
+                    if (fileList.length < 2) {
+                      alert("No backup file found.");
+                      return
+                    }
+
+                    fileList.map((filename, index) => {
+                      toMatchedList[matched] = filename;
+                      matched++;
+                    })
+                    console.log("in management page 149", toMatchedList);
+                    setMatchedUserList(toMatchedList);
+                    setShowUsersFileList(true);
+                  }
+                }
+              >
                 {t("delete")}
               </Button>
             </div>
@@ -189,6 +232,25 @@ export default function Index(props: any) {
                 <ul
                   className="absolute w-[400px] py-2 px-8 bg-gray-200 
                           border border-gray-200 rounded-md  ">
+                  {manegementAction == "delete" &&
+                    <div>
+                      <Button className={'bg-red-500  '}
+                        onClick={
+                          async () => {
+                            if (manegementAction == "delete") {
+                              if (confirm("Delete ALL user data?")) {
+                                // TODO
+                              }
+                            }
+                          }
+                        }
+                      >
+                        全部刪除
+                      </Button>
+                      <div className="mt-2 bg-gray-300  w-full h-[2px]"></div>
+                    </div>
+                  }
+
                   {
                     matchedUserList.map((item: string, index) => {
                       if (item != "users.json") {
@@ -202,14 +264,21 @@ export default function Index(props: any) {
                         return <li key={index}
                           className={"py-2 cursor-pointer " + table_text_size}
                           onClick={async () => {
-                            if (confirm(t("sure-to-recovery-msg"))) {
-                              const res = await axios.get('/api/backup?cmd=recoverUsers&file=' + item);
-                              console.log("in management page 190", res.data);
-                              if (res.data == "OK") {
-                                alert(t("recovery-sucess-msg"));
+                            if (manegementAction == "recovery") {
+                              if (confirm(t("sure-to-recovery-msg"))) {
+                                const res = await axios.get('/api/backup?cmd=recoverUsers&file=' + item);
+                                console.log("in management page 190", res.data);
+                                if (res.data == "OK") {
+                                  alert(t("recovery-sucess-msg"));
+                                }
                               }
                             }
 
+                            if (manegementAction == "delete") {
+                              if (confirm("Delete this backup file?")) {
+                                // TODO
+                              }
+                            }
                             setShowUsersFileList(false);
                           }
                           }
@@ -222,7 +291,6 @@ export default function Index(props: any) {
                 </ul>
               </div>
             )}
-
 
             <div className="mt-4 flex flex-row items-center justify-around">
               <div className={"font-bold w-1/2 " + table_text_size}>

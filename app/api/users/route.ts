@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
-  console.log("users DELETE Mewthod");
+  console.log("users DELETE Method");
   const cryptr = new Cryptr(process.env.TOKEN_SECRET!);
   users = [];
 

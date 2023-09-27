@@ -106,6 +106,8 @@
     "sure-to-backup-msg": "Backup the current date/time database, are you sure?",
     "backup-sucess-msg": "Backup successfully!",
     "sure-to-recovery-msg": "Recovery will replace the existing database, are you sure?",
-    "recovery-sucess-msg": "Recovery successfully!"
+    "recovery-sucess-msg": "Recovery successfully!",
+    "delet-selected-users": "Delete selected users",
+    "delete-failed-msg": "Failed to delete data. Please try again, or contact the administrator."
   }
 }
