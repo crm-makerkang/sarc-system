@@ -3,23 +3,35 @@ import Cryptr from "cryptr";
 import { v4 as uuidv4 } from 'uuid';
 import * as fs from "fs";
 
-import { Measuements } from '@/types/types'
-var measuements: Measuements[] = []
+import { UserInfo } from '@/types/types'
+var measuements: UserInfo[] = []
 var cryptedMeasurements: string[] = [];
 
-import { json_measurements_filename } from '@/Settings/settings'
+import { json_in_measure_filename, json_measurements_filename } from '@/Settings/settings'
 
-function readMeasurements() {
-  const cryptr = new Cryptr(process.env.TOKEN_SECRET!);
+function readMeasuring() {
+  measuements = [];
+  try {
+    var data = fs.readFileSync(json_in_measure_filename, 'utf8');
+    try {
+      const in_measuring = JSON.parse(data);
+      return in_measuring;
+    } catch (error: any) {
+      return [];
+    }
+  } catch (error: any) {
+    console.log(error.message);
+    return [];
+  }
+}
+
+function readRecords() {
   measuements = [];
   try {
     var data = fs.readFileSync(json_measurements_filename, 'utf8');
     try {
-      const encrypted_measuements = JSON.parse(data);
-      for (var i = 0; i < encrypted_measuements.length; i++) {
-        measuements.push(JSON.parse(cryptr.decrypt(encrypted_measuements[i])));
-      }
-      return measuements;
+      const in_measuring = JSON.parse(data);
+      return in_measuring;
     } catch (error: any) {
       return [];
     }
@@ -32,8 +44,12 @@ function readMeasurements() {
 export async function GET(request: NextRequest) {
   console.log("measuements api GET method");
 
+  console.log("measurement api 47:", request.nextUrl.searchParams.get("type"));
+
+  const isMeasuring = request.nextUrl.searchParams.get("type") == "measuring";
+
   try {
-    measuements = readMeasurements();
+    measuements = isMeasuring ? readMeasuring() : readRecords();
     console.log("Records number:", measuements.length);
     const response = NextResponse.json(measuements);
     return response;
@@ -49,7 +65,7 @@ export async function POST(request: NextRequest) {
   measuements = [];
 
   try {
-    measuements = readMeasurements();
+    measuements = readMeasuring();
 
     try {
       const reqBody = await request.json();

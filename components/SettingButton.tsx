@@ -34,7 +34,7 @@ function SettingButton() {
   useEffect(() => {
     const getSettings = async () => {
       const res = await axios.get('/api/settings/')
-      console.log("settings", res.data);
+      //console.log("settings", res.data);
       setSettings({
         table_text_size: JSON.parse(res.data.message).table_text_size,
         rows_per_page: JSON.parse(res.data.message).rows_per_page
@@ -44,7 +44,7 @@ function SettingButton() {
 
     const getIP = async () => {
       const res = await axios.get('/api/get_ip/')
-      console.log("ip", res.data);
+      //console.log("ip", res.data);
       setIpaddress(res.data);
     }
 

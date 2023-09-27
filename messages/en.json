@@ -108,6 +108,18 @@
     "sure-to-recovery-msg": "Recovery will replace the existing database, are you sure?",
     "recovery-sucess-msg": "Recovery successfully!",
     "delet-selected-users": "Delete selected users",
-    "delete-failed-msg": "Failed to delete data. Please try again, or contact the administrator."
+    "delet-selected-measurements": "Delete selected measurements",
+    "delete-failed-msg": "Failed to delete data. Please try again, or contact the administrator.",
+    "calf-grith": "Calf Grith",
+    "grip-strength": "Handgrip Strength",
+    "chair-standup5": "Chair Standup (5 times)",
+    "muscle-quantity": "Muscle Quantity (ASMI)",
+    "gait-speed4": "Gait Speed (4m)",
+    "gait-speed6": "Gait Speed (6m)",
+    "cm": "cm",
+    "kgs": "kgs",
+    "seconds": "s",
+    "asmi": "kg/m2",
+    "manual-add": "Manual Add"
   }
 }

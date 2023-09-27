@@ -1,0 +1,22 @@
+[
+  {
+    "name": "Alice",
+    "calf_grith": "38.5",
+    "grip_strength": "31.6",
+    "chair_standup5": "8.4",
+    "muscle_quantity": "2.2",
+    "gait_speed4": "5.2",
+    "gait_speed6": "6.7",
+    "uid": "06582eca-51a2-4db2-b63d-7a848efd329f"
+  },
+  {
+    "name": "Bob",
+    "calf_grith": "23.1",
+    "grip_strength": "24.1",
+    "chair_standup5": "10.9",
+    "muscle_quantity": "9.2",
+    "gait_speed4": "7.3",
+    "gait_speed6": "8.2",
+    "uid": "218818d2-0087-47fc-ab35-781948f44503"
+  }
+]

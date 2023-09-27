@@ -68,7 +68,6 @@ export default function Index(props: any) {
     const res = await axios.get('/api/users/')
     //console.log(res.data);
     setUserData(res.data);
-    //simulate no data setData([]);
   }
 
   useEffect(() => {

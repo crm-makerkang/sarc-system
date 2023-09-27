@@ -108,6 +108,18 @@
     "sure-to-recovery-msg": "回復會覆蓋現有資料庫，確認要進行回復?",
     "recovery-sucess-msg": "回復成功!",
     "delet-selected-users": "刪除選定用戶",
-    "delete-failed-msg": "刪除資料失敗，請再試一次。若多次嘗試仍然失敗，請聯絡管理員。"
+    "delet-selected-measurements": "刪除選定量測資料",
+    "delete-failed-msg": "刪除資料失敗，請再試一次。若多次嘗試仍然失敗，請聯絡管理員。",
+    "calf-grith": "小腿圍",
+    "grip-strength": "握力",
+    "chair-standup5": "椅子坐站 (5次)",
+    "muscle-quantity": "肌肉質量 (ASMI)",
+    "gait-speed4": "步行速度 (4m)",
+    "gait-speed6": "步行速度 (6m)",
+    "cm": "公分",
+    "kgs": "公斤",
+    "seconds": "秒",
+    "asmi": "kg/m2",
+    "manual-add": "手動新增"
   }
 }

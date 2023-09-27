@@ -28,7 +28,7 @@ export default function Header(test: any) {
     console.log("in Hedaer 28:");
     const get_privilege = async () => {
       const res = await axios.get('/api/token/')
-      console.log("in Hedaer 31:", res.data, typeof res.data);
+      //console.log("in Hedaer 31:", res.data, typeof res.data);
       setUsername(res.data.username);
       setPrivilege((res.data.privilege == 100) ? true : false);
     }

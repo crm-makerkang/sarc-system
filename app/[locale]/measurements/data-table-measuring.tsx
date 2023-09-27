@@ -46,7 +46,7 @@ interface DataTableProps<TData, TValue> {
   getData: any
 }
 
-export function DataTable<TData, TValue>({
+export function DataTableMeasuring<TData, TValue>({
   columns,
   data,
   getData,
@@ -123,7 +123,13 @@ export function DataTable<TData, TValue>({
           <Loader2 className="animate-spin  -ml-2 mr-2 h-16 w-16 opacity-75 "></Loader2>
         </div>
       )}
+
       <div className="flex items-center py-4">
+        <Button id="addNewUserButton" className="bg-primary text-xl "
+          onClick={() => { alert("Not implement yet") }}
+        >
+          {t("manual-add")}
+        </Button>
         <Input
           placeholder={t("filter-names")}
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
@@ -132,7 +138,7 @@ export function DataTable<TData, TValue>({
               table.getColumn("name")?.setFilterValue(event.target.value)
             }
           }
-          className={"max-w-sm border-black " + table_text_size}
+          className={"ml-4 max-w-sm border-black " + table_text_size}
         />
         <Switch
           className="ml-24 text-xl"
@@ -174,16 +180,19 @@ export function DataTable<TData, TValue>({
                 for (var i = 0; i < table.getFilteredSelectedRowModel().rows.length; i++) {
                   const del_config = {
                     data: {
-                      id: table.getFilteredSelectedRowModel().rows[i].getValue('select')
+                      // id: table.getFilteredSelectedRowModel().rows[i].getValue('select')
+                      id: i
                     }
                   }
-                  const res = await axios.delete('/api/users/', del_config);
-                  if (res.data.success) {
-                    alert(table.getFilteredSelectedRowModel().rows[i].getValue('name') + " " + t("delete-failed-msg"));
-                  }
+
+                  console.log("in measurements/data-table.tsx 187:", del_config);
+                  // const res = await axios.delete('/api/users/', del_config);
+                  // if (res.data.success) {
+                  //   alert(table.getFilteredSelectedRowModel().rows[i].getValue('name') + " " + t("delete-failed-msg"));
+                  // }
                 }
 
-                window.location.reload();
+                // window.location.reload();
               }
             }
           }
@@ -216,14 +225,13 @@ export function DataTable<TData, TValue>({
                   > <div className={table_text_size}>
                       {/* {t(column.id)} next-intl not works */}
                       {i == 0 ? t("name") : null}
-                      {i == 1 ? t("card-no") : null}
-                      {i == 2 ? t("phone") : null}
-                      {i == 3 ? t("email") : null}
-                      {i == 4 ? t("gender") : null}
-                      {i == 5 ? t("age") : null}
-                      {i == 6 ? t("height").substring(0, t("height").length - 5) : null}
-                      {i == 7 ? t("weight").substring(0, t("weight").length - 5) : null}
-                      {i == 8 ? t("actions") : null}
+                      {i == 1 ? t("calf-grith") : null}
+                      {i == 2 ? t("grip-strength") : null}
+                      {i == 3 ? t("chair-standup5") : null}
+                      {i == 4 ? t("muscle-quantity") : null}
+                      {i == 5 ? t("gait-speed4") : null}
+                      {i == 6 ? t("gait-speed6") : null}
+                      {i == 7 ? t("actions") : null}
                       {/* {column.id} */}
                     </div>
                   </DropdownMenuCheckboxItem>

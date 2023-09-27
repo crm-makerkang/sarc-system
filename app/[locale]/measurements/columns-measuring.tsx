@@ -22,14 +22,14 @@ import { table_text_size } from "@/Settings/settings"
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 
-import { UserInfo } from "@/types/types"
+import { InMeasuring } from "@/types/types"
 
 import axios from "axios"
 
-export const columns: ColumnDef<UserInfo>[] = [
+export const columns_measuring: ColumnDef<InMeasuring>[] = [
   {
     id: "select",
-    accessorKey: "id",
+    accessorKey: "uid",
     header: ({ table }) => (
       <Checkbox
         checked={table.getIsAllPageRowsSelected()}
@@ -52,94 +52,121 @@ export const columns: ColumnDef<UserInfo>[] = [
     accessorKey: "name",
     header: () => {
       const t = useTranslations('sarc');
-      return <div>{t('name')}</div>
+      return <div className="flex flex-row items-center justify-center">{t('name')}</div>
     },
+    cell: ({ row }) => {
+      return (
+        <span className="flex flex-row items-center justify-center">{row.original.name}</span>
+      )
+    }
   },
   {
-    id: "card_no",
-    accessorKey: "card_no",
+    id: "calf_grith",
+    accessorKey: "calf_grith",
     header: () => {
       const t = useTranslations('sarc');
-      return <div>{t("card-no")}</div>
+      return <div className="flex flex-row items-center justify-center">{t("calf-grith")}</div>
     },
+    cell: ({ row }) => {
+      const t = useTranslations('sarc');
+      return (
+        <span className="flex flex-row items-center justify-center">{row.original.calf_grith}<span className="text-sm">{t('cm')}</span></span>
+      )
+    }
   },
   {
-    accessorKey: "phone",
+    accessorKey: "grip_strength",
     header: ({ column }) => {
       const t = useTranslations('sarc');
       return (
-        <span
-          className="flex flex-start"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          <div className="text-xl">{t('phone')}</div>
-          <ArrowUpDown className="ml-2 mt-2 h-4 w-4" />
-        </span>
+        <div className="flex flex-row items-center justify-center">{t('grip-strength')}</div>
       )
     },
-  },
-
-  {
-    id: "email",
-    accessorKey: "email",
-    header: () => {
-      const t = useTranslations('sarc');
-      return <div>{t('email')}</div>
-    },
-  },
-
-  {
-    id: "gender",
-    accessorKey: "gender",
-    header: () => {
-      const t = useTranslations('sarc');
-      return <div>{t('gender')}</div>
-    },
     cell: ({ row }) => {
-      const UserInfo = row.original
       const t = useTranslations('sarc');
       return (
-        <span >{t(UserInfo.gender)}</span>
+        <span className="flex flex-row items-center justify-center">{row.original.grip_strength}<span className="text-sm">{t('kgs')}</span></span>
+      )
+    }
+  },
+  {
+    id: "chair_standup5",
+    accessorKey: "chair_standup5",
+    header: () => {
+      const t = useTranslations('sarc');
+      return <div className="flex flex-row items-center justify-center">{t('chair-standup5')}</div>
+    },
+    cell: ({ row }) => {
+      const t = useTranslations('sarc');
+      return (
+        <div className="flex flex-row items-center justify-center">
+          <span >{row.original.chair_standup5} <span className="text-sm">{t('seconds')}</span> </span>
+        </div>
       )
     }
   },
 
   {
-    accessorKey: "age",
+    accessorKey: "muscle_quantity",
     header: ({ column }) => {
       const t = useTranslations('sarc');
       return (
-        <span
-          className="flex flex-start"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          <div className="text-xl">{t('age')}</div>
-          <ArrowUpDown className="ml-2 mt-2 h-4 w-4" />
-        </span>
+        <div className="flex flex-row items-center justify-center">{t('muscle-quantity')}</div>
       )
     },
+    cell: ({ row }) => {
+      const t = useTranslations('sarc');
+      return (
+        <div className="flex flex-row items-center justify-center">
+          <span >{row.original.muscle_quantity} <span className="text-sm">{t('asmi')}</span> </span>
+        </div>
+      )
+    }
   },
   {
-    id: "height",
-    accessorKey: "height",
+    id: "gait_speed4",
+    accessorKey: "gait_speed4",
     header: () => {
       const t = useTranslations('sarc');
-      return <div>{t('height')}</div>
+      return <div className="flex flex-row items-center justify-center">{t('gait-speed4')}</div>
     },
+    cell: ({ row }) => {
+      const t = useTranslations('sarc');
+      return (
+        <div className="flex flex-row items-center justify-center">
+          <span >{row.original.gait_speed4} <span className="text-sm">{t('seconds')}</span> </span>
+        </div>
+      )
+    }
   },
   {
-    id: "weight",
-    accessorKey: "weight",
+    id: "gait_speed6",
+    accessorKey: "gait_speed6",
     header: () => {
       const t = useTranslations('sarc');
-      return <div>{t('weight')}</div>
+      return <div className="flex flex-row items-center justify-center">{t('gait-speed6')}</div>
     },
+    cell: ({ row }) => {
+      const t = useTranslations('sarc');
+      return (
+        <div className="flex flex-row items-center justify-center">
+          <span >{row.original.gait_speed6} <span className="text-sm">{t('seconds')}</span> </span>
+        </div>
+      )
+    }
   },
+  // {
+  //   id: "weight",
+  //   accessorKey: "weight",
+  //   header: () => {
+  //     const t = useTranslations('sarc');
+  //     return <div>{t('weight')}</div>
+  //   },
+  // },
 
   {
     id: "actions",
     cell: ({ row }) => {
-      const UserInfo = row.original
       const t = useTranslations('sarc');
       return (
         <DropdownMenu>
@@ -153,7 +180,7 @@ export const columns: ColumnDef<UserInfo>[] = [
             <DropdownMenuLabel></DropdownMenuLabel>
             <DropdownMenuItem
               onClick={() => {
-                window.location.href = `/start/?id=${UserInfo.id}`
+                window.location.href = `/start/?id=${row.original.uid}`
               }}
             >
               <div className={table_text_size}>{t("edit")}</div>
@@ -161,8 +188,7 @@ export const columns: ColumnDef<UserInfo>[] = [
 
             <DropdownMenuItem
               onClick={async () => {
-                //navigator.clipboard.writeText(UserInfo.id);
-                console.log(UserInfo.id)
+                console.log(row.original.uid)
 
                 const res = await axios.get('/api/token/')
                 if (res.data.privilege != 100) {
@@ -172,7 +198,7 @@ export const columns: ColumnDef<UserInfo>[] = [
                   if (comfirm) {
                     const del_config = {
                       data: {
-                        id: UserInfo.id
+                        id: row.original.uid
                       }
                     }
                     const res = await axios.delete('/api/users/', del_config);
