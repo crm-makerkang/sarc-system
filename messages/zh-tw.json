@@ -94,6 +94,7 @@
     "employee-not-found-msg": "無此員工帳號",
     "confirm-to-save-msg": "確認要儲存資料?",
     "confirm-to-save-to-records-msg": "確認要儲存選定至紀錄? 紀錄無法再修改。",
+    "no-privilege-to-save-to-records-msg": "只有管理員可以儲存至紀錄",
     "no-privilege-to-delete-msg": "只有管理員可以進行刪除",
     "confirm-to-delete-msg": "確認要刪除?",
     "data-management": "資料管理",

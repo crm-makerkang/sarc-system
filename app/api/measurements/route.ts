@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Cryptr from "cryptr";
 import { v4 as uuidv4 } from 'uuid';
+import { DateTime } from "luxon";
 import * as fs from "fs";
 
 import { Measurement } from '@/types/types'
@@ -61,33 +62,40 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   console.log("measurements POST Mewthod");
-  const cryptr = new Cryptr(process.env.TOKEN_SECRET!);
-  measurements = [];
 
   try {
-    measurements = readMeasuring();
+    measurements = readRecords();
 
     try {
       const reqBody = await request.json();
-      const user_uuid = uuidv4();
+      const record_uuid = uuidv4();
+      const nowDateTime = DateTime.now().toString();
 
-      reqBody.id = user_uuid;
+      reqBody.rid = record_uuid;
+      reqBody.datetime = nowDateTime!.substr(0, 10) + " " + nowDateTime!.substr(11, 5);
       measurements.push(reqBody);
-      console.log(measurements.length);
+
+      console.log("in measurements api 76:", reqBody, measurements.length, measurements);
 
     } catch (error) {
       console.log("reqBody err");
+      const response = NextResponse.json({
+        message: "reqBody err",
+        success: false,
+      })
+      return response;
     }
 
+
     try {
-
-      for (var i = 0; i < measurements.length; i++) {
-        cryptedMeasurements[i] = cryptr.encrypt(JSON.stringify(measurements[i]));
-      }
-
-      fs.writeFileSync(json_measurements_filename, JSON.stringify(cryptedMeasurements))
+      fs.writeFileSync(json_measurements_filename, JSON.stringify(measurements))
     } catch (error: any) {
       console.log(error.message);
+      const response = NextResponse.json({
+        message: error.message,
+        success: false,
+      })
+      return response;
     }
 
     const response = NextResponse.json({
@@ -106,7 +114,6 @@ export async function DELETE(request: NextRequest) {
   console.log("measurements DELETE Method");
 
   const isMeasuring = request.nextUrl.searchParams.get("type") == "measuring";
-  console.log("in management api 109:", isMeasuring);
 
   try {
     measurements = isMeasuring ? readMeasuring() : readRecords();

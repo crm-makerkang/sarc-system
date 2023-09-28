@@ -277,7 +277,7 @@ export const columns_measurements: ColumnDef<Measurement>[] = [
                   if (comfirm) {
                     const del_config = {
                       data: {
-                        id: row.original.rid
+                        id: [row.original.rid]
                       }
                     }
                     console.log("in measurements/data-table.tsx 283:", del_config);

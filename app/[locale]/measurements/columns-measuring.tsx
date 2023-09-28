@@ -244,17 +244,58 @@ export const columns_measuring: ColumnDef<Measurement>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel></DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => {
-                // window.location.href = `/start/?id=${row.original.uid}`
-              }}
+              onClick={
+                async () => {
+                  console.log("in measurement page 249:", row.index, row.original)
+
+                  if (confirm(t("confirm-to-save-to-records-msg"))) {
+                    // save to records
+                    const new_record = {
+                      "datetime": row.original.datetime,
+                      "calf_grith": row.original.calf_grith,
+                      "grip_strength": row.original.grip_strength,
+                      "chair_standup5": row.original.chair_standup5,
+                      "muscle_quantity": row.original.muscle_quantity,
+                      "gait_speed4": row.original.gait_speed4,
+                      "gait_speed6": row.original.gait_speed6,
+                      "balance": row.original.balance,
+                      "uid": row.original.uid
+                    }
+
+                    const post_res = await axios.post('/api/measurements', new_record);
+                    if (post_res.data.success) {
+                      window.location.reload();
+                    } else {
+                      alert(t("save-failed-msg"));
+                      return
+                    }
+
+                    // delete in_measure
+                    const del_config = {
+                      data: {
+                        id: [row.index]
+                      }
+                    }
+                    const del_res = await axios.delete('/api/measurements?type=measuring', del_config);
+                    if (del_res.data.success) {
+                      window.location.reload();
+                    } else {
+                      alert(t("delete-failed-msg"));
+                    }
+                  }
+                  
+                }
+              }
             >
               <div className={table_text_size}>{t("save-to-record")}</div>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              onClick={() => {
-                // window.location.href = `/start/?id=${row.original.uid}`
-              }}
+              onClick={
+                async () => {
+                  console.log("in measurement page 296:", row.index, row.original)
+                }
+            }
             >
               <div className={table_text_size}>{t("edit")}</div>
             </DropdownMenuItem>
@@ -271,7 +312,7 @@ export const columns_measuring: ColumnDef<Measurement>[] = [
                   if (comfirm) {
                     const del_config = {
                       data: {
-                        id: row.index
+                        id: [row.index]
                       }
                     }
                     const res = await axios.delete('/api/measurements?type=measuring', del_config);
