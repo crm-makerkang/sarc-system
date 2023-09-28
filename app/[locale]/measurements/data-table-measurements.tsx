@@ -46,7 +46,7 @@ interface DataTableProps<TData, TValue> {
   getData: any
 }
 
-export function DataTable<TData, TValue>({
+export function DataTableMeasurements<TData, TValue>({
   columns,
   data,
   getData,
@@ -65,6 +65,8 @@ export function DataTable<TData, TValue>({
 
   const [userAutoUpdate, setUserAutoUpdate] = React.useState(false)
   const [userAutoUpdateInterval, setUserAutoUpdateInterval] = React.useState(false)
+
+  const [delete_all, setDelete_all] = React.useState(false)
 
   const table = useReactTable({
     data,
@@ -97,7 +99,6 @@ export function DataTable<TData, TValue>({
     const interval = setTimeout(() => {
       setLoading(false)
     }, 1000)
-
   }, [])
 
   React.useEffect(() => {
@@ -116,6 +117,10 @@ export function DataTable<TData, TValue>({
     }
   }, [userAutoUpdate])
 
+  React.useEffect(() => {
+    setDelete_all((Object.keys(rowSelection).length > 0) ? true : false);
+  }, [rowSelection])
+
   return (
     <div>
       {loading && (
@@ -123,7 +128,54 @@ export function DataTable<TData, TValue>({
           <Loader2 className="animate-spin  -ml-2 mr-2 h-16 w-16 opacity-75 "></Loader2>
         </div>
       )}
+
       <div className="flex items-center py-4">
+        <Button id="addNewUserButton" className="bg-primary text-xl "
+          onClick={() => { alert("Not implement yet") }}
+        >
+          {t("manual-add")}
+        </Button>
+
+
+        {delete_all && (
+          <Button id="deleteAllButton" className="ml-4 text-xl bg-red-500"
+            onClick={
+              async () => {
+                if (confirm(t("confirm-to-delete-msg"))) {
+
+                  setLoading(true);
+
+                  const delIds = [];
+
+                  for (var i = 0; i < table.getFilteredSelectedRowModel().rows.length; i++) {
+                    delIds.push(table.getFilteredSelectedRowModel().rows[i].getValue('select'));
+                  }
+
+                  const del_config = {
+                    data: {
+                      id: delIds
+                    }
+                  }
+
+                  console.log("in measurements/data-table.tsx 187:", del_config);
+                  const res = await axios.delete('/api/measurements', del_config);
+                  if (!res.data.success) {
+                    alert(t("delete-failed-msg"));
+                  }
+
+                  getData();
+                  setRowSelection({});
+                  setLoading(false);
+                  // window.location.reload();
+                }
+              }
+            }
+          >
+            {t("delet-selected-measurements")}
+          </Button>
+        )}
+
+
         <Input
           placeholder={t("filter-names")}
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
@@ -132,7 +184,7 @@ export function DataTable<TData, TValue>({
               table.getColumn("name")?.setFilterValue(event.target.value)
             }
           }
-          className={"max-w-sm border-black " + table_text_size}
+          className={"ml-4 max-w-sm border-black " + table_text_size}
         />
         <Switch
           className="ml-24 text-xl"
@@ -161,36 +213,6 @@ export function DataTable<TData, TValue>({
         >
           {t("manualUpdate")}
         </Button>
-
-        <Button id="deleteAllButton" className="ml-48 text-xl bg-red-500"
-          onClick={
-            async () => {
-              if (confirm(t("confirm-to-delete-msg"))) {
-
-                // console.log(table.getFilteredSelectedRowModel().rows.length);
-                setLoading(true);
-
-                // 不能用 map, map 會是 async, 用 await 就沒用了
-                for (var i = 0; i < table.getFilteredSelectedRowModel().rows.length; i++) {
-                  const del_config = {
-                    data: {
-                      id: table.getFilteredSelectedRowModel().rows[i].getValue('select')
-                    }
-                  }
-                  const res = await axios.delete('/api/users/', del_config);
-                  if (res.data.success) {
-                    alert(table.getFilteredSelectedRowModel().rows[i].getValue('name') + " " + t("delete-failed-msg"));
-                  }
-                }
-
-                window.location.reload();
-              }
-            }
-          }
-        >
-          {t("delet-selected-measurements")}
-        </Button>
-
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className={"ml-auto border-black " + table_text_size}>
@@ -216,14 +238,15 @@ export function DataTable<TData, TValue>({
                   > <div className={table_text_size}>
                       {/* {t(column.id)} next-intl not works */}
                       {i == 0 ? t("name") : null}
-                      {i == 1 ? t("card-no") : null}
-                      {i == 2 ? t("phone") : null}
-                      {i == 3 ? t("email") : null}
-                      {i == 4 ? t("gender") : null}
-                      {i == 5 ? t("age") : null}
-                      {i == 6 ? t("height").substring(0, t("height").length - 5) : null}
-                      {i == 7 ? t("weight").substring(0, t("weight").length - 5) : null}
-                      {i == 8 ? t("actions") : null}
+                      {i == 1 ? t("datetime") : null}
+                      {i == 2 ? t("calf-grith") : null}
+                      {i == 3 ? t("grip-strength") : null}
+                      {i == 4 ? t("chair-standup") + t("5times") : null}
+                      {i == 5 ? t("muscle-quantity") : null}
+                      {i == 6 ? t("gait-speed") + t("4m") : null}
+                      {i == 7 ? t("gait-speed") + t("6m") : null}
+                      {i == 8 ? t("balance") : null}
+                      {i == 9 ? t("actions") : null}
                       {/* {column.id} */}
                     </div>
                   </DropdownMenuCheckboxItem>

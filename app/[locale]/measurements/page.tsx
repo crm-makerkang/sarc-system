@@ -13,46 +13,90 @@ import { ShoppingCart, ShoppingBag } from 'lucide-react'
 import { useTranslations } from "next-intl"
 import { ArrowUpDown, MoreHorizontal } from "lucide-react"
 
-import { columns } from "./columns"
+import { columns_measurements } from "./columns-measurements"
 import { columns_measuring } from "./columns-measuring"
 
-import { UserInfo, InMeasuring } from "@/types/types"
-import { DataTable } from "./data-table"
+import { UserInfo, Measurement } from "@/types/types"
+import { DataTableMeasurements } from "./data-table-measurements"
 import { DataTableMeasuring } from "./data-table-measuring"
 import { useEffect } from "react";
 
 export default function Home(props: any) {
 
+  const t = useTranslations('sarc');
+
   const searchParams = useSearchParams();
 
-  var [data, setData] = React.useState<UserInfo[]>([])
-  var [data_measuring, setData_measuring] = React.useState<InMeasuring[]>([])
-  const [measuring, setMeasuring] = React.useState(true);
+  const [userData, setUserData] = React.useState<UserInfo[]>([]);
+
+  var [data, setData] = React.useState<UserInfo[]>([]) // TODO: change the data type and naming
+
+  var [data_measuring, setData_measuring] = React.useState<Measurement[]>([])
+  var [data_records, setData_records] = React.useState<Measurement[]>([])
+  const [measuring, setMeasuring] = React.useState(false);
   const [data_id, setData_id] = React.useState(0);
 
-  //let data1 = getData();
+
+  const getUsers = async () => {
+    const res = await axios.get('/api/users/')
+    //console.log(res.data);
+    setUserData(res.data);
+  }
 
   const getMeasuring = async () => {
     const res = await axios.get('/api/measurements?type=measuring')
-    console.log("in measurement page 36: getMeasuring:", res.data.length);
+    console.log("in measurement page 45: getMeasuring:", res.data, userData);
+
+    if (res.data.length == 0) {
+      setData_measuring([]);
+    }
+    for (var i = 0; i < res.data.length; i++) {
+      //res.data[i].name = "looking-for-user";
+      for (var j = 0; j < userData.length; j++) {
+        if (res.data[i].uid == userData[j].id) {
+          res.data[i].name = userData[j].name;
+          break;
+        }
+      }
+    }
     setData_measuring(res.data);
   }
 
   const getMeasurements = async () => {
     const res = await axios.get('/api/measurements?type=records')
-    console.log("in measurement page 43: getMeasurements:", res.data.length);
-    setData(res.data);
+    console.log("in measurement page 51: getMeasurements:", res.data.length);
+    for (var i = 0; i < res.data.length; i++) {
+      //res.data[i].name = "looking-for-user";
+      for (var j = 0; j < userData.length; j++) {
+        if (res.data[i].uid == userData[j].id) {
+          res.data[i].name = userData[j].name;
+          break;
+        }
+      }
+    }
+    setData_records(res.data);
   }
 
   useEffect(() => {
-    getMeasuring();
-    getMeasurements();
+    getUsers();
+    // getMeasuring();
+    // getMeasurements();
+    const isMeasuring = searchParams.get('type') == 'measuring';
 
+    if (isMeasuring) {
+      setMeasuring(true);
+    }
   }, [])
 
   useEffect(() => {
+    console.log("in measurement page 63:", userData);
+    getMeasuring();
+    getMeasurements();
+  }, [userData])
+
+  useEffect(() => {
     const did = searchParams.get('did');
-    console.log("in measurement page 53:", did);
+    console.log("in measurement page 95:", did);
 
     // did == null => 沒有參數，代表不編輯資料
     // did == -1   => 代表編輯新資料
@@ -70,24 +114,26 @@ export default function Home(props: any) {
     <>
       {data_id < -1 && (
         <div className="flex items-center justify-center mt-6">
-          <Button className={"mx-4 text-xl " + (measuring ? "bg-primary" : "bg-gray-200 text-gray-400")}
+          <Button className={"mt-4 mx-4 text-xl " + (measuring ? "bg-primary" : "bg-gray-200 text-gray-400")}
             onClick={
               () => {
-                setMeasuring(true);
+                // setMeasuring(true);
+                window.location.href = "/measurements?type=measuring";
               }
             }
           >
-            量測中
+            {t("measuring")}
           </Button>
 
-          <Button className={"mx-4 text-xl " + (measuring ? "bg-gray-200 text-gray-400" : "bg-primary")}
+          <Button className={"mt-4 mx-4 text-xl " + (measuring ? "bg-gray-200 text-gray-400" : "bg-primary")}
             onClick={
               () => {
-                setMeasuring(false);
+                // setMeasuring(false);
+                window.location.href = "/measurements/";
               }
             }
           >
-            量測紀錄
+            {t("user-records")}
           </Button>
         </div>
       )}
@@ -101,7 +147,7 @@ export default function Home(props: any) {
 
         {!measuring && data_id < -1 && (
           <div className="mt-8 p-12 rounded-xl bg-white opacity-95">
-            <DataTable columns={columns} data={data} getData={getMeasurements} />
+            <DataTableMeasurements columns={columns_measurements} data={data_records} getData={getMeasurements} />
           </div>
 
         )}

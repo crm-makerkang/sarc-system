@@ -10,7 +10,8 @@ export type UserInfo = {
   weight: string
 }
 
-export type InMeasuring = {
+export type Measurement = {
+  datetime: string,
   name: string,
   calf_grith: string,
   grip_strength: string,
@@ -18,5 +19,10 @@ export type InMeasuring = {
   muscle_quantity: string,
   gait_speed4: string,
   gait_speed6: string,
-  uid: string
+  balance: object,
+  balanceA: string,
+  balanceB: string,
+  balanceC: string,
+  uid: string,
+  rid: string
 }

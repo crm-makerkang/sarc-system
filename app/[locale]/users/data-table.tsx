@@ -66,6 +66,8 @@ export function DataTable<TData, TValue>({
   const [userAutoUpdate, setUserAutoUpdate] = React.useState(false)
   const [userAutoUpdateInterval, setUserAutoUpdateInterval] = React.useState(false)
 
+  const [dataSelected, setDataSelected] = React.useState(false)
+
   const table = useReactTable({
     data,
     columns,
@@ -116,6 +118,10 @@ export function DataTable<TData, TValue>({
     }
   }, [userAutoUpdate])
 
+  React.useEffect(() => {
+    setDataSelected((Object.keys(rowSelection).length > 0) ? true : false);
+  }, [rowSelection])
+
   return (
     <div>
       {loading && (
@@ -129,6 +135,41 @@ export function DataTable<TData, TValue>({
         >
           {t("new-user")}
         </Button>
+
+
+        {dataSelected && (
+          <Button id="deleteAllButton" className="ml-4 text-xl bg-red-500"
+            onClick={
+              async () => {
+                if (confirm(t("confirm-to-delete-msg"))) {
+
+                  // console.log(table.getFilteredSelectedRowModel().rows.length);
+                  setLoading(true);
+
+                  // 不能用 map, map 會是 async, 用 await 就沒用了
+                  for (var i = 0; i < table.getFilteredSelectedRowModel().rows.length; i++) {
+                    const del_config = {
+                      data: {
+                        id: table.getFilteredSelectedRowModel().rows[i].getValue('select')
+                      }
+                    }
+                    const res = await axios.delete('/api/users/', del_config);
+                    if (res.data.success) {
+                      alert(table.getFilteredSelectedRowModel().rows[i].getValue('name') + " " + t("delete-failed-msg"));
+                    }
+                  }
+
+                  getData();
+                  setRowSelection({});
+                  //window.location.reload();
+                }
+              }
+            }
+          >
+            {t("delet-selected-users")}
+          </Button>
+        )}
+
 
         <Input
           placeholder={t("filter-names")}
@@ -166,35 +207,6 @@ export function DataTable<TData, TValue>({
           }}
         >
           {t("manualUpdate")}
-        </Button>
-
-        <Button id="deleteAllButton" className="ml-48 text-xl bg-red-500"
-          onClick={
-            async () => {
-              if (confirm(t("confirm-to-delete-msg"))) {
-
-                // console.log(table.getFilteredSelectedRowModel().rows.length);
-                setLoading(true);
-
-                // 不能用 map, map 會是 async, 用 await 就沒用了
-                for (var i = 0; i < table.getFilteredSelectedRowModel().rows.length; i++) {
-                  const del_config = {
-                    data: {
-                      id: table.getFilteredSelectedRowModel().rows[i].getValue('select')
-                    }
-                  }
-                  const res = await axios.delete('/api/users/', del_config);
-                  if (res.data.success) {
-                    alert(table.getFilteredSelectedRowModel().rows[i].getValue('name') + " " + t("delete-failed-msg"));
-                  }
-                }
-
-                window.location.reload();
-              }
-            }
-          }
-        >
-          {t("delet-selected-users")}
         </Button>
 
         <DropdownMenu>

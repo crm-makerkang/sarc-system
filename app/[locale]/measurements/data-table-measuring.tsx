@@ -66,6 +66,8 @@ export function DataTableMeasuring<TData, TValue>({
   const [userAutoUpdate, setUserAutoUpdate] = React.useState(false)
   const [userAutoUpdateInterval, setUserAutoUpdateInterval] = React.useState(false)
 
+  const [dataSelected, setDataSelected] = React.useState(false)
+
   const table = useReactTable({
     data,
     columns,
@@ -116,6 +118,10 @@ export function DataTableMeasuring<TData, TValue>({
     }
   }, [userAutoUpdate])
 
+  React.useEffect(() => {
+    setDataSelected((Object.keys(rowSelection).length > 0) ? true : false);
+  }, [rowSelection])
+
   return (
     <div>
       {loading && (
@@ -125,11 +131,89 @@ export function DataTableMeasuring<TData, TValue>({
       )}
 
       <div className="flex items-center py-4">
-        <Button id="addNewUserButton" className="bg-primary text-xl "
+        <Button id="addNewUserButton" className="bg-primary text-xl"
           onClick={() => { alert("Not implement yet") }}
         >
           {t("manual-add")}
         </Button>
+
+        {/* save all selected data to records */}
+        {dataSelected && (
+          <Button id="saveAllButton" className="ml-4 text-xl bg-primary"
+            onClick={
+              async () => {
+                if (confirm(t("confirm-to-save-to-records-msg"))) {
+
+                  // console.log(table.getFilteredSelectedRowModel().rows.length);
+                  //setLoading(true);
+
+                  // 不能用 map, map 會是 async, 用 await 就沒用了
+                  for (var i = 0; i < table.getFilteredSelectedRowModel().rows.length; i++) {
+                    const save_config = {
+                      data: {
+                        id: i
+                      }
+                    }
+
+                    console.log("in measurements/data-table.tsx 159:", save_config);
+                    // const res = await axios.delete('/api/measurements?type=measuring', save_config);
+                    // if (!res.data.success) {
+                    //   alert(table.getFilteredSelectedRowModel().rows[i].getValue('name') + " " + t("delete-failed-msg"));
+                    // }
+                  }
+
+                  // window.location.reload();
+                }
+              }
+            }
+          >
+            {t("save-selected-measurements")}
+          </Button>
+        )}
+
+        {/* delete all selected data */}
+        {dataSelected && (
+          <Button id="deleteAllButton" className="ml-4 text-xl bg-red-500"
+            onClick={
+              async () => {
+                if (confirm(t("confirm-to-delete-msg"))) {
+
+                  // console.log(table.getFilteredSelectedRowModel().rows.length);
+                  setLoading(true);
+
+                  const delKeys = Object.keys(rowSelection);
+                  console.log("in measurements/data-table.tsx 184:", typeof delKeys[0]);
+
+                  const delIds = [];
+
+                  // 不能用 map, map 會是 async, 用 await 就沒用了
+                  for (var i = 0; i < delKeys.length; i++) {
+                    delIds.push(parseInt(delKeys[i]));
+                  }
+                  const del_config = {
+                    data: {
+                      id: delIds
+                    }
+                  }
+
+                  // console.log("in measurements/data-table.tsx 199:", del_config);
+                  const res = await axios.delete('/api/measurements?type=measuring', del_config);
+                  if (!res.data.success) {
+                    alert(t("delete-failed-msg"));
+                  }
+
+                  getData();
+                  setRowSelection({});
+                  setLoading(false);
+                  // window.location.reload();
+                }
+              }
+            }
+          >
+            {t("delet-selected-measurements")}
+          </Button>
+        )}
+
         <Input
           placeholder={t("filter-names")}
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
@@ -168,38 +252,6 @@ export function DataTableMeasuring<TData, TValue>({
           {t("manualUpdate")}
         </Button>
 
-        <Button id="deleteAllButton" className="ml-48 text-xl bg-red-500"
-          onClick={
-            async () => {
-              if (confirm(t("confirm-to-delete-msg"))) {
-
-                // console.log(table.getFilteredSelectedRowModel().rows.length);
-                setLoading(true);
-
-                // 不能用 map, map 會是 async, 用 await 就沒用了
-                for (var i = 0; i < table.getFilteredSelectedRowModel().rows.length; i++) {
-                  const del_config = {
-                    data: {
-                      // id: table.getFilteredSelectedRowModel().rows[i].getValue('select')
-                      id: i
-                    }
-                  }
-
-                  console.log("in measurements/data-table.tsx 187:", del_config);
-                  // const res = await axios.delete('/api/users/', del_config);
-                  // if (res.data.success) {
-                  //   alert(table.getFilteredSelectedRowModel().rows[i].getValue('name') + " " + t("delete-failed-msg"));
-                  // }
-                }
-
-                // window.location.reload();
-              }
-            }
-          }
-        >
-          {t("delet-selected-measurements")}
-        </Button>
-
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className={"ml-auto border-black " + table_text_size}>
@@ -227,11 +279,12 @@ export function DataTableMeasuring<TData, TValue>({
                       {i == 0 ? t("name") : null}
                       {i == 1 ? t("calf-grith") : null}
                       {i == 2 ? t("grip-strength") : null}
-                      {i == 3 ? t("chair-standup5") : null}
+                      {i == 3 ? t("chair-standup") + t("5times") : null}
                       {i == 4 ? t("muscle-quantity") : null}
-                      {i == 5 ? t("gait-speed4") : null}
-                      {i == 6 ? t("gait-speed6") : null}
-                      {i == 7 ? t("actions") : null}
+                      {i == 5 ? t("gait-speed") + t("4m") : null}
+                      {i == 6 ? t("gait-speed") + t("6m") : null}
+                      {i == 7 ? t("balance") + t("6m") : null}
+                      {i == 8 ? t("actions") : null}
                       {/* {column.id} */}
                     </div>
                   </DropdownMenuCheckboxItem>

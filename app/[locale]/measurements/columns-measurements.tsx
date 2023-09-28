@@ -26,10 +26,10 @@ import { Measurement } from "@/types/types"
 
 import axios from "axios"
 
-export const columns_measuring: ColumnDef<Measurement>[] = [
+export const columns_measurements: ColumnDef<Measurement>[] = [
   {
     id: "select",
-    accessorKey: "uid",
+    accessorKey: "rid",
     header: ({ table }) => (
       <Checkbox
         checked={table.getIsAllPageRowsSelected()}
@@ -57,6 +57,28 @@ export const columns_measuring: ColumnDef<Measurement>[] = [
     cell: ({ row }) => {
       return (
         <span className="flex flex-row items-center justify-center">{row.original.name}</span>
+      )
+    }
+  },
+  {
+    id: "datetime",
+    accessorKey: "datetime",
+    header: ({ column }) => {
+      const t = useTranslations('sarc');
+      return (
+        <span
+          className="flex flex-start"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          <div className="text-xl">{t("datetime")}</div>
+          <ArrowUpDown className="ml-2 mt-2 h-4 w-4" />
+        </span>
+      )
+    },
+
+    cell: ({ row }) => {
+      return (
+        <span className="flex flex-row items-center justify-center">{row.original.datetime}</span>
       )
     }
   },
@@ -244,24 +266,8 @@ export const columns_measuring: ColumnDef<Measurement>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel></DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => {
-                // window.location.href = `/start/?id=${row.original.uid}`
-              }}
-            >
-              <div className={table_text_size}>{t("save-to-record")}</div>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => {
-                // window.location.href = `/start/?id=${row.original.uid}`
-              }}
-            >
-              <div className={table_text_size}>{t("edit")}</div>
-            </DropdownMenuItem>
-
-            <DropdownMenuItem
               onClick={async () => {
-                console.log(row.index)
+                console.log(row.original.rid)
 
                 const res = await axios.get('/api/token/')
                 if (res.data.privilege != 100) {
@@ -271,10 +277,11 @@ export const columns_measuring: ColumnDef<Measurement>[] = [
                   if (comfirm) {
                     const del_config = {
                       data: {
-                        id: row.index
+                        id: row.original.rid
                       }
                     }
-                    const res = await axios.delete('/api/measurements?type=measuring', del_config);
+                    console.log("in measurements/data-table.tsx 283:", del_config);
+                    const res = await axios.delete('/api/measurements', del_config);
                     if (res.data.success) {
                       window.location.reload();
                     } else {
