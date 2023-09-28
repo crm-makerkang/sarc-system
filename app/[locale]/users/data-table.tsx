@@ -154,13 +154,14 @@ export function DataTable<TData, TValue>({
                       }
                     }
                     const res = await axios.delete('/api/users/', del_config);
-                    if (res.data.success) {
+                    if (!res.data.success) {
                       alert(table.getFilteredSelectedRowModel().rows[i].getValue('name') + " " + t("delete-failed-msg"));
                     }
                   }
 
                   getData();
                   setRowSelection({});
+                  setLoading(false);
                   //window.location.reload();
                 }
               }
