@@ -34,6 +34,7 @@
     "eslint-config-next": "^13.5.2",
     "json-server": "^0.17.3",
     "jsonwebtoken": "^9.0.2",
+    "jspdf": "^2.5.1",
     "lucide-react": "^0.274.0",
     "luxon": "^3.4.3",
     "next": "^13.5.2",

@@ -27,6 +27,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
+import { jsPDF } from "jspdf"
+
 export default function Index(props: any) {
   console.log("in guide", props);
   const t = useTranslations('sarc');
@@ -39,21 +41,29 @@ export default function Index(props: any) {
 
   return (
 
-    <div className="mt-4 flex flex-row w-full items-center justify-evenly">
+    <div className="mt-4 flex flex-col w-full items-center justify-evenly ">
 
-      <div className="flex flex-col">
-        <div className="flex flex-col h-16 w-[100px] items-center justify-around bg-gray-200 mt-2 rounded-md ">
-          <div>User</div>
-        </div>
-        <div className="flex flex-col h-16 w-[100px] items-center justify-around bg-gray-200 mt-2 rounded-md ">
-          <div>Report</div>
-        </div>
-
-        <div className="flex flex-col h-16 w-[100px] items-center justify-around bg-gray-200 mt-2 rounded-md ">
-          <div>Standard</div>
-        </div>
+      <div id="pdf_test" className="flex flex-row space-x-4 w-full ">
+          <div className="bg-gray-200 p-1 rounded-md">User</div>
+          <div className="bg-gray-200 p-1 rounded-md">Report</div>
+          <div className="bg-gray-200 p-1 rounded-md">Standard</div>
       </div>
 
+      <Button onClick={
+        () => {
+          var html_div = document.querySelector("#pdf_test");             
+          var doc = new jsPDF('p', 'mm');
+          doc.html(html_div, {
+            callback: function (doc) {
+              doc.save("test.pdf");
+            },
+            x: 15,
+            y: 15,
+            width: 170,
+            windowWidth: 650
+          })
+        }
+      }>generate pdf from canvas</Button>
 
       <div className="flex flex-row h-full w-11/12 items-top justify-evenly mt-4 rounded-2xl bg-gray-200">
 
