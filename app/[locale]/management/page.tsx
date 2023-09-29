@@ -50,12 +50,14 @@ export default function Index(props: any) {
   const [buttonDisabled, setButtonDisabled] = React.useState(false);
 
   const [showUsersFileList, setShowUsersFileList] = React.useState(false);
+  const [showMeasurementsFileList, setShowMeasurementsFileList] = React.useState(false);
   const [showDataCard, setShowDataCard] = React.useState(true);
   const [showBinding, setshowBinding] = React.useState(false);
 
   const [userFileList, setUserFileList] = React.useState([]);
   const [matchedUserList, setMatchedUserList] = React.useState([]);
-  const [employees, seteEmployees] = React.useState<string[]>([]);
+  const [matchedMeasurementsList, setMatchedMeasurementsList] = React.useState([]);
+  const [employees, seteEmployees] = React.useState<string[]>(["","","","",""]);
 
   const [passwords, setePasswords] = React.useState<string[]>([]);
 
@@ -67,26 +69,26 @@ export default function Index(props: any) {
 
     const getEmployees = async () => {
       const res = await axios.get('/api/employees/')
-      console.log("in management page 70:", res.data);
+      console.log("in management page 72:", res.data);
       const return_employees = res.data;
 
       seteEmployees(return_employees);
 
-      var pwd_encrypt = [];
-      for (var i = 0; i < 5; i++) {
-        if (return_employees[i] != "" && return_employees[i] != undefined) {
-          //console.log("in management page 78:", employees[i]);   
-          const res = await axios.post('/api/pwd_encrypt/',
-            {
-              username: return_employees[i]
-            })
-          pwd_encrypt.push(res.data.message);
-          //console.log("in management page 84:", res.data.message);
-        } else {
-          pwd_encrypt.push("");
-        }
-      }
-      setePasswords(pwd_encrypt);
+      // var pwd_encrypt = [];
+      // for (var i = 0; i < 5; i++) {
+      //   if (return_employees[i] != "" && return_employees[i] != undefined) {
+      //     //console.log("in management page 78:", employees[i]);   
+      //     const res = await axios.post('/api/pwd_encrypt/',
+      //       {
+      //         username: return_employees[i]
+      //       })
+      //     pwd_encrypt.push(res.data.message);
+      //     //console.log("in management page 84:", res.data.message);
+      //   } else {
+      //     pwd_encrypt.push("");
+      //   }
+      // }
+      // setePasswords(pwd_encrypt);
 
     }
 
@@ -143,7 +145,7 @@ export default function Index(props: any) {
                         const res = await axios.get('/api/backup?cmd=backupUsers');
                         console.log("in management page 137", res.data);
                         if (res.data == "OK") {
-                          alert(t("backup-sucess-msg"));
+                          alert(t("backup-success-msg"));
                         }
                       }
                     }, 1)
@@ -157,6 +159,7 @@ export default function Index(props: any) {
                 onClick={
                   async () => {
                     if (showUsersFileList && manegementAction == "recovery") {
+                      // close file list
                       setShowUsersFileList(false);
                       setManegementAction("");
                       return
@@ -170,7 +173,7 @@ export default function Index(props: any) {
                     const fileList: [] = res.data.userFileList;
 
                     if (fileList.length < 2) {
-                      alert("No backup file found.");
+                      alert(t("not-backup-found"));
                       return
                     }
 
@@ -209,7 +212,7 @@ export default function Index(props: any) {
                     const fileList: [] = res.data.userFileList;
 
                     if (fileList.length < 2) {
-                      alert("No backup file found.");
+                      alert(t("not-backup-found"));
                       return
                     }
 
@@ -217,7 +220,7 @@ export default function Index(props: any) {
                       toMatchedList[matched] = filename;
                       matched++;
                     })
-                    console.log("in management page 149", toMatchedList);
+                    console.log("in management page 221", toMatchedList);
                     setMatchedUserList(toMatchedList);
                     setShowUsersFileList(true);
                   }
@@ -238,14 +241,19 @@ export default function Index(props: any) {
                         onClick={
                           async () => {
                             if (manegementAction == "delete") {
-                              if (confirm("Delete ALL user data?")) {
-                                // TODO
+                              if (confirm(t("sure-to-delete-msg"))) {
+                                const res = await axios.get('/api/backup?cmd=deleteAllUsersBackups');
+                                console.log("in management page 244", res.data);
+                                if (res.data == "OK") {
+                                  alert(t("delete-success-msg"));
+                                }
                               }
                             }
+                            setShowUsersFileList(false);
                           }
                         }
                       >
-                        全部刪除
+                        {t("delete-all")}
                       </Button>
                       <div className="mt-2 bg-gray-300  w-full h-[2px]"></div>
                     </div>
@@ -269,14 +277,18 @@ export default function Index(props: any) {
                                 const res = await axios.get('/api/backup?cmd=recoverUsers&file=' + item);
                                 console.log("in management page 190", res.data);
                                 if (res.data == "OK") {
-                                  alert(t("recovery-sucess-msg"));
+                                  alert(t("recovery-success-msg"));
                                 }
                               }
                             }
 
                             if (manegementAction == "delete") {
-                              if (confirm("Delete this backup file?")) {
-                                // TODO
+                              if (confirm(t("sure-to-delete-msg"))) {
+                                const res = await axios.get('/api/backup?cmd=deleteUsersBackup&file=' + item);
+                                console.log("in management page 190", res.data);
+                                if (res.data == "OK") {
+                                  alert(t("delete-success-msg"));
+                                }
                               }
                             }
                             setShowUsersFileList(false);
@@ -296,10 +308,59 @@ export default function Index(props: any) {
               <div className={"font-bold w-1/2 " + table_text_size}>
                 {t("measurements") + ": "}
               </div>
-              <Button className={'bg-primary  ' + table_text_size}>
+              <Button className={'bg-primary  ' + table_text_size}
+                onClick={
+                  async () => {
+                    setShowMeasurementsFileList(false);
+
+                    // 使用 timeout 是避免 confirm 擋住前面 setShowMeasurementsFileList(false); 執行
+                    setTimeout(async () => {
+                      if (confirm(t("sure-to-backup-msg"))) {
+                        const res = await axios.get('/api/backup?cmd=backupMeasurements');
+                        console.log("in management page 137", res.data);
+                        if (res.data == "OK") {
+                          alert(t("backup-success-msg"));
+                        }
+                      }
+                    }, 1)
+
+                  }
+                }              
+              >
                 {t("backup")}
               </Button>
-              <Button className={'bg-primary  ' + table_text_size}>
+              <Button className={'bg-primary  ' + table_text_size}
+                onClick={
+                  async () => {
+                    if (showMeasurementsFileList && manegementAction == "recovery") {
+                      // close file list
+                      setShowMeasurementsFileList(false);
+                      setManegementAction("");
+                      return
+                    }
+
+                    setManegementAction("recovery");
+                    let matched = 0;
+                    let toMatchedList: any = [];
+
+                    const res = await axios.get('/api/backup?cmd=getFileList');
+                    const fileList: [] = res.data.measurementsFileList;
+
+                    if (fileList.length < 2) {
+                      alert(t("not-backup-found"));
+                      return
+                    }
+
+                    fileList.map((filename, index) => {
+                      toMatchedList[matched] = filename;
+                      matched++;
+                    })
+                    console.log("in management page 357", toMatchedList);
+                    setMatchedMeasurementsList(toMatchedList);
+                    setShowMeasurementsFileList(true);
+                  }
+                }              
+              >
                 {t("recovery")}
               </Button>
               {/* <Button className={'bg-primary  ' + table_text_size}>
@@ -308,10 +369,115 @@ export default function Index(props: any) {
               <Button className={'bg-primary  ' + table_text_size}>
                 {t("export")}
               </Button> */}
-              <Button className={'bg-red-500  ' + table_text_size}>
+              <Button className={'bg-red-500  ' + table_text_size}
+                onClick={
+                  async () => {
+                    if (showMeasurementsFileList && manegementAction == "delete") {
+                      setShowMeasurementsFileList(false);
+                      setManegementAction("");
+                      return
+                    }
+
+                    setManegementAction("delete");
+                    let matched = 0;
+                    let toMatchedList: any = [];
+
+                    const res = await axios.get('/api/backup?cmd=getFileList');
+                    const fileList: [] = res.data.measurementsFileList;
+
+                    if (fileList.length < 2) {
+                      alert(t("not-backup-found"));
+                      return
+                    }
+
+                    fileList.map((filename, index) => {
+                      toMatchedList[matched] = filename;
+                      matched++;
+                    })
+                    console.log("in management page 221", toMatchedList);
+                    setMatchedMeasurementsList(toMatchedList);
+                    setShowMeasurementsFileList(true);
+                  }
+                }              
+              >
                 {t("delete")}
               </Button>
             </div>
+
+            {showMeasurementsFileList && (
+              <div className="flex flex-col items-end">
+                <ul
+                  className="absolute w-[400px] py-2 px-8 bg-gray-200 
+                          border border-gray-200 rounded-md  ">
+                  {manegementAction == "delete" &&
+                    <div>
+                      <Button className={'bg-red-500  '}
+                        onClick={
+                          async () => {
+                            if (manegementAction == "delete") {
+                              if (confirm(t("sure-to-delete-msg"))) {
+                                const res = await axios.get('/api/backup?cmd=deleteAllMeasurementsBackups');
+                                console.log("in management page 390", res.data);
+                                if (res.data == "OK") {
+                                  alert(t("delete-success-msg"));
+                                }
+                              }
+                            }
+                            setShowMeasurementsFileList(false);
+                          }
+                        }
+                      >
+                        {t("delete-all")}
+                      </Button>
+                      <div className="mt-2 bg-gray-300  w-full h-[2px]"></div>
+                    </div>
+                  }
+
+                  {
+                    matchedMeasurementsList.map((item: string, index) => {
+                      if (item != "measurements.json") {
+                        const splitedName = item.split(".");
+                        // const fileTime = new Date(parseInt(splitedName[2]))
+                        // const fileTimeISO = fileTime.toISOString();
+                        const fileTime = DateTime.fromMillis(parseInt(splitedName[2]));
+                        const fileTimeISO = fileTime.toISO();
+                        const fileNameWithDate = "measurements.json : " + fileTimeISO!.substr(0, 10) + " " + fileTimeISO!.substr(11, 8);
+
+                        return <li key={index}
+                          className={"py-2 cursor-pointer " + table_text_size}
+                          onClick={async () => {
+                            if (manegementAction == "recovery") {
+                              if (confirm(t("sure-to-recovery-msg"))) {
+                                const res = await axios.get('/api/backup?cmd=recoverMeasurements&file=' + item);
+                                console.log("in management page 422", res.data);
+                                if (res.data == "OK") {
+                                  alert(t("recovery-success-msg"));
+                                }
+                              }
+                            }
+
+                            if (manegementAction == "delete") {
+                              if (confirm(t("sure-to-delete-msg"))) {
+                                const res = await axios.get('/api/backup?cmd=deleteMeasurementsBackup&file=' + item);
+                                console.log("in management page 432", res.data);
+                                if (res.data == "OK") {
+                                  alert(t("delete-success-msg"));
+                                }
+                              }
+                            }
+                            setShowMeasurementsFileList(false);
+                          }
+                          }
+                        >
+                          {fileNameWithDate}
+                        </li>
+                      }
+                    })
+                  }
+                </ul>
+              </div>
+            )}
+
             <hr className="mt-4"></hr>
             <hr className="mt-1"></hr>
           </CardContent>

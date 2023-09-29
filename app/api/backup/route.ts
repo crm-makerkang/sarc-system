@@ -44,7 +44,8 @@ export async function GET(request: NextRequest) {
   if (request.nextUrl.searchParams.get("cmd") == "backupUsers") {
     try {
       fs.copyFileSync("data/users.json", "data/users.json." + nowTimeStamp.toString());
-
+      const response = NextResponse.json("OK");
+      return response;
     } catch (error: any) {
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
@@ -57,11 +58,102 @@ export async function GET(request: NextRequest) {
       if ((recoveryFile != null) && (recoveryFile != "")) {
         fs.copyFileSync("data/" + recoveryFile, "data/users.json");
       }
-
+      const response = NextResponse.json("OK");
+      return response;
     } catch (error: any) {
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
   }
+
+  if (request.nextUrl.searchParams.get("cmd") == "deleteUsersBackup") {
+    try {
+      const deleteFile = request.nextUrl.searchParams.get("file")
+      console.log("in backup api 71:", deleteFile);
+      if ((deleteFile != null) && (deleteFile != "")) {
+        fs.unlinkSync("data/" + deleteFile);
+      }
+      const response = NextResponse.json("OK");
+      return response;
+    } catch (error: any) {
+      return NextResponse.json({ error: error.message }, { status: 500 })
+    }
+  }
+
+  if (request.nextUrl.searchParams.get("cmd") == "deleteAllUsersBackups") {
+    try {
+
+        //fs.unlinkSync("data/" + deleteFile);
+        const path = 'data/'
+        let regex = /users.json.[0-9]*/
+        fs.readdirSync(path)
+            .filter(f => regex.test(f))
+            // .map(f => console.log(path + f))
+            .map(f => fs.unlinkSync(path + f))
+
+      const response = NextResponse.json("OK");
+      return response;
+    } catch (error: any) {
+      return NextResponse.json({ error: error.message }, { status: 500 })
+    }
+  }
+
+  
+  if (request.nextUrl.searchParams.get("cmd") == "backupMeasurements") {
+    try {
+      fs.copyFileSync("data/measurements.json", "data/measurements.json." + nowTimeStamp.toString());
+      const response = NextResponse.json("OK");
+      return response;
+    } catch (error: any) {
+      return NextResponse.json({ error: error.message }, { status: 500 })
+    }
+  }
+
+  if (request.nextUrl.searchParams.get("cmd") == "recoverMeasurements") {
+    try {
+      const recoveryFile = request.nextUrl.searchParams.get("file")
+      console.log("in backup api 54:", recoveryFile);
+      if ((recoveryFile != null) && (recoveryFile != "")) {
+        fs.copyFileSync("data/" + recoveryFile, "data/measurements.json");
+      }
+      const response = NextResponse.json("OK");
+      return response;
+    } catch (error: any) {
+      return NextResponse.json({ error: error.message }, { status: 500 })
+    }
+  }
+
+  if (request.nextUrl.searchParams.get("cmd") == "deleteMeasurementsBackup") {
+    try {
+      const deleteFile = request.nextUrl.searchParams.get("file")
+      console.log("in backup api 71:", deleteFile);
+      if ((deleteFile != null) && (deleteFile != "")) {
+        fs.unlinkSync("data/" + deleteFile);
+      }
+      const response = NextResponse.json("OK");
+      return response;
+    } catch (error: any) {
+      return NextResponse.json({ error: error.message }, { status: 500 })
+    }
+  }
+
+  if (request.nextUrl.searchParams.get("cmd") == "deleteAllMeasurementsBackups") {
+    try {
+
+        //fs.unlinkSync("data/" + deleteFile);
+        const path = 'data/'
+        let regex = /measurements.json.[0-9]*/
+        fs.readdirSync(path)
+            .filter(f => regex.test(f))
+            // .map(f => console.log(path + f))
+            .map(f => fs.unlinkSync(path + f))
+
+      const response = NextResponse.json("OK");
+      return response;
+    } catch (error: any) {
+      return NextResponse.json({ error: error.message }, { status: 500 })
+    }
+  }
+
 
   const response = NextResponse.json("OK");
   return response;

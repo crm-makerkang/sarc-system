@@ -100,15 +100,19 @@
     "data-management": "資料管理",
     "user-data": "用戶資料",
     "backup": "備份",
+    "not-backup-found": "沒有備份",
     "recovery": "回復",
     "import": "匯入",
     "export": "匯出",
     "privacy-policy": "隱私政策",
     "agree-privacy-msg": "我同意 ",
     "sure-to-backup-msg": "備份目前日期/時間資料庫，確認要進行備份?",
-    "backup-sucess-msg": "備份成功!",
+    "backup-success-msg": "備份成功!",
     "sure-to-recovery-msg": "回復會覆蓋現有資料庫，確認要進行回復?",
-    "recovery-sucess-msg": "回復成功!",
+    "sure-to-delete-msg": "刪除後無法回復，確認要進行刪除?",
+    "recovery-success-msg": "回復成功!",
+    "delete-success-msg": "刪除成功!",
+    "delete-all-msg": "刪除全部",
     "delet-selected-users": "刪除選定用戶",
     "delet-selected-measurements": "刪除選定量測資料",
     "save-selected-measurements": "儲存選定至紀錄",
@@ -132,6 +136,7 @@
     "balance": "SPPB 平衡",
     "measuring": "量測中",
     "user-records": "用戶記錄",
-    "datetime": "日期/時間"
+    "datetime": "日期/時間",
+    "delete-all": "全部刪除"
   }
 }
