@@ -137,6 +137,8 @@
     "measuring": "量測中",
     "user-records": "用戶記錄",
     "datetime": "日期/時間",
-    "delete-all": "全部刪除"
+    "delete-all": "全部刪除",
+    "primary-care": "基層醫療/社區預防",
+    "hostpital-client": "醫院/診所"
   }
 }

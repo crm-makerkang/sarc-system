@@ -138,6 +138,8 @@
     "balance": "SPPB Balance",
     "measuring": "Measuring",
     "user-records": "User Records",
-    "datetime": "Date/Time"
+    "datetime": "Date/Time",
+    "primary-care": "Primary Care",
+    "hostpital-client": "Hospital/Client"
   }
 }
