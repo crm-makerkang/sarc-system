@@ -22,9 +22,9 @@ import { Label } from "@/components/ui/label"
 
 import Header from '@/components/Header'
 import Container from '@/components/Container'
-import { ShoppingCart, ShoppingBag } from 'lucide-react'
+import { ShoppingCart, ShoppingBag, X } from 'lucide-react'
 import { useTranslations } from "next-intl"
-import { ArrowUpDown, MoreHorizontal } from "lucide-react"
+import { Loader2, ArrowUpDown, MoreHorizontal } from "lucide-react"
 
 import { columns_measurements } from "./columns-measurements"
 import { columns_measuring } from "./columns-measuring"
@@ -41,6 +41,8 @@ export default function Home(props: any) {
   const searchParams = useSearchParams();
 
   const [userData, setUserData] = React.useState<UserInfo[]>([]);
+
+  const [loading, setLoading] = React.useState(true)
 
   var [data, setData] = React.useState<UserInfo[]>([]) // TODO: change the data type and naming
 
@@ -73,26 +75,29 @@ export default function Home(props: any) {
 
   const getMeasuring = async () => {
     const res = await axios.get('/api/measurements?type=measuring')
-    console.log("in measurement page 45: getMeasuring:", res.data, userData);
+    console.log("in measurement page 78: getMeasuring:", res.data, userData);
 
     if (res.data.length == 0) {
       setData_measuring([]);
+      return
     }
     for (var i = 0; i < res.data.length; i++) {
       //res.data[i].name = "looking-for-user";
       for (var j = 0; j < userData.length; j++) {
         if (res.data[i].uid == userData[j].id) {
           res.data[i].name = userData[j].name;
+
           break;
         }
       }
     }
+    setLoading(false);
     setData_measuring(res.data);
   }
 
   const getMeasurements = async () => {
     const res = await axios.get('/api/measurements?type=records')
-    console.log("in measurement page 51: getMeasurements:", res.data.length);
+    console.log("in measurement page 98: getMeasurements:", res.data.length, res.data);
     for (var i = 0; i < res.data.length; i++) {
       //res.data[i].name = "looking-for-user";
       for (var j = 0; j < userData.length; j++) {
@@ -102,6 +107,7 @@ export default function Home(props: any) {
         }
       }
     }
+    setLoading(false);
     setData_records(res.data);
   }
 
@@ -148,6 +154,8 @@ export default function Home(props: any) {
         rid: ""
       };
       if (data_measuring[index]== undefined) return;
+      measure_tmp.uid = (data_measuring[index].uid == undefined)? "" : data_measuring[index].uid;
+      measure_tmp.name = (data_measuring[index].name == undefined)? "" : data_measuring[index].name;
       measure_tmp.calf_grith = (data_measuring[index].calf_grith == undefined)? "" : data_measuring[index].calf_grith;
       measure_tmp.grip_strength = (data_measuring[index].grip_strength == undefined)? "" : data_measuring[index].grip_strength;
       measure_tmp.chair_standup5 = (data_measuring[index].chair_standup5 == undefined)? "" : data_measuring[index].chair_standup5;
@@ -167,6 +175,11 @@ export default function Home(props: any) {
 
   return (
     <>
+      {loading && (
+        <div className='float h-16 w-16 absolute top-1/3 left-1/2 -translate-x-8 -translate-y-8 z-10'>
+          <Loader2 className="animate-spin  -ml-2 mr-2 h-16 w-16 opacity-75 "></Loader2>
+        </div>
+      )}
       {data_id < -1 && (
         <div className="flex items-center justify-center mt-6">
           <Button className={"mt-4 mx-4 text-xl " + (measuring ? "bg-primary" : "bg-gray-200 text-gray-400")}
@@ -212,7 +225,14 @@ export default function Home(props: any) {
           {true && (
             <Card className="w-[850px]">
               <CardHeader>
-                <CardTitle>量測中資料</CardTitle>
+                <CardTitle className="w-full flex flex-row align-center justify-between">
+                  <div>修改量測中資料</div>
+                  <X className="cursor-pointer" onClick={
+                    () => {
+                      window.location.href = "/measurements?type=measuring";
+                    }
+                  }></X>
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid w-full items-center gap-4">
@@ -348,6 +368,34 @@ export default function Home(props: any) {
                   }}
                 >
                   {t("clear-data")}
+                </Button>
+
+                <Button variant="outline" className={table_text_size}
+                  onClick={async () => {
+                    window.location.reload();
+                  }}
+                >
+                  {t("reload-data")}
+                </Button>
+
+                <Button className={"bg-primary " + table_text_size}
+                  onClick={async () => {
+                    if (data_id !=-1) {
+                      if (confirm(t("confirm-to-save-msg"))) {
+                        data_measuring[data_id] = measurement;
+                        console.log("data_measuring", data_measuring);
+  
+                        const res = await axios.post('/api/measurements?cmd=writeToMeasuring', data_measuring);
+                        if (res.data.success) {
+                          window.location.href = "/measurements?type=measuring";
+                        } else {
+                          alert(t("save-failed-msg"));
+                        }
+                      }
+                    }                  
+                  }}
+                >
+                  {t("save-data")}
                 </Button>
 
               </CardFooter>

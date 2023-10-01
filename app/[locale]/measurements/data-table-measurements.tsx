@@ -61,7 +61,7 @@ export function DataTableMeasurements<TData, TValue>({
 
   const [rowSelection, setRowSelection] = React.useState({})
 
-  const [loading, setLoading] = React.useState(true)
+  const [loading, setLoading] = React.useState(false)
 
   const [userAutoUpdate, setUserAutoUpdate] = React.useState(false)
   const [userAutoUpdateInterval, setUserAutoUpdateInterval] = React.useState(false)
@@ -96,9 +96,9 @@ export function DataTableMeasurements<TData, TValue>({
   // more pagination control, see https://github.com/TanStack/table/tree/main/examples/react/pagination-controlled
   React.useEffect(() => {
     table.setPageSize(rows_per_page);
-    const interval = setTimeout(() => {
-      setLoading(false)
-    }, 1000)
+    // const interval = setTimeout(() => {
+    //   setLoading(false)
+    // }, 1000)
   }, [])
 
   React.useEffect(() => {

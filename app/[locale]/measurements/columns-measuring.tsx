@@ -259,7 +259,7 @@ export const columns_measuring: ColumnDef<Measurement>[] = [
                       "uid": row.original.uid
                     }
 
-                    const post_res = await axios.post('/api/measurements', new_record);
+                    const post_res = await axios.post('/api/measurements?cmd=writeToRecords', new_record);
                     if (post_res.data.success) {
                       window.location.reload();
                     } else {
@@ -291,6 +291,7 @@ export const columns_measuring: ColumnDef<Measurement>[] = [
               onClick={
                 async () => {
                   console.log("in measurement page 296:", row.index, row.original)
+                  window.location.href = "/measurements?did=" + row.index.toString();
                 }
             }
             >

@@ -5,7 +5,9 @@ import { DateTime } from "luxon";
 import * as fs from "fs";
 
 import { Measurement } from '@/types/types'
-var measurements: Measurement[] = []
+var measurements: Measurement[] = [];
+var dataToWrite: Measurement[] = [];
+var fileToWrite ="";
 var cryptedMeasurements: string[] = [];
 
 import { json_in_measure_filename, json_measurements_filename } from '@/Settings/settings'
@@ -63,8 +65,9 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   console.log("measurements POST Mewthod");
 
-  try {
-    measurements = readRecords();
+  if (request.nextUrl.searchParams.get("cmd") == "writeToRecords") {
+    dataToWrite = readRecords();
+    fileToWrite = json_measurements_filename;
 
     try {
       const reqBody = await request.json();
@@ -73,9 +76,9 @@ export async function POST(request: NextRequest) {
 
       reqBody.rid = record_uuid;
       reqBody.datetime = nowDateTime!.substr(0, 10) + " " + nowDateTime!.substr(11, 5);
-      measurements.push(reqBody);
+      dataToWrite.push(reqBody);
 
-      console.log("in measurements api 76:", reqBody, measurements.length, measurements);
+      console.log("in measurements api 81:", reqBody, dataToWrite.length, dataToWrite);
 
     } catch (error) {
       console.log("reqBody err");
@@ -86,9 +89,14 @@ export async function POST(request: NextRequest) {
       return response;
     }
 
-
     try {
-      fs.writeFileSync(json_measurements_filename, JSON.stringify(measurements))
+      fs.writeFileSync(fileToWrite, JSON.stringify(dataToWrite));
+      const response = NextResponse.json({
+        message: "POST successful:",
+        success: true,
+      })
+      return response;
+
     } catch (error: any) {
       console.log(error.message);
       const response = NextResponse.json({
@@ -98,16 +106,49 @@ export async function POST(request: NextRequest) {
       return response;
     }
 
-    const response = NextResponse.json({
-      message: "POST successful:",
-      success: true,
+  } else if (request.nextUrl.searchParams.get("cmd") == "writeToMeasuring") {
+    // dataToWrite = readMeasuring();
+    fileToWrite = json_in_measure_filename;
+
+    try {
+      dataToWrite = await request.json();
+
+      console.log("in measurements api 116:", dataToWrite, dataToWrite.length);
+
+    } catch (error) {
+      console.log("reqBody err");
+      const response = NextResponse.json({
+        message: "reqBody err",
+        success: false,
+      })
+      return response;
+    }
+
+    try {
+      fs.writeFileSync(fileToWrite, JSON.stringify(dataToWrite));
+      const response = NextResponse.json({
+        message: "POST successful:",
+        success: true,
+      })
+      return response;
+
+    } catch (error: any) {
+      console.log(error.message);
+      const response = NextResponse.json({
+        message: error.message,
+        success: false,
+      })
+      return response;
+    }
+
+
+  } else {
+    return NextResponse.json({
+      message: "cmd incorrected",
+      success: false,
     })
-
-    return response;
-
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
   }
+
 }
 
 export async function DELETE(request: NextRequest) {
