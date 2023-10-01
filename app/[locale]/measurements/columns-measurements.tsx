@@ -221,24 +221,19 @@ export const columns_measurements: ColumnDef<Measurement>[] = [
     },
     cell: ({ row }) => {
       const t = useTranslations('sarc');
-      if (row.original.balance != undefined) {
+      if ((row.original.balanceA != undefined)  || (row.original.balanceB != undefined) || (row.original.balanceC != undefined))
+      {
         return (
           <div className="flex items-center justify-center">
             <div className="flex items-center justify-center">
               <img src="/img/sppb_A.png" className="w-[20px]"></img>
-              {// @ts-ignore // 實在沒辦法，只好用粗暴的解法
-                row.original.balance.A
-              }
+              { row.original.balanceA }
               <span className="text-sm">{t('seconds')}</span>
               <img src="/img/sppb_B.png" className="w-[18px] ml-2"></img>
-              {// @ts-ignore // 實在沒辦法，只好用粗暴的解法
-                row.original.balance.B
-              }
+              { row.original.balanceB }
               <span className="text-sm">{t('seconds')}</span>
               <img src="/img/sppb_C.png" className="w-[10px] ml-3"></img>
-              {// @ts-ignore // 實在沒辦法，只好用粗暴的解法
-                row.original.balance.C
-              }
+              { row.original.balanceC }
               <span className="text-sm">{t('seconds')}</span>
             </div>
           </div>

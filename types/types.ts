@@ -19,7 +19,6 @@ export type Measurement = {
   muscle_quantity: string,
   gait_speed4: string,
   gait_speed6: string,
-  balance: object,
   balanceA: string,
   balanceB: string,
   balanceC: string,

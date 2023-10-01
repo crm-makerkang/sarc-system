@@ -166,7 +166,6 @@ export default function Index(props: any) {
   }
 
   return (
-    <>
       <div className='container flex items-start mt-12 justify-center '
         style={{
           // backgroundImage: 'url(/img/bg-start-credit.png)',
@@ -436,9 +435,5 @@ export default function Index(props: any) {
         }
 
       </div >
-
-
-
-    </>
   );
 }
