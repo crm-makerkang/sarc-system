@@ -96,12 +96,12 @@ function SettingButton() {
         >
           繁體中文
         </DropdownMenuItem>
-        <DropdownMenuItem
+        {/* <DropdownMenuItem
           onClick={() => { window.location.href = "/zh-cn/guide" }}
           className={"cursor-pointer " + settings.table_text_size}
         >
           简体中文
-        </DropdownMenuItem>
+        </DropdownMenuItem> */}
 
         {/* <DropdownMenuItem
           onClick={() => { window.location.href = "/ja/guide" }}

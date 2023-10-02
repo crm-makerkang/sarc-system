@@ -28,14 +28,19 @@ import {
 } from "@/components/ui/select"
 
 export default function Index(props: any) {
-  console.log("in guide", props);
+  console.log("in guide page 31:", props.params.locale);
   const t = useTranslations('sarc');
   const router = useRouter();
 
-  useEffect(() => {
-    //window.location.href = "/start"
-    //router.push("/start");
-  }, [])
+  const [locale, setLocale] = React.useState(props.params.locale);
+
+  // useEffect(() => {
+  //   window.location.href = "/start"
+  //   router.push("/start");
+  // }, [])
+
+  if (props.params.locale == 'en') {
+  }
 
   return (
 
@@ -76,12 +81,12 @@ export default function Index(props: any) {
                   <div className="">2.</div>
                   <div className="ml-2">{t('guide-2-2-msg')}</div>
                 </div>
-                <img src="/img/guide-2-1.png" className="w-5/6"></img>
+                <img src={"/img/guide-2-1-" + locale + ".png"} className="w-5/6"></img>
                 <div className="mt-4 flex flex-row justify-start">
                   <div className="">3.</div>
                   <div className="ml-2">{t('guide-2-3-msg')}</div>
                 </div>
-                <img src="/img/guide-2-2.png" className="w-5/6"></img>
+                <img src={"/img/guide-2-2-" + locale + ".png"} className="w-5/6"></img>
                 <div className="mt-4 flex flex-row justify-start">
                   <div className="">4.</div>
                   <div className="ml-2">{t('guide-2-4-msg')}</div>

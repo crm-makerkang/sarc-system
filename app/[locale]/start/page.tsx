@@ -166,274 +166,274 @@ export default function Index(props: any) {
   }
 
   return (
-      <div className='container flex items-start mt-12 justify-center '
-        style={{
-          // backgroundImage: 'url(/img/bg-start-credit.png)',
-          // backgroundSize: 'cover', backgroundPosition: 'top',
-          //height: '91vh', width: '100%'
-        }}
-      >
-        {showDataCard && (
-          <Card className="w-[850px]">
-            <CardHeader>
-              <CardTitle>{t('user-info')} <span className="text-red-500 text-lg">{t('required-msg')}</span></CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid w-full items-center gap-4">
+    <div className='container flex items-start mt-12 justify-center '
+      style={{
+        // backgroundImage: 'url(/img/bg-start-credit.png)',
+        // backgroundSize: 'cover', backgroundPosition: 'top',
+        //height: '91vh', width: '100%'
+      }}
+    >
+      {showDataCard && (
+        <Card className="w-[850px]">
+          <CardHeader>
+            <CardTitle>{t('user-info')} <span className="text-red-500 text-lg">{t('required-msg')}</span></CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid w-full items-center gap-4">
 
-                <div className="flex flex-row space-y-1.5">
-                  <Label className={"w-44 pt-3 " + table_text_size} htmlFor="name">{t('name')}*</Label>
-                  <Input className={table_text_size}
-                    id="name"
-                    value={user.name}
-                    onChange={
-                      (e) => {
-                        setDataModified(true);
-                        setUser({ ...user, name: e.target.value });
-                        setShowSearch(false);
-                        let matched = 0;
-                        let toMatchedList: any = [];
-                        userData.map((user, index) => {
-                          if ((matched < 10) && (user.name.includes(e.target.value))) {
-                            toMatchedList[matched] = (user.name);
-                            matched++;
-                          }
-                        })
-                        setMatchedList(toMatchedList);
-                        if (matched > 0) {
-                          setShowSearch(true);
-                        } else {
-                          //不好處理，先不處理
+              <div className="flex flex-row space-y-1.5">
+                <Label className={"w-44 pt-3 " + table_text_size} htmlFor="name">{t('name')}*</Label>
+                <Input className={table_text_size}
+                  id="name"
+                  value={user.name}
+                  onChange={
+                    (e) => {
+                      setDataModified(true);
+                      setUser({ ...user, name: e.target.value });
+                      setShowSearch(false);
+                      let matched = 0;
+                      let toMatchedList: any = [];
+                      userData.map((user, index) => {
+                        if ((matched < 10) && (user.name.includes(e.target.value))) {
+                          toMatchedList[matched] = (user.name);
+                          matched++;
                         }
-
+                      })
+                      setMatchedList(toMatchedList);
+                      if (matched > 0) {
+                        setShowSearch(true);
+                      } else {
+                        //不好處理，先不處理
                       }
-                    }
-                    placeholder={t('your-name')}
-                  />
-                </div>
 
-                {showSearch && matchedList.length > 0 && (
-                  <div className="">
-                    <ul
-                      className="absolute w-[660px] ml-32 -mt-4 py-2 px-8 bg-gray-200 
+                    }
+                  }
+                  placeholder={t('your-name')}
+                />
+              </div>
+
+              {showSearch && matchedList.length > 0 && (
+                <div className="">
+                  <ul
+                    className="absolute w-[660px] ml-32 -mt-4 py-2 px-8 bg-gray-200 
                           border border-gray-200 rounded-md  ">
-                      {matchedList.map((item, index) => {
-                        return <li key={index}
-                          className={"py-2 cursor-pointer " + table_text_size}
-                          onClick={
-                            () => {
-                              for (let i = 0; i < userData.length; i++) {
-                                if (userData[i].name === item) {
-                                  console.log(userData[i]);
-                                  setUser(userData[i]);
-                                  setDataModified(false);
-                                }
+                    {matchedList.map((item, index) => {
+                      return <li key={index}
+                        className={"py-2 cursor-pointer " + table_text_size}
+                        onClick={
+                          () => {
+                            for (let i = 0; i < userData.length; i++) {
+                              if (userData[i].name === item) {
+                                console.log(userData[i]);
+                                setUser(userData[i]);
+                                setDataModified(false);
                               }
-
-                              //setUser({ ...user, name: item });
-                              setShowSearch(false);
                             }
+
+                            //setUser({ ...user, name: item });
+                            setShowSearch(false);
                           }
-                        >
-                          {item}
-                        </li>
-                      })}
-                    </ul>
-                  </div>
-                )}
-
-                <div className="flex flex-row space-y-1.5">
-                  <Label className={"w-44 pt-3 " + table_text_size} htmlFor="card_no">{t("card-no")}*</Label>
-                  <Input className={table_text_size}
-                    id="card_no"
-                    value={user.card_no}
-                    onChange={(e) => {
-                      setUser({ ...user, card_no: e.target.value });
-                      setDataModified(true);
-                    }}
-                    placeholder={t("card-no")}
-                  />
-                </div>
-
-                <div className="flex flex-row space-y-1.5">
-                  <Label className={"w-44 pt-3 " + table_text_size} htmlFor="phone">{t('phone')}</Label>
-                  <Input className={table_text_size}
-                    id="phone"
-                    value={user.phone}
-                    onChange={(e) => {
-                      setUser({ ...user, phone: e.target.value });
-                      setDataModified(true);
-                    }}
-                    placeholder={t('phone')}
-                  />
-                </div>
-                <div className="flex flex-row space-y-1.5">
-                  <Label className={"w-44 pt-3 " + table_text_size} htmlFor="email">{t('email')}</Label>
-                  <Input className={table_text_size}
-                    id="email"
-                    value={user.email}
-                    onChange={(e) => {
-                      setUser({ ...user, email: e.target.value });
-                      setDataModified(true);
-                    }}
-                    placeholder={t('email')}
-                  />
-                </div>
-              </div>
-
-              <hr className='m-4'></hr>
-              <div className="mb-2 text-lg text-red-500 font-bold ">{t('bio-msg')}</div>
-
-              <div className="grid w-full items-center gap-4">
-                <div className="flex flex-row space-y-1.5">
-                  <Label className={"w-44 pt-3 " + table_text_size} htmlFor="gender">{t('bio-gender')}*</Label>
-
-                  <select id="gender_select" className={
-                    "w-24 -ml-12 p-1 border rounded-md text-gray-500 " +
-                    "focus:border-gray-500 focus:outline-none focus:border-2 focus:rounded-xl " +
-                    table_text_size}
-                    onChange={(e) => {
-                      setUser({ ...user, gender: e.target.value == t("male") ? "male" : "female" });
-                      setDataModified(true);
-                    }}
-                  >
-                    <option value={t("male")}>{t("male")}</option>
-                    <option value={t("female")}>{t("female")}</option>
-                  </select>
-                </div>
-
-                <div className="flex flex-row space-y-1.5">
-                  <Label className={"w-44 pt-3 " + table_text_size} htmlFor="age">{t("age")}*</Label>
-                  <Input className={table_text_size}
-                    id="age"
-                    value={user.age}
-                    onChange={(e) => {
-                      setUser({ ...user, age: e.target.value });
-                      setDataModified(true);
-                    }}
-                    placeholder={t("age")}
-                  />
-                </div>
-                <div className="flex flex-row space-y-1.5">
-                  <Label className={"w-44 pt-3 " + table_text_size} htmlFor="height">{t("height")}*</Label>
-                  <Input className={table_text_size}
-                    id="height"
-                    value={user.height}
-                    onChange={(e) => {
-                      setUser({ ...user, height: e.target.value });
-                      setDataModified(true);
-                    }}
-                    placeholder={t("height")}
-                  />
-                </div>
-                <div className="flex flex-row space-y-1.5">
-                  <Label className={"w-44 pt-3 " + table_text_size} htmlFor="weight">{t("weight")}*</Label>
-                  <Input className={table_text_size}
-                    id="weight"
-                    value={user.weight}
-                    onChange={(e) => {
-                      setUser({ ...user, weight: e.target.value });
-                      setDataModified(true);
-                    }}
-                    placeholder={t("weight")}
-                  />
-                </div>
-              </div>
-
-              <hr className='m-4'></hr>
-
-              <input className="mx-4 " type="checkbox" id="privacy" name="privacy"
-                style={{ width: '20px', height: '20px' }}
-                // @ts-ignore // 實在沒辦法，只好用粗暴的解法
-                onClick={(e) => { e.target.checked ? setPrivacy(true) : setPrivacy(false) }}
-              />
-              <span className="align-top">{t('agree-privacy-msg')}
-                <a href="/privacy-policy" className="underline"> {t('privacy-policy')} </a>
-              </span>
-
-            </CardContent>
-            <CardFooter className="flex items-center justify-between">
-              <Button variant="outline" className={table_text_size}
-                onClick={async () => {
-                  window.location.reload();
-                }}
-              >
-                {t("clear-data")}
-              </Button>
-
-              {dataModified && privacy && (
-                <Button className={'bg-primary  ' + table_text_size}
-                  onClick={async () => { saveUser() }}
-                >
-                  {t("save-data")}
-                </Button>
-              )}
-            </CardFooter>
-          </Card>
-        )
-        }
-
-        {showBinding && (
-          <Card className="w-[550px]">
-            <CardHeader>
-              <CardTitle>用戶：{user.name} 您好，請綁定卡號後進行量測</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid w-full items-center gap-4">
-                <div className="flex flex-row space-y-1.5">
-                  <Label className={"w-44 pt-3 " + table_text_size} htmlFor="card_no">ID {t("card-no")}</Label>
-                  <Input autoFocus className={table_text_size}
-                    id="card_no"
-                    value={user.card_no}
-                    onChange={
-                      (e) => {
-                        let card_no: string = "";
-                        console.log(e.target.value);
-                        if (e.target.value.length == 10) {
-                          console.log("10 digits detected");
-
-                          card_no = e.target.value;
-                          e.target.value = ""
                         }
-                        setUser({ ...user, card_no: e.target.value });
-
-                      }
-                    }
-                    placeholder={t("card-msg")}
-                  />
+                      >
+                        {item}
+                      </li>
+                    })}
+                  </ul>
                 </div>
-                {user.card_no != "" && (
-                  <div className={table_text_size}>已綁定卡號： {user.card_no}</div>
-                )}
+              )}
+
+              <div className="flex flex-row space-y-1.5">
+                <Label className={"w-44 pt-3 " + table_text_size} htmlFor="card_no">{t("card-no")}*</Label>
+                <Input className={table_text_size}
+                  id="card_no"
+                  value={user.card_no}
+                  onChange={(e) => {
+                    setUser({ ...user, card_no: e.target.value });
+                    setDataModified(true);
+                  }}
+                  placeholder={t("card-no")}
+                />
               </div>
 
-            </CardContent>
-            <CardFooter className="flex items-center justify-between">
-              <Button variant="outline" className={'flex ' + table_text_size}
-                onClick={async () => {
-                  //setParq_checked(!parq_checked);
-                  setShowDataCard(true);
-                  setshowBinding(false);
-                  setUser({ ...user, card_no: "" });
-                }}
-              >
-                {t("cancel")}
-              </Button>
-              {user.card_no != "" && (
-                <Button className={'flex bg-primary  ' + table_text_size}
-                  onClick={async () => {
-                    //setParq_checked(!parq_checked);
-                    //setShowDataCard(false);
+              <div className="flex flex-row space-y-1.5">
+                <Label className={"w-44 pt-3 " + table_text_size} htmlFor="phone">{t('phone')}</Label>
+                <Input className={table_text_size}
+                  id="phone"
+                  value={user.phone}
+                  onChange={(e) => {
+                    setUser({ ...user, phone: e.target.value });
+                    setDataModified(true);
+                  }}
+                  placeholder={t('phone')}
+                />
+              </div>
+              <div className="flex flex-row space-y-1.5">
+                <Label className={"w-44 pt-3 " + table_text_size} htmlFor="email">{t('email')}</Label>
+                <Input className={table_text_size}
+                  id="email"
+                  value={user.email}
+                  onChange={(e) => {
+                    setUser({ ...user, email: e.target.value });
+                    setDataModified(true);
+                  }}
+                  placeholder={t('email')}
+                />
+              </div>
+            </div>
+
+            <hr className='m-4'></hr>
+            <div className="mb-2 text-lg text-red-500 font-bold ">{t('bio-msg')}</div>
+
+            <div className="grid w-full items-center gap-4">
+              <div className="flex flex-row space-y-1.5">
+                <Label className={"w-44 pt-3 " + table_text_size} htmlFor="gender">{t('bio-gender')}*</Label>
+
+                <select id="gender_select" className={
+                  "w-24 -ml-12 p-1 border rounded-md text-gray-500 " +
+                  "focus:border-gray-500 focus:outline-none focus:border-2 focus:rounded-xl " +
+                  table_text_size}
+                  onChange={(e) => {
+                    setUser({ ...user, gender: e.target.value == t("male") ? "male" : "female" });
+                    setDataModified(true);
                   }}
                 >
-                  綁定後開始量測
-                </Button>
-              )}
-            </CardFooter>
-          </Card >
-        )
-        }
+                  <option value={t("male")}>{t("male")}</option>
+                  <option value={t("female")}>{t("female")}</option>
+                </select>
+              </div>
 
-      </div >
+              <div className="flex flex-row space-y-1.5">
+                <Label className={"w-44 pt-3 " + table_text_size} htmlFor="age">{t("age")}*</Label>
+                <Input className={table_text_size}
+                  id="age"
+                  value={user.age}
+                  onChange={(e) => {
+                    setUser({ ...user, age: e.target.value });
+                    setDataModified(true);
+                  }}
+                  placeholder={t("age")}
+                />
+              </div>
+              <div className="flex flex-row space-y-1.5">
+                <Label className={"w-44 pt-3 " + table_text_size} htmlFor="height">{t("height")}*</Label>
+                <Input className={table_text_size}
+                  id="height"
+                  value={user.height}
+                  onChange={(e) => {
+                    setUser({ ...user, height: e.target.value });
+                    setDataModified(true);
+                  }}
+                  placeholder={t("height")}
+                />
+              </div>
+              <div className="flex flex-row space-y-1.5">
+                <Label className={"w-44 pt-3 " + table_text_size} htmlFor="weight">{t("weight")}*</Label>
+                <Input className={table_text_size}
+                  id="weight"
+                  value={user.weight}
+                  onChange={(e) => {
+                    setUser({ ...user, weight: e.target.value });
+                    setDataModified(true);
+                  }}
+                  placeholder={t("weight")}
+                />
+              </div>
+            </div>
+
+            <hr className='m-4'></hr>
+
+            <input className="mx-4 " type="checkbox" id="privacy" name="privacy"
+              style={{ width: '20px', height: '20px' }}
+              // @ts-ignore // 實在沒辦法，只好用粗暴的解法
+              onClick={(e) => { e.target.checked ? setPrivacy(true) : setPrivacy(false) }}
+            />
+            <span className="align-top">{t('agree-privacy-msg')}
+              <a href="/privacy-policy" className="underline"> {t('privacy-policy')} </a>
+            </span>
+
+          </CardContent>
+          <CardFooter className="flex items-center justify-between">
+            <Button variant="outline" className={table_text_size}
+              onClick={async () => {
+                window.location.reload();
+              }}
+            >
+              {t("clear-data")}
+            </Button>
+
+            {dataModified && privacy && (
+              <Button className={'bg-primary  ' + table_text_size}
+                onClick={async () => { saveUser() }}
+              >
+                {t("save-data")}
+              </Button>
+            )}
+          </CardFooter>
+        </Card>
+      )
+      }
+
+      {showBinding && (
+        <Card className="w-[550px]">
+          <CardHeader>
+            <CardTitle>用戶：{user.name} 您好，請綁定卡號後進行量測</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid w-full items-center gap-4">
+              <div className="flex flex-row space-y-1.5">
+                <Label className={"w-44 pt-3 " + table_text_size} htmlFor="card_no">ID {t("card-no")}</Label>
+                <Input autoFocus className={table_text_size}
+                  id="card_no"
+                  value={user.card_no}
+                  onChange={
+                    (e) => {
+                      let card_no: string = "";
+                      console.log(e.target.value);
+                      if (e.target.value.length == 10) {
+                        console.log("10 digits detected");
+
+                        card_no = e.target.value;
+                        e.target.value = ""
+                      }
+                      setUser({ ...user, card_no: e.target.value });
+
+                    }
+                  }
+                  placeholder={t("card-msg")}
+                />
+              </div>
+              {user.card_no != "" && (
+                <div className={table_text_size}>已綁定卡號： {user.card_no}</div>
+              )}
+            </div>
+
+          </CardContent>
+          <CardFooter className="flex items-center justify-between">
+            <Button variant="outline" className={'flex ' + table_text_size}
+              onClick={async () => {
+                //setParq_checked(!parq_checked);
+                setShowDataCard(true);
+                setshowBinding(false);
+                setUser({ ...user, card_no: "" });
+              }}
+            >
+              {t("cancel")}
+            </Button>
+            {user.card_no != "" && (
+              <Button className={'flex bg-primary  ' + table_text_size}
+                onClick={async () => {
+                  //setParq_checked(!parq_checked);
+                  //setShowDataCard(false);
+                }}
+              >
+                綁定後開始量測
+              </Button>
+            )}
+          </CardFooter>
+        </Card >
+      )
+      }
+
+    </div >
   );
 }
