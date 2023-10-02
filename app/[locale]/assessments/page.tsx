@@ -5,6 +5,8 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from 'next-intl';
 import { ArrowDown, Check, X } from "lucide-react"
+import { DateTime } from "luxon";
+import { UserInfo } from "@/types/types"
 
 import { table_text_size } from "@/Settings/settings"
 
@@ -30,6 +32,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
+import axios from "axios";
 import { jsPDF } from "jspdf"
 
 export default function Index(props: any) {
@@ -45,9 +48,32 @@ export default function Index(props: any) {
   const [showType, setShowType] = React.useState(false);
   const [locale, setLocale] = React.useState(props.params.locale);
 
+  const [showSearch, setShowSearch] = React.useState(false);
+  const [matchedList, setMatchedList] = React.useState([]);
+  const [userData, setUserData] = React.useState<UserInfo[]>([]);
+  const [user, setUser] = React.useState<UserInfo>({
+    id: "",
+    name: "",
+    card_no: "",
+    email: "",
+    phone: "",
+    gender: "male",
+    age: "",
+    height: "",
+    weight: ""
+  })
+  const [nowDate, setNowDate] = React.useState("");
+
+  const getUsers = async () => {
+    const res = await axios.get('/api/users/')
+    //console.log(res.data);
+    setUserData(res.data);
+  }
+
   useEffect(() => {
-    //window.location.href = "/start"
-    //router.push("/start");
+    getUsers();
+    const nowDateTime = DateTime.now().toString();
+    setNowDate(nowDateTime!.substr(0, 10));
   }, [])
 
   return (
@@ -155,12 +181,78 @@ export default function Index(props: any) {
             <div className="w-7/12 mt-4">
               <div className="flex flex-col w-full h-full mx-4 items-center justify-center">
                 <div className="flex flex-row items-center justify-center">
-                  <div className="w-[500px] h-[190px] text-xl bg-white rounded-2xl mt-3">
+                  <div className="w-[500px] h-[190px] text-xl rounded-2xl mt-3">
                     <div className="flex flex-col items-start justify-start p-4 ml-4">
-                      <div className="">日期： 2023-10-02 </div>
-                      <div className="mt-2">姓名： Alice</div>
-                      <div className="mt-2">年齡： 23</div>
-                      <div className="mt-2">性別： 女</div>
+                      <div className="">日期： 
+                        <span className="ml-4">{nowDate} </span>
+                      </div>
+
+                      <div className="flex flex-row space-y-1.5">
+
+                <Label className={"w-24 pt-3 " + table_text_size} htmlFor="name">姓名：</Label>
+                <Input className="text-xl border border-gray-500"
+                  id="name"
+                  value={user.name}
+                  onChange={
+                    (e) => {
+                      setUser({ ...user, name: e.target.value });
+                      setShowSearch(false);
+                      let matched = 0;
+                      let toMatchedList: any = [];
+                      userData.map((user, index) => {
+                        if ((matched < 10) && (user.name.includes(e.target.value))) {
+                          toMatchedList[matched] = (user.name);
+                          matched++;
+                        }
+                      })
+                      setMatchedList(toMatchedList);
+                      if (matched > 0) {
+                        setShowSearch(true);
+                      } else {
+                        //不好處理，先不處理
+                      }
+
+                    }
+                  }
+                  placeholder={t('your-name')}
+                />
+              </div>
+
+              {showSearch && matchedList.length > 0 && (
+                <div className="">
+                  <ul
+                    className="absolute w-[660px] ml-32 -mt-4 py-2 px-8 bg-gray-200 
+                          border border-gray-200 rounded-md  ">
+                    {matchedList.map((item, index) => {
+                      return <li key={index}
+                        className={"py-2 cursor-pointer " + table_text_size}
+                        onClick={
+                          () => {
+                            for (let i = 0; i < userData.length; i++) {
+                              if (userData[i].name === item) {
+                                console.log(userData[i]);
+                                setUser(userData[i]);
+                              }
+                            }
+
+                            //setUser({ ...user, name: item });
+                            setShowSearch(false);
+                          }
+                        }
+                      >
+                        {item}
+                      </li>
+                    })}
+                  </ul>
+                </div>
+              )}              
+
+                      <div className="mt-2">年齡： 
+                        <span className="ml-4">{user.age}</span>
+                      </div>
+                      <div className="mt-2">性別： 
+                        <span className="ml-4">{user.name==""?"":user.gender=="male"?"男":"女"}</span>
+                      </div>
                     </div>
                   </div>
                   <div className="w-full flex flex-col items-center">
@@ -189,7 +281,7 @@ export default function Index(props: any) {
                   </div> */}
                   <div className="w-[550px] h-[100px] p-2 rounded-2xl"></div>
                 </div>
-                <img src="/img/arrow-down-red.png" className="h-[50px] w-[50px] -ml-20"></img>
+                <img src="/img/arrow-down-green.png" className="h-[50px] w-[50px]"></img>
               </div>
 
               <div className="flex flex-col w-full h-full mx-4 items-center justify-center">
@@ -219,7 +311,7 @@ export default function Index(props: any) {
                   </div> */}
                   <div className="w-[550px] h-[100px] p-2 rounded-2xl"></div>
                 </div>
-                <img src="/img/arrow-down-red.png" className="h-[50px] w-[50px] -ml-20"></img>
+                <img src="/img/arrow-down-green.png" className="h-[50px] w-[50px]"></img>
               </div>
 
               <div className="flex flex-col w-full h-full mx-4 mb-8 items-center justify-center">
@@ -231,7 +323,7 @@ export default function Index(props: any) {
                       <div className="flex flex-row items-center justify-between">
                         <div className="text-2xl font-bold mb-2">診斷:</div>
 
-                        <Button className="bg-primary text-white text-xl -mt-4 w-[120px]">儲存診斷</Button>
+                        <Button className="bg-primary text-white text-xl -mt-4 w-[100px]">儲存</Button>
                       </div>
 
                       <div className="flex flex-row items-center justify-between">
