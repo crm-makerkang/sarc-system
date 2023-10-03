@@ -1,12 +1,18 @@
 {
   "sarc": {
     "": "",
+    "database": "Database",
     "language": "English",
     "guide": "Guide",
     "start": "Start",
     "users": "Users",
     "measurements": "Measurements",
     "assessments": "Assessments",
+    "diagnose": "Diagnose",
+    "diagnose-records": "Diagnose records",
+    "assessments-records": "Assessments records",
+    "new-assessment": "New assessment",
+    "new-diagnose": "New Diagnose",
     "sarc-form": "SARC-CalF",
     "sppb-form": "SPPB",
     "management": "Management",
@@ -101,7 +107,7 @@
     "data-management": "Data Management",
     "user-data": "User data",
     "backup": "Backup",
-    "not-backup-found": "No backup found",
+    "no-backup-found": "No backup found",
     "recovery": "Recovery",
     "import": "Import",
     "export": "Export",
@@ -113,12 +119,13 @@
     "sure-to-delete-msg": "Are you sure to delete?",
     "sure-to-delete-all-msg": "Are you sure to delete all?",
     "recovery-success-msg": "Recovery successfully!",
+    "recovery-failed-msg": "Recovery failed, please try again, or contact the administrator.",
     "delete-success-msg": "Delete successfully!",
+    "delete-failed-msg": "Delete failed, please try again, or contact the administrator.",
     "delete-all-msg": "Delete All",
     "delet-selected-users": "Delete selected users",
     "delet-selected-measurements": "Delete selected measurements",
     "save-selected-measurements": "Save selected to records",
-    "delete-failed-msg": "Failed to delete data. Please try again, or contact the administrator.",
     "calf-grith": "Calf Grith",
     "grip-strength": "Handgrip Strength",
     "chair-standup": "Chair Standup",
@@ -140,6 +147,7 @@
     "user-records": "User Records",
     "datetime": "Date/Time",
     "primary-care": "Primary Care",
-    "hostpital-client": "Hospital/Client"
+    "hostpital-client": "Hospital/Client",
+    "select-a-user": "Please select a user"
   }
 }

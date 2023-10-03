@@ -10,6 +10,17 @@ import { UserInfo } from "@/types/types"
 
 import { table_text_size } from "@/Settings/settings"
 
+import { format } from "date-fns"
+import { Calendar as CalendarIcon } from "lucide-react"
+
+import { cn } from "@/lib/utils"
+import { Calendar } from "@/components/ui/calendar"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import {
@@ -62,7 +73,9 @@ export default function Index(props: any) {
     height: "",
     weight: ""
   })
-  const [nowDate, setNowDate] = React.useState("");
+  const [vaildUser, setVaildUser] = React.useState(false);
+
+  const [date, setDate] = React.useState<Date>(); // shadcn date picker
 
   const getUsers = async () => {
     const res = await axios.get('/api/users/')
@@ -73,14 +86,91 @@ export default function Index(props: any) {
   useEffect(() => {
     getUsers();
     const nowDateTime = DateTime.now().toString();
-    setNowDate(nowDateTime!.substr(0, 10));
+    setDate(new Date());
   }, [])
 
   return (
 
     <div className="mt-12 flex flex-col w-full items-center justify-evenly ">
 
-      <div className="flex flex-row w-full w-11/12 items-center justify-evenly">
+      <div className="flex flex-row w-8/12 items-center justify-evenly">
+
+        <div className="flex flex-col space-y-1.5">
+
+          <div className="flex flex-row ml-24 justify-start">
+            <Label className="-ml-24 pt-1 text-2xl" htmlFor="name">姓名：</Label>
+            <Input className="text-xl border border-gray-500 w-[200px]"
+              id="name"
+              value={user.name}
+              onChange={
+                (e) => {
+                  setUser({ ...user, name: e.target.value });
+                  setVaildUser(false);
+                  // setShowSearch(false);
+                  let matched = 0;
+                  let toMatchedList: any = [];
+                  userData.map((user, index) => {
+                    if ((matched < 10) && (user.name.includes(e.target.value))) {
+                      toMatchedList[matched] = (user.name);
+                      matched++;
+                    }
+                  })
+                  setMatchedList(toMatchedList);
+                  if (matched > 0) {
+                    setShowSearch(true);
+                  } else {
+                    //不好處理，先不處理
+                  }
+                }
+              }
+              placeholder={t('your-name')}
+            />
+          </div>
+
+          {showSearch && matchedList.length > 0 && (
+            <div className="">
+              <ul
+                className="z-10 absolute w-[660px] ml-24  -mt-2 py-2 px-8 bg-gray-200 
+                           border border-gray-200 rounded-md  ">
+                {matchedList.map((item, index) => {
+                  return <li key={index}
+                    className={"py-2 cursor-pointer " + table_text_size}
+                    onClick={
+                      () => {
+                        for (let i = 0; i < userData.length; i++) {
+                          if (userData[i].name === item) {
+                            console.log(userData[i]);
+                            setUser(userData[i]);
+                            setVaildUser(true);
+                            break;
+                          }
+                        }
+
+                        //setUser({ ...user, name: item });
+                        setShowSearch(false);
+                      }
+                    }
+                  >
+                    {item}
+                  </li>
+                })}
+              </ul>
+            </div>
+          )}
+        </div>
+
+        <Button className="text-2xl" variant={"outline"}
+          onClick={() => {
+            if (vaildUser) {
+              console.log("in diagnose page 165:");
+            } else {
+              alert(t("select-a-user"));
+            }
+          }}
+        >
+          {t('diagnose-records')}
+          <ArrowDown className="ml-2 h-6 w-6" />
+        </Button>
 
         <div className="flex flex-col ">
           <Button className="w-[220px] font-bold text-2xl opacity-90" variant={"outline"}
@@ -183,76 +273,66 @@ export default function Index(props: any) {
                 <div className="flex flex-row items-center justify-center">
                   <div className="w-[500px] h-[190px] text-xl rounded-2xl mt-3">
                     <div className="flex flex-col items-start justify-start p-4 ml-4">
-                      <div className="">日期： 
-                        <span className="ml-4">{nowDate} </span>
+
+                      評估日期：
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant={"outline"}
+                            className={cn(
+                              "justify-start text-left font-normal",
+                              !date && "text-muted-foreground"
+                            ) + " text-xl w-[220px]  border-gray-400"}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {date ? format(date, "yyyy-MM-dd") : <span>Pick a date</span>}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0">
+                          <Calendar
+                            mode="single"
+                            selected={date}
+                            onSelect={setDate}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+
+                      <div className="mt-4">姓名：
+                        <span className="ml-4">{user.name = (vaildUser) ? user.name : ""}</span>
+                      </div>
+                      <div className="mt-2">年齡：
+                        <span className="ml-4">{user.age = (vaildUser) ? user.age : ""}</span>
+                      </div>
+                      <div className="mt-2">性別：
+                        <span className="ml-4">
+                          {user.gender = (vaildUser) ? (user.gender == "male" ? "男" : "女") : ""}
+                        </span>
                       </div>
 
-                      <div className="flex flex-row space-y-1.5">
+                      {vaildUser && (
+                        <>
+                          <div className="w-full h-[2px] mt-2 bg-gray-400"></div>
 
-                <Label className={"w-24 pt-3 " + table_text_size} htmlFor="name">姓名：</Label>
-                <Input className="text-xl border border-gray-500"
-                  id="name"
-                  value={user.name}
-                  onChange={
-                    (e) => {
-                      setUser({ ...user, name: e.target.value });
-                      setShowSearch(false);
-                      let matched = 0;
-                      let toMatchedList: any = [];
-                      userData.map((user, index) => {
-                        if ((matched < 10) && (user.name.includes(e.target.value))) {
-                          toMatchedList[matched] = (user.name);
-                          matched++;
-                        }
-                      })
-                      setMatchedList(toMatchedList);
-                      if (matched > 0) {
-                        setShowSearch(true);
-                      } else {
-                        //不好處理，先不處理
-                      }
+                          <div className="mt-4">{t("new-diagnose")}：</div>
 
-                    }
-                  }
-                  placeholder={t('your-name')}
-                />
-              </div>
+                          <Button className="w-[220px] mt-2 text-lg border-gray-400" variant={"outline"}
+                          >
+                            取得量測資料
+                          </Button>
 
-              {showSearch && matchedList.length > 0 && (
-                <div className="">
-                  <ul
-                    className="absolute w-[660px] ml-32 -mt-4 py-2 px-8 bg-gray-200 
-                          border border-gray-200 rounded-md  ">
-                    {matchedList.map((item, index) => {
-                      return <li key={index}
-                        className={"py-2 cursor-pointer " + table_text_size}
-                        onClick={
-                          () => {
-                            for (let i = 0; i < userData.length; i++) {
-                              if (userData[i].name === item) {
-                                console.log(userData[i]);
-                                setUser(userData[i]);
-                              }
-                            }
+                          <Button className="w-[220px] mt-2 text-lg border-gray-400" variant={"outline"}
+                          >
+                            取得 SARC-ClaF 問卷
+                          </Button>
 
-                            //setUser({ ...user, name: item });
-                            setShowSearch(false);
-                          }
-                        }
-                      >
-                        {item}
-                      </li>
-                    })}
-                  </ul>
-                </div>
-              )}              
+                          <Button className="w-[220px] mt-2 text-lg border-gray-400" variant={"outline"}
+                          >
+                            取得 SPPB 量表
+                          </Button>
+                        </>
+                      )}
 
-                      <div className="mt-2">年齡： 
-                        <span className="ml-4">{user.age}</span>
-                      </div>
-                      <div className="mt-2">性別： 
-                        <span className="ml-4">{user.name==""?"":user.gender=="male"?"男":"女"}</span>
-                      </div>
                     </div>
                   </div>
                   <div className="w-full flex flex-col items-center">
@@ -275,13 +355,13 @@ export default function Index(props: any) {
                       </div>
                     </div>
                   </div>
-                  {/* <img src="/img/arrow-right-green.png" className="w-[100px] h-[50px] ml-2"></img>
+                  {/* <img src="/img/arrow-right-green.png" className="w-[100px] h-[30px] ml-2"></img>
                   <div className="w-[450px] h-[100px] p-4 rounded-2xl bg-green-700 text-white text-xl">
                     肌少症機率低。<div> 若有疑慮，請洽詢醫師 </div>
                   </div> */}
                   <div className="w-[550px] h-[100px] p-2 rounded-2xl"></div>
                 </div>
-                <img src="/img/arrow-down-green.png" className="h-[50px] w-[50px]"></img>
+                <img src="/img/arrow-down-green.png" className="h-[50px] w-[40px]"></img>
               </div>
 
               <div className="flex flex-col w-full h-full mx-4 items-center justify-center">
@@ -311,7 +391,7 @@ export default function Index(props: any) {
                   </div> */}
                   <div className="w-[550px] h-[100px] p-2 rounded-2xl"></div>
                 </div>
-                <img src="/img/arrow-down-green.png" className="h-[50px] w-[50px]"></img>
+                <img src="/img/arrow-down-green.png" className="h-[50px] w-[40px]"></img>
               </div>
 
               <div className="flex flex-col w-full h-full mx-4 mb-8 items-center justify-center">
@@ -323,7 +403,14 @@ export default function Index(props: any) {
                       <div className="flex flex-row items-center justify-between">
                         <div className="text-2xl font-bold mb-2">診斷:</div>
 
-                        <Button className="bg-primary text-white text-xl -mt-4 w-[100px]">儲存</Button>
+                        <Button className="bg-primary text-white text-xl -mt-4 w-[100px]"
+                          onClick={() => {
+                            console.log("in diagnoses oage 373:", date)
+                            //setDate(new Date("2023-10-05"));
+                          }}
+                        >
+                          儲存
+                        </Button>
                       </div>
 
                       <div className="flex flex-row items-center justify-between">
