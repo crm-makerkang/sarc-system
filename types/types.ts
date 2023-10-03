@@ -27,8 +27,6 @@ export type Measurement = {
 }
 
 export type Diagonose = {
-  datetime: string,
-  name: string,
   calf_grith: string,
   grip_strength: string,
   chair_standup5: string,
@@ -40,10 +38,10 @@ export type Diagonose = {
   balanceC: string,
   uid: string,
   rid: string,
-  aid: string,
-  a_datetime: string,
-  a_diagnostic: string,
-  a_examiner: string,
+  dia_id: string,
+  dia_datetime: string,
+  dia_result: string,
+  dia_examiner: string,
   sarc_f_Q1: string,
   sarc_f_Q2: string,
   sarc_f_Q3: string,

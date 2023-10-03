@@ -26,22 +26,6 @@ function readDiagnoses() {
   }
 }
 
-function readMeasuring() {
-  try {
-    var data = fs.readFileSync(json_in_measure_filename, 'utf8');
-    try {
-      const in_measuring = JSON.parse(data);
-      return in_measuring;
-    } catch (error: any) {
-      return [];
-    }
-  } catch (error: any) {
-    console.log(error.message);
-    return [];
-  }
-}
-
-
 export async function GET(request: NextRequest) {
   console.log("diagnoses api GET method");
 
@@ -54,27 +38,27 @@ export async function GET(request: NextRequest) {
     return response;
 
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    return NextResponse.json("Failed");
   }
 }
 
 export async function POST(request: NextRequest) {
   console.log("measurements POST Mewthod");
 
-  if (request.nextUrl.searchParams.get("cmd") == "writeToRecords") {
-    dataToWrite = readRecords();
-    fileToWrite = json_measurements_filename;
+  if (request.nextUrl.searchParams.get("cmd") == "writeToDiagnoses") {
+    dataToWrite = readDiagnoses();
+    fileToWrite = json_diagnoses_filename;
 
     try {
       const reqBody = await request.json();
-      const record_uuid = uuidv4();
+      const diagnose_uuid = uuidv4();
       const nowDateTime = DateTime.now().toString();
 
-      reqBody.rid = record_uuid;
-      reqBody.datetime = nowDateTime!.substr(0, 10) + " " + nowDateTime!.substr(11, 5);
+      reqBody.dia_id = diagnose_uuid;
+      reqBody.dia_datetime = nowDateTime!.substr(0, 10) + " " + nowDateTime!.substr(11, 5);
       dataToWrite.push(reqBody);
 
-      console.log("in measurements api 81:", reqBody, dataToWrite.length, dataToWrite);
+      console.log("in diagnose_uuid api 77", reqBody, dataToWrite.length, dataToWrite);
 
     } catch (error) {
       console.log("reqBody err");
@@ -88,7 +72,7 @@ export async function POST(request: NextRequest) {
     try {
       fs.writeFileSync(fileToWrite, JSON.stringify(dataToWrite));
       const response = NextResponse.json({
-        message: "POST successful:",
+        message: "diagnoses POST successful 75:",
         success: true,
       })
       return response;
@@ -101,43 +85,6 @@ export async function POST(request: NextRequest) {
       })
       return response;
     }
-
-  } else if (request.nextUrl.searchParams.get("cmd") == "writeToMeasuring") {
-    // dataToWrite = readMeasuring();
-    fileToWrite = json_in_measure_filename;
-
-    try {
-      dataToWrite = await request.json();
-
-      console.log("in measurements api 116:", dataToWrite, dataToWrite.length);
-
-    } catch (error) {
-      console.log("reqBody err");
-      const response = NextResponse.json({
-        message: "reqBody err",
-        success: false,
-      })
-      return response;
-    }
-
-    try {
-      fs.writeFileSync(fileToWrite, JSON.stringify(dataToWrite));
-      const response = NextResponse.json({
-        message: "POST successful:",
-        success: true,
-      })
-      return response;
-
-    } catch (error: any) {
-      console.log(error.message);
-      const response = NextResponse.json({
-        message: error.message,
-        success: false,
-      })
-      return response;
-    }
-
-
   } else {
     return NextResponse.json({
       message: "cmd incorrected",
@@ -148,37 +95,24 @@ export async function POST(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
-  console.log("measurements DELETE Method");
-
-  const isMeasuring = request.nextUrl.searchParams.get("type") == "measuring";
+  console.log("diagnose DELETE Method");
 
   try {
-    measurements = isMeasuring ? readMeasuring() : readRecords();
-    console.log("Records number:", measurements.length);
+    diagnoses = readDiagnoses();
+    console.log("Diagnose number:", diagnoses.length);
 
     try {
       const reqBody = await request.json();
-      console.log("in management api 117:", reqBody);
+      console.log("in diagnoses api 122:", reqBody);
 
-      if (isMeasuring) {
-        // reqBody.id is the index array
-        for (var i = (reqBody.id.length - 1); i > -1; i--) {
-          console.log("in management api 122:", reqBody.id[i]);
-          measurements.splice(reqBody.id, 1);
-        }
-      } else {
-
-        for (var i = 0; i < measurements.length; i++) {
-          console.log("in management api 128:", reqBody.id);
-          for (var j = 0; j < reqBody.id.length; j++) {
-            if (measurements[i].rid === reqBody.id[j]) {
-              measurements.splice(i, 1);
-            }
+      for (var i = 0; i < diagnoses.length; i++) {
+        console.log("in diagnoses api 125:", reqBody.dia_id);
+        for (var j = 0; j < reqBody.id.length; j++) {
+          if (diagnoses[i].dia_id === reqBody.dia_id[j]) {
+            diagnoses.splice(i, 1);
           }
         }
       }
-
-      // console.log("in management api 136:", measurements.length, measurements);
     } catch (error) {
       console.log("reqBody err");
       const response = NextResponse.json({
@@ -189,8 +123,7 @@ export async function DELETE(request: NextRequest) {
     }
 
     try {
-      const measurementFileName = isMeasuring ? json_in_measure_filename : json_measurements_filename
-      fs.writeFileSync(measurementFileName, JSON.stringify(measurements))
+      fs.writeFileSync(json_diagnoses_filename, JSON.stringify(diagnoses))
     } catch (error: any) {
       console.log(error.message);
       const response = NextResponse.json({

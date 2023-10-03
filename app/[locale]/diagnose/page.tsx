@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from 'next-intl';
 import { ArrowDown, Check, X } from "lucide-react"
 import { DateTime } from "luxon";
-import { UserInfo } from "@/types/types"
+import { UserInfo, Diagnose } from "@/types/types"
 
 import { table_text_size } from "@/Settings/settings"
 
@@ -47,7 +47,7 @@ import axios from "axios";
 import { jsPDF } from "jspdf"
 
 export default function Index(props: any) {
-  console.log("in guide", props);
+  //console.log("in diagnose page 50:", props);
   const t = useTranslations('sarc');
   const router = useRouter();
 
@@ -60,6 +60,9 @@ export default function Index(props: any) {
   const [locale, setLocale] = React.useState(props.params.locale);
 
   const [showSearch, setShowSearch] = React.useState(false);
+  const [showDiagnoseList, setShowDiagnoseList] = React.useState(false);
+  const [diagnoseList, setDiagnoseList] = React.useState([["",""]]);
+
   const [matchedList, setMatchedList] = React.useState([]);
   const [userData, setUserData] = React.useState<UserInfo[]>([]);
   const [user, setUser] = React.useState<UserInfo>({
@@ -72,7 +75,32 @@ export default function Index(props: any) {
     age: "",
     height: "",
     weight: ""
-  })
+  });
+
+  const [diagnoses, setDiagnoses] = React.useState<Diagnose[]>([]);
+  const [diagnose, setDiagnose] = React.useState<Diagnose>({
+    calf_grith: "",
+    grip_strength: "",
+    chair_standup5: "",
+    muscle_quantity: "",
+    gait_speed4: "",
+    gait_speed6: "",
+    balanceA: "",
+    balanceB: "",
+    balanceC: "",
+    uid: "",
+    rid: "",
+    dia_id: "",
+    dia_datetime: "",
+    dia_result: "",
+    dia_examiner: "",
+    sarc_f_Q1: "",
+    sarc_f_Q2: "",
+    sarc_f_Q3: "",
+    sarc_f_Q4: "",
+    sarc_f_Q5: ""
+  });
+
   const [vaildUser, setVaildUser] = React.useState(false);
 
   const [date, setDate] = React.useState<Date>(); // shadcn date picker
@@ -83,9 +111,16 @@ export default function Index(props: any) {
     setUserData(res.data);
   }
 
+  const getDiagnoses = async () => {
+    const res = await axios.get('/api/diagnoses/')
+    console.log("in diagnoses page 88:",res.data);
+    setDiagnoses(res.data);
+  }
+  
   useEffect(() => {
     getUsers();
-    const nowDateTime = DateTime.now().toString();
+    getDiagnoses();
+    //const nowDateTime = DateTime.now().toString();
     setDate(new Date());
   }, [])
 
@@ -98,15 +133,15 @@ export default function Index(props: any) {
         <div className="flex flex-col space-y-1.5">
 
           <div className="flex flex-row ml-24 justify-start">
-            <Label className="-ml-24 pt-1 text-2xl" htmlFor="name">姓名：</Label>
+            <Label className="-ml-24 pt-1 text-2xl" htmlFor="diag_name">姓名：</Label>
             <Input className="text-xl border border-gray-500 w-[200px]"
-              id="name"
+              id="diag_name"
               value={user.name}
               onChange={
                 (e) => {
+                  console.log("xxx", e.target.value);
                   setUser({ ...user, name: e.target.value });
                   setVaildUser(false);
-                  // setShowSearch(false);
                   let matched = 0;
                   let toMatchedList: any = [];
                   userData.map((user, index) => {
@@ -146,8 +181,8 @@ export default function Index(props: any) {
                           }
                         }
 
-                        //setUser({ ...user, name: item });
                         setShowSearch(false);
+                        setShowDiagnoseList(false);
                       }
                     }
                   >
@@ -159,18 +194,62 @@ export default function Index(props: any) {
           )}
         </div>
 
-        <Button className="text-2xl" variant={"outline"}
-          onClick={() => {
-            if (vaildUser) {
-              console.log("in diagnose page 165:");
-            } else {
-              alert(t("select-a-user"));
-            }
-          }}
-        >
-          {t('diagnose-records')}
-          <ArrowDown className="ml-2 h-6 w-6" />
-        </Button>
+        <div className="flex flex-col ">
+          <Button className="text-2xl" variant={"outline"}
+            onClick={() => {
+              if (vaildUser) {
+                if (showDiagnoseList) {
+                  setShowDiagnoseList(false);
+                  return;
+                }
+
+                let matched = 0;
+                let toMatchedList: any = [];
+                for (let i = 0; i < diagnoses.length; i++) {
+                  for (var j=0; j< userData.length; j++) {
+                    if (diagnoses[i].uid == userData[j].id) {
+                      toMatchedList[matched] = [i.toString(), diagnoses[i].dia_datetime];
+                      matched++;
+                    }
+                  }
+                }
+                setDiagnoseList(toMatchedList);
+                if (matched > 0) {
+                  setShowDiagnoseList(true);
+                } else {
+                  //不好處理，先不處理
+                }
+
+              } else {
+                alert(t("select-a-user"));
+              }
+            }}
+          >
+            {t('diagnose-records')}
+            <ArrowDown className="ml-2 h-6 w-6" />
+          </Button>
+          {showDiagnoseList && (
+            <div className="">
+              <ul
+                className="z-10 absolute w-[300px] py-2 px-8 bg-gray-200 
+                           border border-gray-200 rounded-md  ">
+                {diagnoseList.map((item, index) => {
+                  return <li key={index}
+                    className={"py-2 cursor-pointer " + table_text_size}
+                    onClick={
+                      () => {
+                        setDiagnose(diagnoses[parseInt(item[0])]);
+                        setShowDiagnoseList(false);
+                      }
+                    }
+                  >
+                    {item[1]}
+                  </li>
+                })}
+              </ul>
+            </div>
+          )}
+        </div>
 
         <div className="flex flex-col ">
           <Button className="w-[220px] font-bold text-2xl opacity-90" variant={"outline"}
@@ -186,7 +265,7 @@ export default function Index(props: any) {
           </Button>
 
           {showStandard && (
-            <div className="w-full flex flex-row justify-start ">
+            <div className="w-full flex flex-row justify-start z-10">
               <ul
                 className="absolute ml-4 py-2 px-8 bg-white
                                 border border-gray-200 rounded-md  ">
@@ -195,6 +274,7 @@ export default function Index(props: any) {
                   onClick={
                     () => {
                       setAssessmentStandard("AWGS 2019");
+                      setShowDiagnoseList(false);
                       setShowStandard(false);
                     }
                   }
@@ -231,7 +311,7 @@ export default function Index(props: any) {
           </Button>
 
           {showType && (
-            <div className="w-full flex flex-row justify-center ">
+            <div className="w-full flex flex-row justify-center z-10">
               <ul
                 className="absolute py-2 px-8 bg-white 
                                 border border-gray-200 rounded-md  ">
@@ -306,7 +386,8 @@ export default function Index(props: any) {
                       </div>
                       <div className="mt-2">性別：
                         <span className="ml-4">
-                          {user.gender = (vaildUser) ? (user.gender == "male" ? "男" : "女") : ""}
+                          {/* {user.gender = (vaildUser) ? (user.gender == t("male") ? "男" : "女") : ""} */}
+                          { user.gender }
                         </span>
                       </div>
 
@@ -340,8 +421,13 @@ export default function Index(props: any) {
                       <div className="text-2xl font-bold mb-2">篩檢:</div>
                       <div className="flex flex-row items-center justify-between">
                         <div className="ml-14">{"小腿圍： 男<34公分，女<33公分"}</div>
-                        <div className="bg-green-700 text-white p-1 rounded-md w-[100px]
-                                        flex items-center justify-end pr-2">35.8 公分</div>
+                        <div className={ ((user.gender == "male") 
+                                           ? (diagnose.calf_grith < 34)? "bg-red-500": "bg-green-700"
+                                           : (diagnose.calf_grith < 33)? "bg-red-500": "bg-green-700") 
+                                      + " text-white p-1 rounded-md w-[100px]" 
+                                      + " flex items-center justify-end pr-2"}
+                        >
+                          {diagnose.calf_grith} 公分</div>
                       </div>
                       <div className="flex flex-row items-center justify-between">
                         <div className="ml-8">{"或 SARC-F 問卷 >= 4 分"}</div>
@@ -425,9 +511,9 @@ export default function Index(props: any) {
                       </div>
 
                       <div className="flex flex-row items-center justify-start mt-4">
-                        <Label className="text-xl w-2/12" htmlFor="diagnostic">診斷者：</Label>
+                        <Label className="text-xl w-2/12" htmlFor="examiner">診斷者：</Label>
                         <Input className={table_text_size + " w-10/12 -ml-7 border-gray-400"}
-                          id="diagnostic" placeholder="名字"
+                          id="examiner" placeholder="名字"
                         />
                       </div>
 
