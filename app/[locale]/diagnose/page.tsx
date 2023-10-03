@@ -422,8 +422,8 @@ export default function Index(props: any) {
                       <div className="flex flex-row items-center justify-between">
                         <div className="ml-14">{"小腿圍： 男<34公分，女<33公分"}</div>
                         <div className={ ((user.gender == "male") 
-                                           ? (diagnose.calf_grith < 34)? "bg-red-500": "bg-green-700"
-                                           : (diagnose.calf_grith < 33)? "bg-red-500": "bg-green-700") 
+                                           ? (parseInt(diagnose.calf_grith) < 34)? "bg-red-500": "bg-green-700"
+                                           : (parseInt(diagnose.calf_grith) < 33)? "bg-red-500": "bg-green-700") 
                                       + " text-white p-1 rounded-md w-[100px]" 
                                       + " flex items-center justify-end pr-2"}
                         >

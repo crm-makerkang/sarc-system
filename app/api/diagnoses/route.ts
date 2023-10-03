@@ -4,8 +4,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { DateTime } from "luxon";
 import * as fs from "fs";
 
-import { Measurement, Diagonose } from '@/types/types'
-var diagnoses: Diagonose[] = [];
+import { Measurement, Diagnose } from '@/types/types'
+var diagnoses: Diagnose[] = [];
 var dataToWrite: Measurement[] = [];
 var fileToWrite = "";
 

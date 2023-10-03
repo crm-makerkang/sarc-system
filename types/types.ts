@@ -26,7 +26,7 @@ export type Measurement = {
   rid: string
 }
 
-export type Diagonose = {
+export type Diagnose = {
   calf_grith: string,
   grip_strength: string,
   chair_standup5: string,
