@@ -34,7 +34,7 @@ import {
 } from "@/components/ui/select"
 
 export default function Index(props: any) {
-  //console.log("start", props);
+  console.log("start", props);
 
   const router = useRouter();
   const searchParams = useSearchParams()

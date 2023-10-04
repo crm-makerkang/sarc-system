@@ -19,11 +19,14 @@
     "sarc_f_Q1": "0",
     "sarc_f_Q2": "0",
     "sarc_f_Q3": "0",
-    "sarc_f_Q4": "0",
-    "sarc_f_Q5": "0"
+    "sarc_f_Q4": "1",
+    "sarc_f_Q5": "1",
+    "sarc_f_score": "2",
+    "sarc_calf_score": "2",
+    "comments": "Record 1"
   },
   {
-    "calf_grith": "38.5",
+    "calf_grith": "32.5",
     "grip_strength": "31.6",
     "chair_standup5": "8.4",
     "muscle_quantity": "2.2",
@@ -41,8 +44,11 @@
     "dia_examiner": "Dr. Lin",
     "sarc_f_Q1": "0",
     "sarc_f_Q2": "0",
-    "sarc_f_Q3": "0",
-    "sarc_f_Q4": "0",
-    "sarc_f_Q5": "0"
+    "sarc_f_Q3": "1",
+    "sarc_f_Q4": "1",
+    "sarc_f_Q5": "1",
+    "sarc_f_score": "3",
+    "sarc_calf_score": "13",
+    "comments": "Record2"
   }
 ]

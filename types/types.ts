@@ -46,5 +46,8 @@ export type Diagnose = {
   sarc_f_Q2: string,
   sarc_f_Q3: string,
   sarc_f_Q4: string,
-  sarc_f_Q5: string
+  sarc_f_Q5: string,
+  sarc_f_score: string,
+  sarc_calf_score: string,
+  comments: string
 }

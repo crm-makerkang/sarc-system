@@ -148,6 +148,7 @@
     "datetime": "Date/Time",
     "primary-care": "Primary Care",
     "hostpital-client": "Hospital/Client",
-    "select-a-user": "Please select a user"
+    "select-a-user": "Please select a user",
+    "no-diag-data": "No diagnosis data"
   }
 }

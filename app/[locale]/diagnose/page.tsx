@@ -47,7 +47,7 @@ import axios from "axios";
 import { jsPDF } from "jspdf"
 
 export default function Index(props: any) {
-  //console.log("in diagnose page 50:", props);
+  console.log("in diagnose page 50:", props);
   const t = useTranslations('sarc');
   const router = useRouter();
 
@@ -61,7 +61,7 @@ export default function Index(props: any) {
 
   const [showSearch, setShowSearch] = React.useState(false);
   const [showDiagnoseList, setShowDiagnoseList] = React.useState(false);
-  const [diagnoseList, setDiagnoseList] = React.useState([["",""]]);
+  const [diagnoseList, setDiagnoseList] = React.useState([["", ""]]);
 
   const [matchedList, setMatchedList] = React.useState([]);
   const [userData, setUserData] = React.useState<UserInfo[]>([]);
@@ -98,12 +98,19 @@ export default function Index(props: any) {
     sarc_f_Q2: "",
     sarc_f_Q3: "",
     sarc_f_Q4: "",
-    sarc_f_Q5: ""
+    sarc_f_Q5: "",
+    sarc_f_score: "",
+    sarc_calf_score: "",
+    comments: ""
   });
 
   const [vaildUser, setVaildUser] = React.useState(false);
 
   const [date, setDate] = React.useState<Date>(); // shadcn date picker
+
+  const [primaryScreeningPass, setPrimaryScreeningPass] = React.useState(true);
+  const [primaryEvaluatePass, setPrimaryEvaluatePass] = React.useState(true);
+
 
   const getUsers = async () => {
     const res = await axios.get('/api/users/')
@@ -113,16 +120,36 @@ export default function Index(props: any) {
 
   const getDiagnoses = async () => {
     const res = await axios.get('/api/diagnoses/')
-    console.log("in diagnoses page 88:",res.data);
+    console.log("in diagnoses page 88:", res.data);
     setDiagnoses(res.data);
   }
-  
+
   useEffect(() => {
     getUsers();
     getDiagnoses();
     //const nowDateTime = DateTime.now().toString();
     setDate(new Date());
   }, [])
+
+  useEffect(() => {
+    (((user.gender == "male")
+      ? ((parseInt(diagnose.calf_grith) < 34) ? true : false)
+      : ((parseInt(diagnose.calf_grith) < 33) ? true : false))
+      || (parseInt(diagnose.sarc_f_score) > 3)
+      || (parseInt(diagnose.sarc_calf_score) > 10))
+      ? setPrimaryScreeningPass(false) : setPrimaryScreeningPass(true);
+
+
+    (((user.gender == "male")
+      ? ((parseInt(diagnose.grip_strength) < 28) ? true : false)
+      : ((parseInt(diagnose.grip_strength) < 18) ? true : false))
+      || (parseInt(diagnose.chair_standup5) > 12.0))
+      ? setPrimaryEvaluatePass(false) : setPrimaryEvaluatePass(true);
+
+    console.log("in diagnose page 149:", primaryEvaluatePass);
+
+
+  }, [diagnose])
 
   return (
 
@@ -139,7 +166,6 @@ export default function Index(props: any) {
               value={user.name}
               onChange={
                 (e) => {
-                  console.log("xxx", e.target.value);
                   setUser({ ...user, name: e.target.value });
                   setVaildUser(false);
                   let matched = 0;
@@ -206,19 +232,23 @@ export default function Index(props: any) {
                 let matched = 0;
                 let toMatchedList: any = [];
                 for (let i = 0; i < diagnoses.length; i++) {
-                  for (var j=0; j< userData.length; j++) {
-                    if (diagnoses[i].uid == userData[j].id) {
-                      toMatchedList[matched] = [i.toString(), diagnoses[i].dia_datetime];
-                      matched++;
-                    }
+                  // for (var j = 0; j < userData.length; j++) {
+                  //   if (diagnoses[i].uid == userData[j].id) {
+                  //     toMatchedList[matched] = [i.toString(), diagnoses[i].dia_datetime];
+                  //     matched++;
+                  //   }
+                  // }
+                  if (diagnoses[i].uid == user.id) {
+                    toMatchedList[matched] = [i.toString(), diagnoses[i].dia_datetime];
+                    matched++;
                   }
                 }
                 setDiagnoseList(toMatchedList);
-                if (matched > 0) {
-                  setShowDiagnoseList(true);
-                } else {
-                  //不好處理，先不處理
+                if (matched == 0) {
+                  toMatchedList[matched] = ["0", t("no-diag-data")];
                 }
+
+                setShowDiagnoseList(true);
 
               } else {
                 alert(t("select-a-user"));
@@ -238,7 +268,9 @@ export default function Index(props: any) {
                     className={"py-2 cursor-pointer " + table_text_size}
                     onClick={
                       () => {
-                        setDiagnose(diagnoses[parseInt(item[0])]);
+                        if (item[1] != t("no-diag-data")) {
+                          setDiagnose(diagnoses[parseInt(item[0])]);
+                        }
                         setShowDiagnoseList(false);
                       }
                     }
@@ -354,7 +386,7 @@ export default function Index(props: any) {
                   <div className="w-[500px] h-[190px] text-xl rounded-2xl mt-3">
                     <div className="flex flex-col items-start justify-start p-4 ml-4">
 
-                      評估日期：
+                      <div className=" bg-white">評估日期：</div>
                       <Popover>
                         <PopoverTrigger asChild>
                           <Button
@@ -378,16 +410,15 @@ export default function Index(props: any) {
                         </PopoverContent>
                       </Popover>
 
-                      <div className="mt-4">姓名：
+                      <div className="mt-4 bg-white">姓名：
                         <span className="ml-4">{user.name = (vaildUser) ? user.name : ""}</span>
                       </div>
-                      <div className="mt-2">年齡：
+                      <div className="mt-2 bg-white">年齡：
                         <span className="ml-4">{user.age = (vaildUser) ? user.age : ""}</span>
                       </div>
-                      <div className="mt-2">性別：
+                      <div className="mt-2 bg-white">性別：
                         <span className="ml-4">
-                          {/* {user.gender = (vaildUser) ? (user.gender == t("male") ? "男" : "女") : ""} */}
-                          { user.gender }
+                          {(vaildUser) ? (user.gender == "male" ? "男" : "女") : ""}
                         </span>
                       </div>
 
@@ -395,7 +426,7 @@ export default function Index(props: any) {
                         <>
                           <div className="w-full h-[2px] mt-2 bg-gray-400"></div>
 
-                          <div className="mt-4">{t("new-diagnose")}：</div>
+                          <div className="mt-4 bg-white">{t("new-diagnose")}：</div>
 
                           <Button className="w-[220px] mt-2 text-lg border-gray-400" variant={"outline"}
                           >
@@ -421,64 +452,81 @@ export default function Index(props: any) {
                       <div className="text-2xl font-bold mb-2">篩檢:</div>
                       <div className="flex flex-row items-center justify-between">
                         <div className="ml-14">{"小腿圍： 男<34公分，女<33公分"}</div>
-                        <div className={ ((user.gender == "male") 
-                                           ? (parseInt(diagnose.calf_grith) < 34)? "bg-red-500": "bg-green-700"
-                                           : (parseInt(diagnose.calf_grith) < 33)? "bg-red-500": "bg-green-700") 
-                                      + " text-white p-1 rounded-md w-[100px]" 
-                                      + " flex items-center justify-end pr-2"}
+                        <div className={((user.gender == "male")
+                          ? (parseInt(diagnose.calf_grith) < 34) ? "bg-red-500" : "bg-green-700"
+                          : (parseInt(diagnose.calf_grith) < 33) ? "bg-red-500" : "bg-green-700")
+                          + " text-white p-1 rounded-md w-[100px]"
+                          + " flex items-center justify-end pr-2"}
                         >
                           {diagnose.calf_grith} 公分</div>
                       </div>
                       <div className="flex flex-row items-center justify-between">
                         <div className="ml-8">{"或 SARC-F 問卷 >= 4 分"}</div>
-                        <div className="bg-red-700 text-white p-1 mt-1 rounded-md w-[100px]
-                                        flex items-center justify-end pr-2"> 4 分 </div>
+                        <div className={
+                          ((parseInt(diagnose.sarc_f_score) > 3) ? "bg-red-500" : "bg-green-700")
+                          + " text-white p-1 rounded-md w-[100px]"
+                          + " flex items-center justify-end pr-2 mt-1"}
+                        >  {(diagnose.sarc_f_score == "") ? "" : diagnose.sarc_f_score} 分
+                        </div>
                       </div>
                       <div className="flex flex-row items-center justify-between">
                         <div className="ml-8">{"或 SARC-CalF 問卷 >= 11 分"}</div>
-                        <div className="bg-red-700 text-white p-1 mt-1 rounded-md w-[100px]
-                                        flex items-center justify-end pr-2"> 11 分</div>
+                        <div className={
+                          ((parseInt(diagnose.sarc_calf_score) > 10) ? "bg-red-500" : "bg-green-700")
+                          + " text-white p-1 rounded-md w-[100px]"
+                          + " flex items-center justify-end pr-2 mt-1"}
+                        >  {(diagnose.sarc_calf_score == "") ? "" : diagnose.sarc_calf_score} 分
+                        </div>
                       </div>
                     </div>
                   </div>
-                  {/* <img src="/img/arrow-right-green.png" className="w-[100px] h-[30px] ml-2"></img>
-                  <div className="w-[450px] h-[100px] p-4 rounded-2xl bg-green-700 text-white text-xl">
-                    肌少症機率低。<div> 若有疑慮，請洽詢醫師 </div>
-                  </div> */}
                   <div className="w-[550px] h-[100px] p-2 rounded-2xl"></div>
                 </div>
-                <img src="/img/arrow-down-green.png" className="h-[50px] w-[40px]"></img>
+
+                <img src={primaryScreeningPass ? "/img/arrow-down-green.png" : "/img/arrow-down-red.png"}
+                  className="h-[50px] w-[40px]">
+                </img>
+
               </div>
 
-              <div className="flex flex-col w-full h-full mx-4 items-center justify-center">
-                <div className="flex flex-row items-center justify-center">
-                  <div className="w-[500px] h-[100px] text-xl">
-                  </div>
-                  <div className="w-full flex flex-col items-center">
-                    <div className="ml-4 p-4 border-2 border-gray-400 w-full text-xl rounded-2xl">
-                      <div className="text-2xl font-bold mb-2">評估:</div>
-                      <div className="text-xl font-bold ml-4">肌肉力量:</div>
-                      <div className="flex flex-row items-center justify-between">
-                        <div className="ml-14">{"握力: 男<28公斤，女<18公斤"}</div>
-                        <div className="bg-green-700 text-white p-1 rounded-md w-[100px]
-                                        flex items-center justify-end pr-2">35.8 公斤</div>
-                      </div>
-                      <div className="text-xl font-bold ml-4">體能表現:</div>
-                      <div className="flex flex-row items-center justify-between">
-                        <div className="ml-14">{"五次起立坐下: >=12 秒"}</div>
-                        <div className="bg-green-700 text-white p-1 rounded-md w-[100px]
-                                        flex items-center justify-end pr-2">11.28 秒</div>
+              {!primaryScreeningPass && (
+                <div className="flex flex-col w-full h-full mx-4 items-center justify-center">
+                  <div className="flex flex-row items-center justify-center">
+                    <div className="w-[500px] h-[100px] text-xl">
+                    </div>
+                    <div className="w-full flex flex-col items-center">
+                      <div className="ml-4 p-4 border-2 border-gray-400 w-full text-xl rounded-2xl">
+                        <div className="text-2xl font-bold mb-2">評估:</div>
+                        <div className="text-xl font-bold ml-4">肌肉力量:</div>
+                        <div className="flex flex-row items-center justify-between">
+                          <div className="ml-14">{"握力: 男<28公斤，女<18公斤"}</div>
+                          <div className={((user.gender == "male")
+                            ? (parseInt(diagnose.grip_strength) < 28) ? "bg-red-500" : "bg-green-700"
+                            : (parseInt(diagnose.grip_strength) < 18) ? "bg-red-500" : "bg-green-700")
+                            + " text-white p-1 rounded-md w-[100px]"
+                            + " flex items-center justify-end pr-2"}
+                          >{diagnose.grip_strength} 公斤</div>
+                        </div>
+                        <div className="text-xl font-bold ml-4">體能表現:</div>
+                        <div className="flex flex-row items-center justify-between">
+                          <div className="ml-14">{"五次起立坐下: >=12 秒"}</div>
+                          <div className={
+                            ((parseInt(diagnose.chair_standup5) > 12) ? "bg-red-500" : "bg-green-700")
+                            + " text-white p-1 rounded-md w-[100px]"
+                            + " flex items-center justify-end pr-2"}
+                          >{diagnose.chair_standup5} 秒</div>
+                        </div>
                       </div>
                     </div>
+                    <div className="w-[550px] h-[100px] p-2 rounded-2xl"></div>
                   </div>
-                  {/* <img src="/img/arrow-right-green.png" className="w-[100px] h-[50px] ml-2"></img>
-                  <div className="w-[450px] h-[100px] p-4 rounded-2xl bg-green-700 text-white text-xl">
-                    肌少症機率低。<div> 若有疑慮，請洽詢醫師 </div>
-                  </div> */}
-                  <div className="w-[550px] h-[100px] p-2 rounded-2xl"></div>
+
+                  <img src={primaryEvaluatePass ? "/img/arrow-down-green.png" : "/img/arrow-down-red.png"}
+                    className="h-[50px] w-[40px]">
+                  </img>
+
                 </div>
-                <img src="/img/arrow-down-green.png" className="h-[50px] w-[40px]"></img>
-              </div>
+              )}
 
               <div className="flex flex-col w-full h-full mx-4 mb-8 items-center justify-center">
                 <div className="flex flex-row items-center justify-center">
@@ -510,6 +558,7 @@ export default function Index(props: any) {
                         <div>2. 請諮詢醫師進行『營養及運動生活型態調整』</div>
                       </div>
 
+
                       <div className="flex flex-row items-center justify-start mt-4">
                         <Label className="text-xl w-2/12" htmlFor="examiner">診斷者：</Label>
                         <Input className={table_text_size + " w-10/12 -ml-7 border-gray-400"}
@@ -518,7 +567,7 @@ export default function Index(props: any) {
                       </div>
 
                       <div className="mt-2">
-                        說明:
+                        備註:
                       </div>
 
                       <Textarea id="description" className="ml-[86px] -mt-6 w-10/12 h-[200px] text-xl border-gray-400" />
