@@ -133,20 +133,20 @@ export default function Index(props: any) {
 
   useEffect(() => {
     (((user.gender == "male")
-      ? ((parseInt(diagnose.calf_grith) < 34) ? true : false)
-      : ((parseInt(diagnose.calf_grith) < 33) ? true : false))
+      ? ((parseFloat(diagnose.calf_grith) < 34.0) ? true : false)
+      : ((parseFloat(diagnose.calf_grith) < 33.0) ? true : false))
       || (parseInt(diagnose.sarc_f_score) > 3)
       || (parseInt(diagnose.sarc_calf_score) > 10))
       ? setPrimaryScreeningPass(false) : setPrimaryScreeningPass(true);
 
 
     (((user.gender == "male")
-      ? ((parseInt(diagnose.grip_strength) < 28) ? true : false)
-      : ((parseInt(diagnose.grip_strength) < 18) ? true : false))
-      || (parseInt(diagnose.chair_standup5) > 12.0))
+      ? ((parseFloat(diagnose.grip_strength) < 28.0) ? true : false)
+      : ((parseFloat(diagnose.grip_strength) < 18.0) ? true : false))
+      || (parseFloat(diagnose.chair_standup5) > 12.0))
       ? setPrimaryEvaluatePass(false) : setPrimaryEvaluatePass(true);
 
-    console.log("in diagnose page 149:", primaryEvaluatePass);
+    console.log("in diagnose page 149:", parseFloat(diagnose.chair_standup5) > 12.0);
 
 
   }, [diagnose])
@@ -489,7 +489,7 @@ export default function Index(props: any) {
 
               </div>
 
-              {!primaryScreeningPass && (
+              {true && (
                 <div className="flex flex-col w-full h-full mx-4 items-center justify-center">
                   <div className="flex flex-row items-center justify-center">
                     <div className="w-[500px] h-[100px] text-xl">
@@ -548,21 +548,45 @@ export default function Index(props: any) {
                       </div>
 
                       <div className="flex flex-row items-center justify-between">
-                        <div className="ml-14 text-2xl font-bold text-red-500">{"可能肌少症"}</div>
-                        <div className=" text-white p-1 rounded-md w-[120px]"></div>
+                        {primaryEvaluatePass && (
+                          <>
+                            <div className="ml-14 text-2xl font-bold text-green-700">{"肌少症機率低"}</div>
+                            <div className=" text-white p-1 rounded-md w-[120px]"></div>
+                          </>
+                        )}
+                        {!primaryEvaluatePass && (
+                          <>
+                            <div className="ml-14 text-2xl font-bold text-red-500">{"可能肌少症"}</div>
+                            <div className=" text-white p-1 rounded-md w-[120px]"></div>
+                          </>
+                        )}
+
                       </div>
-                      <div className="ml-16">
-                        <div className="flex flex-row items-center justify-start">
-                          1.
-                          <div className="ml-2">請至醫院進行診斷確認</div></div>
-                        <div>2. 請諮詢醫師進行『營養及運動生活型態調整』</div>
-                      </div>
+
+                      {primaryEvaluatePass && (
+                        <div className="ml-16">
+                          <div className="flex flex-row items-center justify-start">
+                            1.
+                            <div className="ml-2">此為初步診斷，若有疑慮，請諮詢醫師</div></div>
+                          <div>2. 可到醫院進行進一步的診斷</div>
+                        </div>
+                      )}
+
+                      {!primaryEvaluatePass && (
+                        <div className="ml-16">
+                          <div className="flex flex-row items-center justify-start">
+                            1.
+                            <div className="ml-2">此為初步診斷，請至醫院進行進一步診斷確認</div></div>
+                          <div>2. 請諮詢醫師進行『營養及運動生活型態調整』</div>
+                        </div>
+                      )}
 
 
                       <div className="flex flex-row items-center justify-start mt-4">
                         <Label className="text-xl w-2/12" htmlFor="examiner">診斷者：</Label>
                         <Input className={table_text_size + " w-10/12 -ml-7 border-gray-400"}
                           id="examiner" placeholder="名字"
+                          value={diagnose.dia_examiner}
                         />
                       </div>
 
@@ -570,7 +594,9 @@ export default function Index(props: any) {
                         備註:
                       </div>
 
-                      <Textarea id="description" className="ml-[86px] -mt-6 w-10/12 h-[200px] text-xl border-gray-400" />
+                      <Textarea className="ml-[86px] -mt-6 w-10/12 h-[200px] text-xl border-gray-400"
+                        id="description" value={diagnose.comments
+                        } />
 
 
                     </div>

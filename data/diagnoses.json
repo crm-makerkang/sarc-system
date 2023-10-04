@@ -28,7 +28,7 @@
   {
     "calf_grith": "32.5",
     "grip_strength": "31.6",
-    "chair_standup5": "8.4",
+    "chair_standup5": "12.5",
     "muscle_quantity": "2.2",
     "gait_speed4": "5.2",
     "gait_speed6": "6.7",
@@ -41,7 +41,7 @@
     "aid": "0",
     "dia_datetime": "2023-10-03 16:42",
     "dia_result": "possible",
-    "dia_examiner": "Dr. Lin",
+    "dia_examiner": "Dr. Kuo",
     "sarc_f_Q1": "0",
     "sarc_f_Q2": "0",
     "sarc_f_Q3": "1",
