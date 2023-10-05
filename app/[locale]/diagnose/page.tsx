@@ -52,7 +52,7 @@ export default function Index(props: any) {
   const router = useRouter();
 
   const [showPrimary, setShowPrimary] = React.useState(true);
-  const [showHospital, setShowHospital] = React.useState(true);
+  const [showHospital, setShowHospital] = React.useState(false);
   const [assessmentStandard, setAssessmentStandard] = React.useState("AWGS 2019");
   const [assessmentType, setAssessmentType] = React.useState(t("primary-care"));
   const [showStandard, setShowStandard] = React.useState(false);
@@ -111,6 +111,9 @@ export default function Index(props: any) {
   const [primaryScreeningPass, setPrimaryScreeningPass] = React.useState(true);
   const [primaryEvaluatePass, setPrimaryEvaluatePass] = React.useState(true);
 
+  const [clinicalIssue, setClinicalIssue] = React.useState(false);
+  const [hostipalScreeningPass, setHostipalScreeningPass] = React.useState(true);
+  const [hostipalEvaluatePass, setHostipalEvaluatePass] = React.useState(true);
 
   const getUsers = async () => {
     const res = await axios.get('/api/users/')
@@ -145,6 +148,13 @@ export default function Index(props: any) {
       : ((parseFloat(diagnose.grip_strength) < 18.0) ? true : false))
       || (parseFloat(diagnose.chair_standup5) > 12.0))
       ? setPrimaryEvaluatePass(false) : setPrimaryEvaluatePass(true);
+
+    if (diagnose.clinicalIssues=="Y") {
+      setClinicalIssue(true);
+      setHostipalScreeningPass(false);
+    } else {
+      setHostipalScreeningPass(primaryScreeningPass);
+    }
 
     console.log("in diagnose page 149:", parseFloat(diagnose.chair_standup5) > 12.0);
 
@@ -353,6 +363,8 @@ export default function Index(props: any) {
                     () => {
                       setAssessmentType(t("primary-care"));
                       setShowType(false);
+                      setShowPrimary(true);
+                      setShowHospital(false);
                     }
                   }
                 >
@@ -364,6 +376,8 @@ export default function Index(props: any) {
                     () => {
                       setAssessmentType(t("hostpital-client"));
                       setShowType(false);
+                      setShowHospital(true);
+                      setShowPrimary(false);
                     }
                   }
                 >
@@ -378,7 +392,6 @@ export default function Index(props: any) {
 
       <div className="flex flex-col h-full w-8/12 justify-evenly mt-4 rounded-2xl bg-white opacity-95">
         <div className="flex flex-row w-full items-center justify-center">
-
           {showPrimary && (assessmentStandard == "AWGS 2019") && (
             <div className="w-7/12 mt-4">
               <div className="flex flex-col w-full h-full mx-4 items-center justify-center">
@@ -386,7 +399,7 @@ export default function Index(props: any) {
                   <div className="w-[500px] h-[190px] text-xl rounded-2xl mt-3">
                     <div className="flex flex-col items-start justify-start p-4 ml-4">
 
-                      <div className=" bg-white">評估日期：</div>
+                      <div className=" bg-white">診斷日期：</div>
                       <Popover>
                         <PopoverTrigger asChild>
                           <Button
@@ -489,44 +502,42 @@ export default function Index(props: any) {
 
               </div>
 
-              {true && (
-                <div className="flex flex-col w-full h-full mx-4 items-center justify-center">
-                  <div className="flex flex-row items-center justify-center">
-                    <div className="w-[500px] h-[100px] text-xl">
-                    </div>
-                    <div className="w-full flex flex-col items-center">
-                      <div className="ml-4 p-4 border-2 border-gray-400 w-full text-xl rounded-2xl">
-                        <div className="text-2xl font-bold mb-2">評估:</div>
-                        <div className="text-xl font-bold ml-4">肌肉力量:</div>
-                        <div className="flex flex-row items-center justify-between">
-                          <div className="ml-14">{"握力: 男<28公斤，女<18公斤"}</div>
-                          <div className={((user.gender == "male")
-                            ? (parseInt(diagnose.grip_strength) < 28) ? "bg-red-500" : "bg-green-700"
-                            : (parseInt(diagnose.grip_strength) < 18) ? "bg-red-500" : "bg-green-700")
-                            + " text-white p-1 rounded-md w-[100px]"
-                            + " flex items-center justify-end pr-2"}
-                          >{diagnose.grip_strength} 公斤</div>
-                        </div>
-                        <div className="text-xl font-bold ml-4">體能表現:</div>
-                        <div className="flex flex-row items-center justify-between">
-                          <div className="ml-14">{"五次起立坐下: >=12 秒"}</div>
-                          <div className={
-                            ((parseInt(diagnose.chair_standup5) > 12) ? "bg-red-500" : "bg-green-700")
-                            + " text-white p-1 rounded-md w-[100px]"
-                            + " flex items-center justify-end pr-2"}
-                          >{diagnose.chair_standup5} 秒</div>
-                        </div>
+              <div className="flex flex-col w-full h-full mx-4 items-center justify-center">
+                <div className="flex flex-row items-center justify-center">
+                  <div className="w-[500px] h-[100px] text-xl">
+                  </div>
+                  <div className="w-full flex flex-col items-center">
+                    <div className="ml-4 p-4 border-2 border-gray-400 w-full text-xl rounded-2xl">
+                      <div className="text-2xl font-bold mb-2">評估:</div>
+                      <div className="text-xl font-bold ml-4">肌肉力量:</div>
+                      <div className="flex flex-row items-center justify-between">
+                        <div className="ml-14">{"握力: 男<28公斤，女<18公斤"}</div>
+                        <div className={((user.gender == "male")
+                          ? (parseInt(diagnose.grip_strength) < 28) ? "bg-red-500" : "bg-green-700"
+                          : (parseInt(diagnose.grip_strength) < 18) ? "bg-red-500" : "bg-green-700")
+                          + " text-white p-1 rounded-md w-[100px]"
+                          + " flex items-center justify-end pr-2"}
+                        >{diagnose.grip_strength} 公斤</div>
+                      </div>
+                      <div className="text-xl font-bold ml-4">體能表現:</div>
+                      <div className="flex flex-row items-center justify-between">
+                        <div className="ml-14">{"五次起立坐下: >=12 秒"}</div>
+                        <div className={
+                          ((parseFloat(diagnose.chair_standup5) > 12.0) ? "bg-red-500" : "bg-green-700")
+                          + " text-white p-1 rounded-md w-[100px]"
+                          + " flex items-center justify-end pr-2"}
+                        >{diagnose.chair_standup5} 秒</div>
                       </div>
                     </div>
-                    <div className="w-[550px] h-[100px] p-2 rounded-2xl"></div>
                   </div>
-
-                  <img src={primaryEvaluatePass ? "/img/arrow-down-green.png" : "/img/arrow-down-red.png"}
-                    className="h-[50px] w-[40px]">
-                  </img>
-
+                  <div className="w-[550px] h-[100px] p-2 rounded-2xl"></div>
                 </div>
-              )}
+
+                <img src={primaryEvaluatePass ? "/img/arrow-down-green.png" : "/img/arrow-down-red.png"}
+                  className="h-[50px] w-[40px]">
+                </img>
+
+              </div>
 
               <div className="flex flex-col w-full h-full mx-4 mb-8 items-center justify-center">
                 <div className="flex flex-row items-center justify-center">
@@ -595,7 +606,7 @@ export default function Index(props: any) {
                       </div>
 
                       <Textarea className="ml-[86px] -mt-6 w-10/12 h-[200px] text-xl border-gray-400"
-                        id="description" value={diagnose.comments
+                        id="description" value={diagnose.primary_comments
                         } />
 
 
@@ -608,27 +619,276 @@ export default function Index(props: any) {
 
             </div>
           )}
-
         </div>
 
+        <div className="flex flex-row w-full items-center justify-center">
+          {showHospital && (assessmentStandard == "AWGS 2019") && (
+            <div className="w-7/12 mt-4">
+              <div className="flex flex-col w-full h-full mx-4 items-center justify-center">
+                <div className="flex flex-row items-center justify-center">
+                  <div className="w-[500px] h-[190px] text-xl rounded-2xl mt-3">
+                    <div className="flex flex-col items-start justify-start p-4 ml-4">
+                      <div className=" bg-white">診斷日期：</div>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant={"outline"}
+                            className={cn(
+                              "justify-start text-left font-normal",
+                              !date && "text-muted-foreground"
+                            ) + " text-xl w-[220px]  border-gray-400"}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {date ? format(date, "yyyy-MM-dd") : <span>Pick a date</span>}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0">
+                          <Calendar
+                            mode="single"
+                            selected={date}
+                            onSelect={setDate}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+
+                      <div className="mt-4 bg-white">姓名：
+                        <span className="ml-4">{user.name = (vaildUser) ? user.name : ""}</span>
+                      </div>
+                      <div className="mt-2 bg-white">年齡：
+                        <span className="ml-4">{user.age = (vaildUser) ? user.age : ""}</span>
+                      </div>
+                      <div className="mt-2 bg-white">性別：
+                        <span className="ml-4">
+                          {(vaildUser) ? (user.gender == "male" ? "男" : "女") : ""}
+                        </span>
+                      </div>
+
+                      {vaildUser && (
+                        <>
+                          <div className="w-full h-[2px] mt-2 bg-gray-400"></div>
+
+                          <div className="mt-4 bg-white">{t("new-diagnose")}：</div>
+
+                          <Button className="w-[220px] mt-2 text-lg border-gray-400" variant={"outline"}
+                          >
+                            取得量測資料
+                          </Button>
+
+                          <Button className="w-[220px] mt-2 text-lg border-gray-400" variant={"outline"}
+                          >
+                            取得 SARC-ClaF 問卷
+                          </Button>
+
+                          <Button className="w-[220px] mt-2 text-lg border-gray-400" variant={"outline"}
+                          >
+                            取得 SPPB 量表
+                          </Button>
+                        </>
+                      )}
+
+                    </div>
+                  </div>
+                  
+                  {/* 醫院篩檢 */}
+                  <div className="w-full flex flex-col items-center">
+                    <div className="mt-4 ml-4 p-4 border-2 border-gray-400 w-full text-xl rounded-2xl">
+                      <div className="text-2xl font-bold mb-2">篩檢:</div>
+                      <div className="flex flex-row justify-start">
+                        <input type="checkbox" className="mt-1 ml-4 w-4 h-4" checked={clinicalIssue} 
+                          onClick={() => {
+                            if (vaildUser) {
+                              if (clinicalIssue) {
+                                setClinicalIssue(false);
+                              } else {
+                                setClinicalIssue(true);
+                              }
+                            }
+                          }}
+                        />
+                        <div className="text-xl font-bold mb-2 ml-4">呈現任一臨床問題:</div>
+                      </div>
+                      <div className="text-xl mb-2 ml-4">
+                        <div>功能下降及受限; 不明原因體重減輕; 憂鬱; 認知障礙; 反覆性跌倒;</div> 
+                        <div>營養不良; 慢性疾病(心衰竭; 慢性阻塞性肺病; 糖尿病; 慢性腎臟病等)</div>
+                      </div>
+
+                      <div className="w-full h-[2px] bg-gray-400 m-4"> </div>
+
+                      <div className="flex flex-row items-center justify-between">
+                        <div className="ml-8">{"或 小腿圍： 男<34公分，女<33公分"}</div>
+                        <div className={((user.gender == "male")
+                          ? (parseInt(diagnose.calf_grith) < 34) ? "bg-red-500" : "bg-green-700"
+                          : (parseInt(diagnose.calf_grith) < 33) ? "bg-red-500" : "bg-green-700")
+                          + " text-white p-1 rounded-md w-[100px]"
+                          + " flex items-center justify-end pr-2"}
+                        >
+                          {diagnose.calf_grith} 公分</div>
+                      </div>
+                      <div className="flex flex-row items-center justify-between">
+                        <div className="ml-8">{"或 SARC-F 問卷 >= 4 分"}</div>
+                        <div className={
+                          ((parseInt(diagnose.sarc_f_score) > 3) ? "bg-red-500" : "bg-green-700")
+                          + " text-white p-1 rounded-md w-[100px]"
+                          + " flex items-center justify-end pr-2 mt-1"}
+                        >  {(diagnose.sarc_f_score == "") ? "" : diagnose.sarc_f_score} 分
+                        </div>
+                      </div>
+                      <div className="flex flex-row items-center justify-between">
+                        <div className="ml-8">{"或 SARC-CalF 問卷 >= 11 分"}</div>
+                        <div className={
+                          ((parseInt(diagnose.sarc_calf_score) > 10) ? "bg-red-500" : "bg-green-700")
+                          + " text-white p-1 rounded-md w-[100px]"
+                          + " flex items-center justify-end pr-2 mt-1"}
+                        >  {(diagnose.sarc_calf_score == "") ? "" : diagnose.sarc_calf_score} 分
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="w-[550px] h-[100px] p-2 rounded-2xl"></div>
+                </div>
+
+                <img src={hostipalScreeningPass ? "/img/arrow-down-green.png" : "/img/arrow-down-red.png"}
+                  className="h-[50px] w-[40px]">
+                </img>
+
+                <div className="flex flex-col w-full h-full mx-4 items-center justify-center">
+                <div className="flex flex-row items-center justify-center">
+                  <div className="w-[500px] h-[100px] text-xl">
+                  </div>
+                  <div className="w-full flex flex-col items-center">
+                    <div className="ml-4 p-4 border-2 border-gray-400 w-full text-xl rounded-2xl">
+                      <div className="text-2xl font-bold mb-2">評估:</div>
+                      <div className="text-xl font-bold ml-4">肌肉力量:</div>
+                      <div className="flex flex-row items-center justify-between">
+                        <div className="ml-14">{"握力: 男<28公斤，女<18公斤"}</div>
+                        <div className={((user.gender == "male")
+                          ? (parseInt(diagnose.grip_strength) < 28) ? "bg-red-500" : "bg-green-700"
+                          : (parseInt(diagnose.grip_strength) < 18) ? "bg-red-500" : "bg-green-700")
+                          + " text-white p-1 rounded-md w-[100px]"
+                          + " flex items-center justify-end pr-2"}
+                        >{diagnose.grip_strength} 公斤</div>
+                      </div>
+                      <div className="text-xl font-bold ml-4">體能表現:</div>
+                      <div className="flex flex-row items-center justify-between">
+                        <div className="ml-14">{"五次起立坐下: >=12 秒"}</div>
+                        <div className={
+                          ((parseFloat(diagnose.chair_standup5) > 12.0) ? "bg-red-500" : "bg-green-700")
+                          + " text-white p-1 rounded-md w-[100px]"
+                          + " flex items-center justify-end pr-2"}
+                        >{diagnose.chair_standup5} 秒</div>
+                      </div>
+                      <div className="flex flex-row mt-1 items-center justify-between">
+                        <div className="ml-7">{"或 六公尺步行速度: < 1.0 公尺/秒"}</div>
+                        <div className={
+                          ((parseFloat(diagnose.chair_standup5) > 12.0) ? "bg-red-500" : "bg-green-700")
+                          + " text-white p-1 rounded-md w-[100px]"
+                          + " flex items-center justify-end pr-2"}
+                        >{diagnose.chair_standup5} 秒</div>
+                      </div>     
+                      <div className="flex flex-row mt-1 items-center justify-between">
+                        <div className="ml-7">{"或 簡易身體功能量表 SPPB: <= 9 分"}</div>
+                        <div className={
+                          ((parseFloat(diagnose.chair_standup5) > 12.0) ? "bg-red-500" : "bg-green-700")
+                          + " text-white p-1 rounded-md w-[100px]"
+                          + " flex items-center justify-end pr-2"}
+                        >{diagnose.chair_standup5} 秒</div>
+                      </div>                                             
+                    </div>
+                  </div>
+                  <div className="w-[550px] h-[100px] p-2 rounded-2xl"></div>
+                </div>
+
+                <img src={primaryEvaluatePass ? "/img/arrow-down-green.png" : "/img/arrow-down-red.png"}
+                  className="h-[50px] w-[40px]">
+                </img>
+
+              </div>
+
+              <div className="flex flex-col w-full h-full mx-4 mb-8 items-center justify-center">
+                <div className="flex flex-row items-center justify-center">
+                  <div className="w-[500px] h-[100px] text-xl">
+                  </div>
+                  <div className="w-full flex flex-col items-center">
+                    <div className="ml-4 p-4 border-2 border-gray-400 w-full text-xl rounded-2xl">
+                      <div className="flex flex-row items-center justify-between">
+                        <div className="text-2xl font-bold mb-2">診斷:</div>
+
+                        <Button className="bg-primary text-white text-xl -mt-4 w-[100px]"
+                          onClick={() => {
+                            console.log("in diagnoses oage 373:", date)
+                            //setDate(new Date("2023-10-05"));
+                          }}
+                        >
+                          儲存
+                        </Button>
+                      </div>
+
+                      <div className="flex flex-row items-center justify-between">
+                        {primaryEvaluatePass && (
+                          <>
+                            <div className="ml-14 text-2xl font-bold text-green-700">{"肌少症機率低"}</div>
+                            <div className=" text-white p-1 rounded-md w-[120px]"></div>
+                          </>
+                        )}
+                        {!primaryEvaluatePass && (
+                          <>
+                            <div className="ml-14 text-2xl font-bold text-red-500">{"可能肌少症"}</div>
+                            <div className=" text-white p-1 rounded-md w-[120px]"></div>
+                          </>
+                        )}
+
+                      </div>
+
+                      {primaryEvaluatePass && (
+                        <div className="ml-16">
+                          <div className="flex flex-row items-center justify-start">
+                            1.
+                            <div className="ml-2">此為初步診斷，若有疑慮，請諮詢醫師</div></div>
+                          <div>2. 可到醫院進行進一步的診斷</div>
+                        </div>
+                      )}
+
+                      {!primaryEvaluatePass && (
+                        <div className="ml-16">
+                          <div className="flex flex-row items-center justify-start">
+                            1.
+                            <div className="ml-2">此為初步診斷，請至醫院進行進一步診斷確認</div></div>
+                          <div>2. 請諮詢醫師進行『營養及運動生活型態調整』</div>
+                        </div>
+                      )}
 
 
-        {/* <div className="flex flex-row w-full items-center justify-center">
+                      <div className="flex flex-row items-center justify-start mt-4">
+                        <Label className="text-xl w-2/12" htmlFor="examiner">診斷者：</Label>
+                        <Input className={table_text_size + " w-10/12 -ml-7 border-gray-400"}
+                          id="examiner" placeholder="名字"
+                          value={diagnose.dia_examiner}
+                        />
+                      </div>
 
-          {showHospital && (
-            <div className="flex flex-col w-2/5 h-full mx-4 items-center justify-center">
-              <div className="w-full h-[800px] border-2 flex flex-col items-center">
-                <div className="mt-4 ml-4 p-4 border-2 border-black w-4/5 text-xl rounded-2xl">
-                  <div className="text-2xl font-bold mb-2">{t('screening')}:</div>
-                  <div className="ml-14">{"小腿圍： 男<34公分，女<33公分"}</div>
-                  <div className="ml-8">{"或 SARC-F 問卷 >= 4 分"}</div>
-                  <div className="ml-8">{"或 SARC-CalF 問卷 >= 11 分"}</div>
+                      <div className="mt-2">
+                        備註:
+                      </div>
+
+                      <Textarea className="ml-[86px] -mt-6 w-10/12 h-[200px] text-xl border-gray-400"
+                        id="description" value={diagnose.hospital_comments} 
+                      />
+
+
+                    </div>
+                  </div>
+                  {/* <img src="/img/arrow-right-blank.png" className="w-[100px] h-[50px] ml-2"></img> */}
+                  <div className="w-[550px] h-[100px] p-2 rounded-2xl"></div>
                 </div>
               </div>
+
+              </div>
+
             </div>
           )}
+        </div>
 
-        </div> */}
 
       </div>
 

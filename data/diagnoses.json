@@ -23,7 +23,9 @@
     "sarc_f_Q5": "1",
     "sarc_f_score": "2",
     "sarc_calf_score": "2",
-    "comments": "Record 1"
+    "primary_comments": "Primary Comments1",
+    "clinicalIssues": "",
+    "hospital_comments": "Hospital Comments2"
   },
   {
     "calf_grith": "32.5",
@@ -49,6 +51,8 @@
     "sarc_f_Q5": "1",
     "sarc_f_score": "3",
     "sarc_calf_score": "13",
-    "comments": "Record2"
+    "primary_comments": "Primary Comments2",
+    "clinicalIssues": "Y",
+    "hospital_comments": "Hospital Comments2"
   }
 ]
