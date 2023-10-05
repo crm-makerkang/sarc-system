@@ -4,7 +4,7 @@ import * as React from "react"
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from 'next-intl';
-import { ArrowDown, Check, X } from "lucide-react"
+import { ArrowDown, Check, X, Dot} from "lucide-react"
 import { DateTime } from "luxon";
 import { UserInfo, Diagnose } from "@/types/types"
 
@@ -101,7 +101,10 @@ export default function Index(props: any) {
     sarc_f_Q5: "",
     sarc_f_score: "",
     sarc_calf_score: "",
-    comments: ""
+    sppb_score: "",
+    primary_comments: "",
+    clinicalIssues: "",
+    hospital_comments: ""
   });
 
   const [vaildUser, setVaildUser] = React.useState(false);
@@ -112,8 +115,14 @@ export default function Index(props: any) {
   const [primaryEvaluatePass, setPrimaryEvaluatePass] = React.useState(true);
 
   const [clinicalIssue, setClinicalIssue] = React.useState(false);
-  const [hostipalScreeningPass, setHostipalScreeningPass] = React.useState(true);
-  const [hostipalEvaluatePass, setHostipalEvaluatePass] = React.useState(true);
+  const [hospitalScreeningPass, setHospitalScreeningPass] = React.useState(true);
+  const [hospitalEvaluatePass, setHospitalEvaluatePass] = React.useState(true);
+  const [hospitalGripPass, setHospitalGripPass] = React.useState(true);
+  const [hospitalPerformancePass, setHospitalPerformancePass] = React.useState(true);
+  const [hospitalASMIPass, setHospitalASMIPass] = React.useState(true);
+
+  const [primaryDiagnoseResult, setPrimaryDiagnoseResult] = React.useState("");
+  const [hospitalDiagnoseResult, setHospitalDiagnoseResult] = React.useState("");
 
   const getUsers = async () => {
     const res = await axios.get('/api/users/')
@@ -135,6 +144,7 @@ export default function Index(props: any) {
   }, [])
 
   useEffect(() => {
+    // Primary screening
     (((user.gender == "male")
       ? ((parseFloat(diagnose.calf_grith) < 34.0) ? true : false)
       : ((parseFloat(diagnose.calf_grith) < 33.0) ? true : false))
@@ -142,21 +152,41 @@ export default function Index(props: any) {
       || (parseInt(diagnose.sarc_calf_score) > 10))
       ? setPrimaryScreeningPass(false) : setPrimaryScreeningPass(true);
 
-
+    // Primary evaluate
     (((user.gender == "male")
       ? ((parseFloat(diagnose.grip_strength) < 28.0) ? true : false)
       : ((parseFloat(diagnose.grip_strength) < 18.0) ? true : false))
-      || (parseFloat(diagnose.chair_standup5) > 12.0))
+      || (parseFloat(diagnose.chair_standup5) > 12.0))    
       ? setPrimaryEvaluatePass(false) : setPrimaryEvaluatePass(true);
 
+    // Clinical issue and hospital screening
     if (diagnose.clinicalIssues=="Y") {
       setClinicalIssue(true);
-      setHostipalScreeningPass(false);
+      setHospitalScreeningPass(false);
     } else {
-      setHostipalScreeningPass(primaryScreeningPass);
+      setHospitalScreeningPass(primaryScreeningPass);
     }
 
-    console.log("in diagnose page 149:", parseFloat(diagnose.chair_standup5) > 12.0);
+    // Hospital evaluate
+    const gripPass = ((user.gender == "male")
+      ? ((parseFloat(diagnose.grip_strength) < 28.0) ? false : true) 
+      : ((parseFloat(diagnose.grip_strength) < 18.0) ? false : true))
+    setHospitalGripPass(gripPass);
+
+    const performancePass = !( (parseFloat(diagnose.chair_standup5) > 12.0) ||
+                               (parseFloat(diagnose.gait_speed6) > 6.0)     ||
+                               (parseInt(diagnose.sppb_score) <10)
+                            );
+    setHospitalPerformancePass(performancePass);
+    
+    const ASMIPass = ((user.gender == "male")
+    ? ((parseFloat(diagnose.muscle_quantity) < 7.0) ? false : true) 
+    : ((parseFloat(diagnose.muscle_quantity) < 5.7) ? false : true));
+    setHospitalASMIPass(ASMIPass);
+
+    setHospitalEvaluatePass(gripPass && performancePass && ASMIPass);
+
+    console.log("in diagnose page 173:", diagnose.muscle_quantity, ASMIPass);
 
 
   }, [diagnose])
@@ -236,6 +266,9 @@ export default function Index(props: any) {
               if (vaildUser) {
                 if (showDiagnoseList) {
                   setShowDiagnoseList(false);
+                  setShowSearch(false);
+                  setShowStandard(false);
+                  setShowType(false);
                   return;
                 }
 
@@ -251,7 +284,7 @@ export default function Index(props: any) {
                   if (diagnoses[i].uid == user.id) {
                     toMatchedList[matched] = [i.toString(), diagnoses[i].dia_datetime];
                     matched++;
-                  }
+                  }ArrowDown
                 }
                 setDiagnoseList(toMatchedList);
                 if (matched == 0) {
@@ -259,6 +292,9 @@ export default function Index(props: any) {
                 }
 
                 setShowDiagnoseList(true);
+                setShowSearch(false);
+                setShowStandard(false);
+                setShowType(false);
 
               } else {
                 alert(t("select-a-user"));
@@ -299,6 +335,8 @@ export default function Index(props: any) {
               () => {
                 setShowStandard(!showStandard);
                 setShowType(false);
+                setShowDiagnoseList(false);
+                setShowSearch(false);
               }
             }
           >
@@ -309,7 +347,7 @@ export default function Index(props: any) {
           {showStandard && (
             <div className="w-full flex flex-row justify-start z-10">
               <ul
-                className="absolute ml-4 py-2 px-8 bg-white
+                className="absolute ml-4 py-2 px-8 bg-gray-200
                                 border border-gray-200 rounded-md  ">
                 <li
                   className={"py-2 cursor-pointer " + table_text_size}
@@ -345,6 +383,8 @@ export default function Index(props: any) {
               () => {
                 setShowStandard(false);
                 setShowType(!showType);
+                setShowDiagnoseList(false);
+                setShowSearch(false);
               }
             }
           >
@@ -355,7 +395,7 @@ export default function Index(props: any) {
           {showType && (
             <div className="w-full flex flex-row justify-center z-10">
               <ul
-                className="absolute py-2 px-8 bg-white 
+                className="absolute py-2 px-8 bg-gray-200 
                                 border border-gray-200 rounded-md  ">
                 <li
                   className={"py-2 cursor-pointer " + table_text_size}
@@ -394,10 +434,11 @@ export default function Index(props: any) {
         <div className="flex flex-row w-full items-center justify-center">
           {showPrimary && (assessmentStandard == "AWGS 2019") && (
             <div className="w-7/12 mt-4">
+              {/* 基層上層篩檢*/}
               <div className="flex flex-col w-full h-full mx-4 items-center justify-center">
-                <div className="flex flex-row items-center justify-center">
-                  <div className="w-[500px] h-[190px] text-xl rounded-2xl mt-3">
-                    <div className="flex flex-col items-start justify-start p-4 ml-4">
+                <div className="flex flex-row items-start justify-center">
+                  <div className="w-[300px] h-[190px] ml-[200px] text-xl rounded-2xl mt-3">
+                    <div className="flex flex-col items-start justify-start p-4 ml-10">
 
                       <div className=" bg-white">診斷日期：</div>
                       <Popover>
@@ -460,7 +501,8 @@ export default function Index(props: any) {
 
                     </div>
                   </div>
-                  <div className="w-full flex flex-col items-center">
+                  {/* 基層篩檢 */}
+                  <div className="w-[700px] flex flex-col items-center">
                     <div className="mt-4 ml-4 p-4 border-2 border-gray-400 w-full text-xl rounded-2xl">
                       <div className="text-2xl font-bold mb-2">篩檢:</div>
                       <div className="flex flex-row items-center justify-between">
@@ -502,11 +544,11 @@ export default function Index(props: any) {
 
               </div>
 
+              {/* 基層中層評估*/}
               <div className="flex flex-col w-full h-full mx-4 items-center justify-center">
                 <div className="flex flex-row items-center justify-center">
-                  <div className="w-[500px] h-[100px] text-xl">
-                  </div>
-                  <div className="w-full flex flex-col items-center">
+                  <div className="w-[500px] h-[100px] text-xl"></div>
+                  <div className="w-[700px] flex flex-col items-center">
                     <div className="ml-4 p-4 border-2 border-gray-400 w-full text-xl rounded-2xl">
                       <div className="text-2xl font-bold mb-2">評估:</div>
                       <div className="text-xl font-bold ml-4">肌肉力量:</div>
@@ -539,14 +581,21 @@ export default function Index(props: any) {
 
               </div>
 
+              {/* 基層下層診斷 */}
               <div className="flex flex-col w-full h-full mx-4 mb-8 items-center justify-center">
                 <div className="flex flex-row items-center justify-center">
-                  <div className="w-[500px] h-[100px] text-xl">
-                  </div>
-                  <div className="w-full flex flex-col items-center">
+                  <div className="w-[500px] h-[100px] text-xl"></div>
+                  <div className="w-[700px] flex flex-col items-center">
                     <div className="ml-4 p-4 border-2 border-gray-400 w-full text-xl rounded-2xl">
                       <div className="flex flex-row items-center justify-between">
-                        <div className="text-2xl font-bold mb-2">診斷:</div>
+                        <div className="text-2xl font-bold mb-2">診斷:
+                        {(primaryEvaluatePass && primaryScreeningPass) && (
+                          <span className="text-green-700"> 肌少症機率低</span> 
+                        )}             
+                        {!(primaryEvaluatePass && primaryScreeningPass) && (
+                          <span className="text-red-500"> 可能肌少症</span> 
+                        )}  
+                        </div>
 
                         <Button className="bg-primary text-white text-xl -mt-4 w-[100px]"
                           onClick={() => {
@@ -558,32 +607,16 @@ export default function Index(props: any) {
                         </Button>
                       </div>
 
-                      <div className="flex flex-row items-center justify-between">
-                        {primaryEvaluatePass && (
-                          <>
-                            <div className="ml-14 text-2xl font-bold text-green-700">{"肌少症機率低"}</div>
-                            <div className=" text-white p-1 rounded-md w-[120px]"></div>
-                          </>
-                        )}
-                        {!primaryEvaluatePass && (
-                          <>
-                            <div className="ml-14 text-2xl font-bold text-red-500">{"可能肌少症"}</div>
-                            <div className=" text-white p-1 rounded-md w-[120px]"></div>
-                          </>
-                        )}
-
-                      </div>
-
-                      {primaryEvaluatePass && (
+                      {(primaryEvaluatePass && primaryScreeningPass) && (
                         <div className="ml-16">
                           <div className="flex flex-row items-center justify-start">
                             1.
                             <div className="ml-2">此為初步診斷，若有疑慮，請諮詢醫師</div></div>
-                          <div>2. 可到醫院進行進一步的診斷</div>
+                          <div>2. 請注重營養及保持運動</div>
                         </div>
                       )}
 
-                      {!primaryEvaluatePass && (
+                      {!(primaryEvaluatePass && primaryScreeningPass) && (
                         <div className="ml-16">
                           <div className="flex flex-row items-center justify-start">
                             1.
@@ -612,7 +645,6 @@ export default function Index(props: any) {
 
                     </div>
                   </div>
-                  {/* <img src="/img/arrow-right-blank.png" className="w-[100px] h-[50px] ml-2"></img> */}
                   <div className="w-[550px] h-[100px] p-2 rounded-2xl"></div>
                 </div>
               </div>
@@ -624,10 +656,11 @@ export default function Index(props: any) {
         <div className="flex flex-row w-full items-center justify-center">
           {showHospital && (assessmentStandard == "AWGS 2019") && (
             <div className="w-7/12 mt-4">
-              <div className="flex flex-col w-full h-full mx-4 items-center justify-center">
-                <div className="flex flex-row items-center justify-center">
-                  <div className="w-[500px] h-[190px] text-xl rounded-2xl mt-3">
-                    <div className="flex flex-col items-start justify-start p-4 ml-4">
+              {/* 醫院上層篩檢*/}
+              <div className="flex flex-col w-full h-full mx-4 items-center justify-center">              
+                <div className="flex flex-row items-start justify-center">
+                  <div className="w-[300px] h-[190px] ml-[200px] text-xl rounded-2xl mt-3">
+                    <div className="flex flex-col items-start justify-start p-4 ml-10">
                       <div className=" bg-white">診斷日期：</div>
                       <Popover>
                         <PopoverTrigger asChild>
@@ -689,9 +722,8 @@ export default function Index(props: any) {
 
                     </div>
                   </div>
-                  
                   {/* 醫院篩檢 */}
-                  <div className="w-full flex flex-col items-center">
+                  <div className="w-[700px] flex flex-col items-center">
                     <div className="mt-4 ml-4 p-4 border-2 border-gray-400 w-full text-xl rounded-2xl">
                       <div className="text-2xl font-bold mb-2">篩檢:</div>
                       <div className="flex flex-row justify-start">
@@ -713,7 +745,7 @@ export default function Index(props: any) {
                         <div>營養不良; 慢性疾病(心衰竭; 慢性阻塞性肺病; 糖尿病; 慢性腎臟病等)</div>
                       </div>
 
-                      <div className="w-full h-[2px] bg-gray-400 m-4"> </div>
+                      <div className="w-11/12 h-[2px] bg-gray-400 m-4"> </div>
 
                       <div className="flex flex-row items-center justify-between">
                         <div className="ml-8">{"或 小腿圍： 男<34公分，女<33公分"}</div>
@@ -747,57 +779,73 @@ export default function Index(props: any) {
                   </div>
                   <div className="w-[550px] h-[100px] p-2 rounded-2xl"></div>
                 </div>
-
-                <img src={hostipalScreeningPass ? "/img/arrow-down-green.png" : "/img/arrow-down-red.png"}
+                <img src={hospitalScreeningPass ? "/img/arrow-down-green.png" : "/img/arrow-down-red.png"}
                   className="h-[50px] w-[40px]">
                 </img>
+              </div>
 
-                <div className="flex flex-col w-full h-full mx-4 items-center justify-center">
-                <div className="flex flex-row items-center justify-center">
-                  <div className="w-[500px] h-[100px] text-xl">
-                  </div>
-                  <div className="w-full flex flex-col items-center">
-                    <div className="ml-4 p-4 border-2 border-gray-400 w-full text-xl rounded-2xl">
-                      <div className="text-2xl font-bold mb-2">評估:</div>
-                      <div className="text-xl font-bold ml-4">肌肉力量:</div>
-                      <div className="flex flex-row items-center justify-between">
-                        <div className="ml-14">{"握力: 男<28公斤，女<18公斤"}</div>
-                        <div className={((user.gender == "male")
-                          ? (parseInt(diagnose.grip_strength) < 28) ? "bg-red-500" : "bg-green-700"
-                          : (parseInt(diagnose.grip_strength) < 18) ? "bg-red-500" : "bg-green-700")
-                          + " text-white p-1 rounded-md w-[100px]"
-                          + " flex items-center justify-end pr-2"}
-                        >{diagnose.grip_strength} 公斤</div>
-                      </div>
-                      <div className="text-xl font-bold ml-4">體能表現:</div>
-                      <div className="flex flex-row items-center justify-between">
-                        <div className="ml-14">{"五次起立坐下: >=12 秒"}</div>
-                        <div className={
-                          ((parseFloat(diagnose.chair_standup5) > 12.0) ? "bg-red-500" : "bg-green-700")
-                          + " text-white p-1 rounded-md w-[100px]"
-                          + " flex items-center justify-end pr-2"}
-                        >{diagnose.chair_standup5} 秒</div>
-                      </div>
-                      <div className="flex flex-row mt-1 items-center justify-between">
-                        <div className="ml-7">{"或 六公尺步行速度: < 1.0 公尺/秒"}</div>
-                        <div className={
-                          ((parseFloat(diagnose.chair_standup5) > 12.0) ? "bg-red-500" : "bg-green-700")
-                          + " text-white p-1 rounded-md w-[100px]"
-                          + " flex items-center justify-end pr-2"}
-                        >{diagnose.chair_standup5} 秒</div>
-                      </div>     
-                      <div className="flex flex-row mt-1 items-center justify-between">
-                        <div className="ml-7">{"或 簡易身體功能量表 SPPB: <= 9 分"}</div>
-                        <div className={
-                          ((parseFloat(diagnose.chair_standup5) > 12.0) ? "bg-red-500" : "bg-green-700")
-                          + " text-white p-1 rounded-md w-[100px]"
-                          + " flex items-center justify-end pr-2"}
-                        >{diagnose.chair_standup5} 秒</div>
-                      </div>                                             
+              {/* 醫院中層評估*/}
+              <div className="flex flex-col w-full h-full mx-4 items-center justify-center">
+                  <div className="flex flex-row items-center justify-center">
+                    <div className="w-[500px] h-[100px] text-xl">
                     </div>
+                    <div className="w-[700px] flex flex-col items-center">
+                      <div className="ml-4 p-4 border-2 border-gray-400 w-full text-xl rounded-2xl">
+                        <div className="text-2xl font-bold mb-2">評估:</div>
+                        <div className="text-xl font-bold ml-4">肌肉力量:</div>
+                        <div className="flex flex-row items-center justify-between">
+                          <div className="ml-8">{"握力: 男<28公斤，女<18公斤"}</div>
+                          <div className={((user.gender == "male")
+                            ? (parseFloat(diagnose.grip_strength) < 28.0) ? "bg-red-500" : "bg-green-700"
+                            : (parseFloat(diagnose.grip_strength) < 18.0) ? "bg-red-500" : "bg-green-700")
+                            + " text-white p-1 rounded-md w-[100px]"
+                            + " flex items-center justify-end pr-2"}
+                          >{diagnose.grip_strength} 公斤</div>
+                        </div>
+                        <div className="text-xl font-bold ml-4">體能表現:</div>
+                        <div className="flex flex-row items-center justify-between">
+                          <div className="ml-14">{"五次起立坐下: >=12 秒"}</div>
+                          <div className={
+                            ((parseFloat(diagnose.chair_standup5) > 12.0) ? "bg-red-500" : "bg-green-700")
+                            + " text-white p-1 rounded-md w-[100px]"
+                            + " flex items-center justify-end pr-2"}
+                          >{diagnose.chair_standup5} 秒</div>
+                        </div>
+                        <div className="flex flex-row mt-1 items-center justify-between">
+                          <div className="ml-8">{"或 六公尺步行速度: >6 秒 (< 1.0 公尺/秒)"}</div>
+                          <div className={
+                            ((parseFloat(diagnose.gait_speed6) > 6.0) ? "bg-red-500" : "bg-green-700")
+                            + " text-white p-1 rounded-md w-[100px]"
+                            + " flex items-center justify-end pr-2"}
+                          >{ diagnose.gait_speed6 } 秒</div>
+                        </div>     
+                        <div className="flex flex-row mt-1 items-center justify-between">
+                          <div className="ml-8">{"或 簡易身體功能量表 SPPB: <= 9 分"}</div>
+                          <div className={
+                            ((parseInt(diagnose.sppb_score) < 10) ? "bg-red-500" : "bg-green-700")
+                            + " text-white p-1 rounded-md w-[100px]"
+                            + " flex items-center justify-end pr-2"}
+                          >{diagnose.sppb_score} 分</div>
+                        </div>  
+
+                        <div className="text-xl font-bold mt-2 ml-4">肌肉質量(ASMI): kg/m2</div>
+                        <div className="flex flex-row items-center justify-between">
+                          <div className="ml-14">{"BIA： 男<7.0 ，女< 5.7 "}</div>
+                          <div className={
+                            (
+                              (user.gender == "male") 
+                              ? ((parseFloat(diagnose.muscle_quantity) < 7.0) ? "bg-red-500" : "bg-green-700")
+                              : ((parseFloat(diagnose.muscle_quantity) < 5.7) ? "bg-red-500" : "bg-green-700")
+                            )
+                            + " text-white p-1 rounded-md w-[100px]"
+                            + " flex items-center justify-end pr-2"}
+                          >{diagnose.muscle_quantity} <span className="text-sm ml-1 ">kg/m2</span></div>
+                        </div> 
+                                                                                     
+                      </div>                      
+                    </div>
+                    <div className="w-[550px] h-[100px] p-2 rounded-2xl"></div>
                   </div>
-                  <div className="w-[550px] h-[100px] p-2 rounded-2xl"></div>
-                </div>
 
                 <img src={primaryEvaluatePass ? "/img/arrow-down-green.png" : "/img/arrow-down-red.png"}
                   className="h-[50px] w-[40px]">
@@ -805,19 +853,33 @@ export default function Index(props: any) {
 
               </div>
 
+              {/* 醫院下層診斷 */}
               <div className="flex flex-col w-full h-full mx-4 mb-8 items-center justify-center">
                 <div className="flex flex-row items-center justify-center">
                   <div className="w-[500px] h-[100px] text-xl">
                   </div>
-                  <div className="w-full flex flex-col items-center">
+                  <div className="w-[700px] flex flex-col items-center">
                     <div className="ml-4 p-4 border-2 border-gray-400 w-full text-xl rounded-2xl">
                       <div className="flex flex-row items-center justify-between">
-                        <div className="text-2xl font-bold mb-2">診斷:</div>
+                        <div className="text-2xl font-bold mb-2">診斷:
+                          <span className="text-red-500">
+                            { 
+                              ( 
+                              (!hospitalGripPass && !hospitalASMIPass && !hospitalPerformancePass) 
+                              ? " 嚴重肌少症" 
+                              : ((!hospitalGripPass && !hospitalASMIPass) 
+                              ? " 肌少症"
+                              : "")
+                              )
+                              
+                            }
+                            </span>
+                        </div>
 
                         <Button className="bg-primary text-white text-xl -mt-4 w-[100px]"
                           onClick={() => {
-                            console.log("in diagnoses oage 373:", date)
-                            //setDate(new Date("2023-10-05"));
+                            console.log("in diagnoses page 825:", date)
+                            
                           }}
                         >
                           儲存
@@ -825,38 +887,42 @@ export default function Index(props: any) {
                       </div>
 
                       <div className="flex flex-row items-center justify-between">
-                        {primaryEvaluatePass && (
-                          <>
-                            <div className="ml-14 text-2xl font-bold text-green-700">{"肌少症機率低"}</div>
-                            <div className=" text-white p-1 rounded-md w-[120px]"></div>
-                          </>
-                        )}
-                        {!primaryEvaluatePass && (
-                          <>
-                            <div className="ml-14 text-2xl font-bold text-red-500">{"可能肌少症"}</div>
-                            <div className=" text-white p-1 rounded-md w-[120px]"></div>
-                          </>
-                        )}
+
+                        <div className="ml-14 mt-2  text-2xl  font-bold text-red-500">
+                          {clinicalIssue && (
+                            <div className="flex flex-row items-center justify-start text-xl">
+                              - 有臨床問題，請洽相關專科醫師協助。
+                            </div>
+                          )}
+
+                          {!primaryScreeningPass && (
+                            <div className="flex flex-row items-center justify-start text-xl">
+                              - 小腿圍 或 <span className="text-lg">SRAC-F</span> 問卷未通過標準
+                            </div>
+                          )}
+
+                          {!hospitalGripPass && (
+                            <div className="flex flex-row items-center justify-start text-xl">
+                              - 低肌肉力量
+                            </div>
+                          )}
+
+                          {!hospitalASMIPass && (
+                            <div className="flex flex-row items-center justify-start text-xl">
+                              - 低肌肉質量
+                            </div>
+                          )}
+
+                          {!hospitalPerformancePass && (
+                            <div className="flex flex-row items-center justify-start text-xl">
+                              - 低體能表現
+                            </div>
+                          )}
+
+                        </div>
 
                       </div>
 
-                      {primaryEvaluatePass && (
-                        <div className="ml-16">
-                          <div className="flex flex-row items-center justify-start">
-                            1.
-                            <div className="ml-2">此為初步診斷，若有疑慮，請諮詢醫師</div></div>
-                          <div>2. 可到醫院進行進一步的診斷</div>
-                        </div>
-                      )}
-
-                      {!primaryEvaluatePass && (
-                        <div className="ml-16">
-                          <div className="flex flex-row items-center justify-start">
-                            1.
-                            <div className="ml-2">此為初步診斷，請至醫院進行進一步診斷確認</div></div>
-                          <div>2. 請諮詢醫師進行『營養及運動生活型態調整』</div>
-                        </div>
-                      )}
 
 
                       <div className="flex flex-row items-center justify-start mt-4">
@@ -875,16 +941,11 @@ export default function Index(props: any) {
                         id="description" value={diagnose.hospital_comments} 
                       />
 
-
                     </div>
                   </div>
-                  {/* <img src="/img/arrow-right-blank.png" className="w-[100px] h-[50px] ml-2"></img> */}
                   <div className="w-[550px] h-[100px] p-2 rounded-2xl"></div>
                 </div>
               </div>
-
-              </div>
-
             </div>
           )}
         </div>

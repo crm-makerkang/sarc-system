@@ -25,7 +25,8 @@ import { NextResponse } from 'next/server';
 //export default createMiddleware({ 
 const intlMiddleware = createMiddleware({
   // A list of all locales that are supported
-  locales: ['en', 'ja', 'zh-tw', 'zh-cn'],
+  // locales: ['en', 'ja', 'zh-tw', 'zh-cn'],
+  locales: ['en', 'ja', 'zh-tw'],
 
   // If this locale is matched, pathnames work without a prefix (e.g. `/about`)
   defaultLocale: 'en'
