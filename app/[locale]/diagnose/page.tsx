@@ -590,7 +590,7 @@ export default function Index(props: any) {
                       <div className="flex flex-row items-center justify-between">
                         <div className="text-2xl font-bold mb-2">診斷:
                         {(primaryEvaluatePass && primaryScreeningPass) && (
-                          <span className="text-green-700"> 肌少症機率低</span> 
+                          <span className="text-green-700"> 肌少症可能性低</span> 
                         )}             
                         {!(primaryEvaluatePass && primaryScreeningPass) && (
                           <span className="text-red-500"> 可能肌少症</span> 
@@ -888,7 +888,7 @@ export default function Index(props: any) {
 
                       <div className="flex flex-row items-center justify-between">
 
-                        <div className="ml-14 mt-2  text-2xl  font-bold text-red-500">
+                        <div className="ml-14 mt-1  text-2xl  font-bold text-red-500">
                           {clinicalIssue && (
                             <div className="flex flex-row items-center justify-start text-xl">
                               - 有臨床問題，請洽相關專科醫師協助。
@@ -897,7 +897,7 @@ export default function Index(props: any) {
 
                           {!primaryScreeningPass && (
                             <div className="flex flex-row items-center justify-start text-xl">
-                              - 小腿圍 或 <span className="text-lg">SRAC-F</span> 問卷未通過標準
+                              - 小腿圍 或 <div className="text-lg ml-1 mr-1">SRAC-F</div> 問卷低於標準
                             </div>
                           )}
 
