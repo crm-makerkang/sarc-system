@@ -10,8 +10,10 @@ import { json_settings_filename } from '@/Settings/settings'
 let globalSettings = "";
 
 function readSettings() {
+  console.log("xxx", json_settings_filename);
   try {
     var data = fs.readFileSync(json_settings_filename, 'utf8');
+    console.log("yyy", data);
     return data;
   } catch (error) {
     console.log("read setting file err");
@@ -35,6 +37,7 @@ export async function GET(request: NextRequest) {
       const font_size = settings.substring(32, 39);
       const rows_per_page = settings.substring(70, 72);
       globalSettings = JSON.stringify({ "table_text_size": font_size, "rows_per_page": rows_per_page });
+      console.log("zzz", globalSettings);
     }
   }
 
