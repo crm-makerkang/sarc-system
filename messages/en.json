@@ -104,6 +104,7 @@
     "no-privilege-to-save-to-records-msg": "Only administrator can save to records.",
     "no-privilege-to-delete-msg": "Only administrator can delete data.",
     "confirm-to-delete-msg": "Are you sure to delete?",
+    "confirm-to-modify-msg": "Are you sure to modify?",
     "data-management": "Data Management",
     "user-data": "User data",
     "backup": "Backup",
@@ -147,7 +148,7 @@
     "user-records": "User Records",
     "datetime": "Date/Time",
     "primary-care": "Primary Care",
-    "hostpital-client": "Hospital/Client",
+    "hostpital-clinic": "Hospital/Client",
     "select-a-user": "Please select a user",
     "no-diag-data": "No diagnosis data"
   }

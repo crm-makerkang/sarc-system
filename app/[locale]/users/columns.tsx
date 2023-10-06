@@ -176,7 +176,7 @@ export const columns: ColumnDef<UserInfo>[] = [
                       }
                     }
                     const res = await axios.delete('/api/users/', del_config);
-                    if (!res.data.success) {
+                    if (res.data.success) {
                       window.location.reload();
                     } else {
                       alert(t("delete-failed-msg"));

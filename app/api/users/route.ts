@@ -54,14 +54,27 @@ export async function POST(request: NextRequest) {
 
     try {
       const reqBody = await request.json();
-      const user_uuid = uuidv4();
 
-      reqBody.id = user_uuid;
-      users.push(reqBody);
-      console.log(users.length);
+      var existUserIndex = -1;
+      for (var i = 0; i < users.length; i++) {
+        if (users[i].name === reqBody.name) {
+          console.log("in users api 61:", "user mached:", i, users[i].name, users[i].id);
+          existUserIndex = i;
+          users[i] = reqBody;
+          break;
+        }
+      }
+
+      // add a new user
+      if (existUserIndex == -1) {
+        const user_uuid = uuidv4();
+        reqBody.id = user_uuid;
+        users.push(reqBody);
+        console.log("in users api 72:", users.length);
+      }
 
     } catch (error) {
-      console.log("reqBody err");
+      console.log("in users api 76: ReqBody Err");
     }
 
     try {

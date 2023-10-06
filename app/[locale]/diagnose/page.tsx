@@ -4,11 +4,11 @@ import * as React from "react"
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from 'next-intl';
-import { ArrowDown, Check, X, Dot} from "lucide-react"
+import { ArrowDown, Check, X, Dot } from "lucide-react"
 import { DateTime } from "luxon";
 import { UserInfo, Diagnose } from "@/types/types"
 
-import { table_text_size } from "@/Settings/settings"
+import { table_text_size, dia_type, dia_standard } from "@/Settings/settings"
 
 import { format } from "date-fns"
 import { Calendar as CalendarIcon } from "lucide-react"
@@ -47,7 +47,7 @@ import axios from "axios";
 import { jsPDF } from "jspdf"
 
 export default function Index(props: any) {
-  console.log("in diagnose page 50:", props);
+  //console.log("in diagnose page 50:", props);
   const t = useTranslations('sarc');
   const router = useRouter();
 
@@ -93,7 +93,8 @@ export default function Index(props: any) {
     dia_id: "",
     dia_datetime: "",
     dia_result: "",
-    dia_examiner: "",
+    primary_examiner: "",
+    hospital_examiner: "",
     sarc_f_Q1: "",
     sarc_f_Q2: "",
     sarc_f_Q3: "",
@@ -114,7 +115,7 @@ export default function Index(props: any) {
   const [primaryScreeningPass, setPrimaryScreeningPass] = React.useState(true);
   const [primaryEvaluatePass, setPrimaryEvaluatePass] = React.useState(true);
 
-  const [clinicalIssue, setClinicalIssue] = React.useState(false);
+  const [clinicalIssues, setClinicalIssues] = React.useState(false);
   const [hospitalScreeningPass, setHospitalScreeningPass] = React.useState(true);
   const [hospitalEvaluatePass, setHospitalEvaluatePass] = React.useState(true);
   const [hospitalGripPass, setHospitalGripPass] = React.useState(true);
@@ -132,7 +133,7 @@ export default function Index(props: any) {
 
   const getDiagnoses = async () => {
     const res = await axios.get('/api/diagnoses/')
-    console.log("in diagnoses page 88:", res.data);
+    console.log("in diagnoses page 136:", res.data);
     setDiagnoses(res.data);
   }
 
@@ -141,6 +142,21 @@ export default function Index(props: any) {
     getDiagnoses();
     //const nowDateTime = DateTime.now().toString();
     setDate(new Date());
+
+    if (dia_standard == "AWGS 2019") {
+      setAssessmentStandard("AWGS 2019");
+    } else {
+      setAssessmentStandard("EWGSOP2");
+    }
+
+    if (dia_type == "hospital") {
+      setAssessmentType(t("hostpital-clinic"));
+      setShowHospital(true);
+    } else {
+      setAssessmentType(t("primary-care"));
+      setShowPrimary(true);
+    }
+
   }, [])
 
   useEffect(() => {
@@ -156,40 +172,50 @@ export default function Index(props: any) {
     (((user.gender == "male")
       ? ((parseFloat(diagnose.grip_strength) < 28.0) ? true : false)
       : ((parseFloat(diagnose.grip_strength) < 18.0) ? true : false))
-      || (parseFloat(diagnose.chair_standup5) > 12.0))    
+      || (parseFloat(diagnose.chair_standup5) > 12.0))
       ? setPrimaryEvaluatePass(false) : setPrimaryEvaluatePass(true);
 
-    // Clinical issue and hospital screening
-    if (diagnose.clinicalIssues=="Y") {
-      setClinicalIssue(true);
+
+    // Hospital Screening
+    if (diagnose.clinicalIssues == "Y") {
+      setClinicalIssues(true);
       setHospitalScreeningPass(false);
-    } else {
-      setHospitalScreeningPass(primaryScreeningPass);
     }
+
+    if (diagnose.clinicalIssues || !primaryScreeningPass) {
+      setHospitalScreeningPass(false);
+    }
+
 
     // Hospital evaluate
     const gripPass = ((user.gender == "male")
-      ? ((parseFloat(diagnose.grip_strength) < 28.0) ? false : true) 
+      ? ((parseFloat(diagnose.grip_strength) < 28.0) ? false : true)
       : ((parseFloat(diagnose.grip_strength) < 18.0) ? false : true))
     setHospitalGripPass(gripPass);
 
-    const performancePass = !( (parseFloat(diagnose.chair_standup5) > 12.0) ||
-                               (parseFloat(diagnose.gait_speed6) > 6.0)     ||
-                               (parseInt(diagnose.sppb_score) <10)
-                            );
+    const performancePass = !((parseFloat(diagnose.chair_standup5) > 12.0) ||
+      (parseFloat(diagnose.gait_speed6) > 6.0) ||
+      (parseInt(diagnose.sppb_score) < 10)
+    );
     setHospitalPerformancePass(performancePass);
-    
+
     const ASMIPass = ((user.gender == "male")
-    ? ((parseFloat(diagnose.muscle_quantity) < 7.0) ? false : true) 
-    : ((parseFloat(diagnose.muscle_quantity) < 5.7) ? false : true));
+      ? ((parseFloat(diagnose.muscle_quantity) < 7.0) ? false : true)
+      : ((parseFloat(diagnose.muscle_quantity) < 5.7) ? false : true));
     setHospitalASMIPass(ASMIPass);
 
     setHospitalEvaluatePass(gripPass && performancePass && ASMIPass);
 
-    console.log("in diagnose page 173:", diagnose.muscle_quantity, ASMIPass);
-
-
   }, [diagnose])
+
+  useEffect(() => {
+    // Clinical issue and hospital screening
+    if (clinicalIssues) {
+      setHospitalScreeningPass(false);
+    } else {
+      setHospitalScreeningPass(primaryScreeningPass);
+    }
+  }, [clinicalIssues])
 
   return (
 
@@ -284,7 +310,7 @@ export default function Index(props: any) {
                   if (diagnoses[i].uid == user.id) {
                     toMatchedList[matched] = [i.toString(), diagnoses[i].dia_datetime];
                     matched++;
-                  }ArrowDown
+                  } ArrowDown
                 }
                 setDiagnoseList(toMatchedList);
                 if (matched == 0) {
@@ -354,6 +380,17 @@ export default function Index(props: any) {
                   onClick={
                     () => {
                       setAssessmentStandard("AWGS 2019");
+
+                      if (dia_type == "hospital") {
+                        setAssessmentType(t("hostpital-clinic"));
+                        setShowPrimary(false);
+                        setShowHospital(true);
+                      } else {
+                        setAssessmentType(t("primary-care"));
+                        setShowPrimary(true);
+                        setShowHospital(false);
+                      }
+
                       setShowDiagnoseList(false);
                       setShowStandard(false);
                     }
@@ -377,56 +414,59 @@ export default function Index(props: any) {
           )}
         </div>
 
-        <div className="flex flex-col items-center justify-center">
-          <Button className="w-[300px] font-bold text-2xl opacity-90" variant={"outline"}
-            onClick={
-              () => {
-                setShowStandard(false);
-                setShowType(!showType);
-                setShowDiagnoseList(false);
-                setShowSearch(false);
+        {(assessmentStandard == "AWGS 2019") && (
+          <div className="flex flex-col items-center justify-center">
+            <Button className="w-[300px] font-bold text-2xl opacity-90" variant={"outline"}
+              onClick={
+                () => {
+                  setShowStandard(false);
+                  setShowType(!showType);
+                  setShowDiagnoseList(false);
+                  setShowSearch(false);
+                }
               }
-            }
-          >
-            {assessmentType}
-            <ArrowDown className="ml-2 h-6 w-6" />
-          </Button>
+            >
+              {assessmentType}
+              <ArrowDown className="ml-2 h-6 w-6" />
+            </Button>
 
-          {showType && (
-            <div className="w-full flex flex-row justify-center z-10">
-              <ul
-                className="absolute py-2 px-8 bg-gray-200 
+            {showType && (
+              <div className="w-full flex flex-row justify-center z-10">
+                <ul
+                  className="absolute py-2 px-8 bg-gray-200 
                                 border border-gray-200 rounded-md  ">
-                <li
-                  className={"py-2 cursor-pointer " + table_text_size}
-                  onClick={
-                    () => {
-                      setAssessmentType(t("primary-care"));
-                      setShowType(false);
-                      setShowPrimary(true);
-                      setShowHospital(false);
+                  <li
+                    className={"py-2 cursor-pointer " + table_text_size}
+                    onClick={
+                      () => {
+                        setAssessmentType(t("primary-care"));
+                        setShowType(false);
+                        setShowPrimary(true);
+                        setShowHospital(false);
+                      }
                     }
-                  }
-                >
-                  {t("primary-care")}
-                </li>
-                <li
-                  className={"py-2 cursor-pointer " + table_text_size}
-                  onClick={
-                    () => {
-                      setAssessmentType(t("hostpital-client"));
-                      setShowType(false);
-                      setShowHospital(true);
-                      setShowPrimary(false);
+                  >
+                    {t("primary-care")}
+                  </li>
+                  <li
+                    className={"py-2 cursor-pointer " + table_text_size}
+                    onClick={
+                      () => {
+                        setAssessmentType(t("hostpital-clinic"));
+                        setShowType(false);
+                        setShowHospital(true);
+                        setShowPrimary(false);
+                      }
                     }
-                  }
-                >
-                  {t("hostpital-client")}
-                </li>
-              </ul>
-            </div>
-          )}
-        </div>
+                  >
+                    {t("hostpital-clinic")}
+                  </li>
+                </ul>
+              </div>
+            )}
+
+          </div>
+        )}
 
       </div>
 
@@ -589,12 +629,12 @@ export default function Index(props: any) {
                     <div className="ml-4 p-4 border-2 border-gray-400 w-full text-xl rounded-2xl">
                       <div className="flex flex-row items-center justify-between">
                         <div className="text-2xl font-bold mb-2">診斷:
-                        {(primaryEvaluatePass && primaryScreeningPass) && (
-                          <span className="text-green-700"> 肌少症可能性低</span> 
-                        )}             
-                        {!(primaryEvaluatePass && primaryScreeningPass) && (
-                          <span className="text-red-500"> 可能肌少症</span> 
-                        )}  
+                          {(primaryEvaluatePass && primaryScreeningPass) && (
+                            <span className="text-green-700"> 肌少症可能性低</span>
+                          )}
+                          {!(primaryEvaluatePass && primaryScreeningPass) && (
+                            <span className="text-red-500"> 可能肌少症</span>
+                          )}
                         </div>
 
                         <Button className="bg-primary text-white text-xl -mt-4 w-[100px]"
@@ -630,7 +670,10 @@ export default function Index(props: any) {
                         <Label className="text-xl w-2/12" htmlFor="examiner">診斷者：</Label>
                         <Input className={table_text_size + " w-10/12 -ml-7 border-gray-400"}
                           id="examiner" placeholder="名字"
-                          value={diagnose.dia_examiner}
+                          value={diagnose.primary_examiner}
+                          onChange={(e) => {
+                            setDiagnose({ ...diagnose, primary_examiner: e.target.value });
+                          }}
                         />
                       </div>
 
@@ -639,8 +682,11 @@ export default function Index(props: any) {
                       </div>
 
                       <Textarea className="ml-[86px] -mt-6 w-10/12 h-[200px] text-xl border-gray-400"
-                        id="description" value={diagnose.primary_comments
-                        } />
+                        id="description" value={diagnose.primary_comments}
+                        onChange={(e) => {
+                          setDiagnose({ ...diagnose, primary_comments: e.target.value });
+                        }}
+                      />
 
 
                     </div>
@@ -657,7 +703,7 @@ export default function Index(props: any) {
           {showHospital && (assessmentStandard == "AWGS 2019") && (
             <div className="w-7/12 mt-4">
               {/* 醫院上層篩檢*/}
-              <div className="flex flex-col w-full h-full mx-4 items-center justify-center">              
+              <div className="flex flex-col w-full h-full mx-4 items-center justify-center">
                 <div className="flex flex-row items-start justify-center">
                   <div className="w-[300px] h-[190px] ml-[200px] text-xl rounded-2xl mt-3">
                     <div className="flex flex-col items-start justify-start p-4 ml-10">
@@ -727,21 +773,17 @@ export default function Index(props: any) {
                     <div className="mt-4 ml-4 p-4 border-2 border-gray-400 w-full text-xl rounded-2xl">
                       <div className="text-2xl font-bold mb-2">篩檢:</div>
                       <div className="flex flex-row justify-start">
-                        <input type="checkbox" className="mt-1 ml-4 w-4 h-4" checked={clinicalIssue} 
-                          onClick={() => {
+                        <input type="checkbox" className="mt-1 ml-4 w-4 h-4" checked={clinicalIssues}
+                          onChange={(e) => {
                             if (vaildUser) {
-                              if (clinicalIssue) {
-                                setClinicalIssue(false);
-                              } else {
-                                setClinicalIssue(true);
-                              }
+                              setClinicalIssues(e.target.checked);
                             }
                           }}
                         />
                         <div className="text-xl font-bold mb-2 ml-4">呈現任一臨床問題:</div>
                       </div>
                       <div className="text-xl mb-2 ml-4">
-                        <div>功能下降及受限; 不明原因體重減輕; 憂鬱; 認知障礙; 反覆性跌倒;</div> 
+                        <div>功能下降及受限; 不明原因體重減輕; 憂鬱; 認知障礙; 反覆性跌倒;</div>
                         <div>營養不良; 慢性疾病(心衰竭; 慢性阻塞性肺病; 糖尿病; 慢性腎臟病等)</div>
                       </div>
 
@@ -786,68 +828,68 @@ export default function Index(props: any) {
 
               {/* 醫院中層評估*/}
               <div className="flex flex-col w-full h-full mx-4 items-center justify-center">
-                  <div className="flex flex-row items-center justify-center">
-                    <div className="w-[500px] h-[100px] text-xl">
-                    </div>
-                    <div className="w-[700px] flex flex-col items-center">
-                      <div className="ml-4 p-4 border-2 border-gray-400 w-full text-xl rounded-2xl">
-                        <div className="text-2xl font-bold mb-2">評估:</div>
-                        <div className="text-xl font-bold ml-4">肌肉力量:</div>
-                        <div className="flex flex-row items-center justify-between">
-                          <div className="ml-8">{"握力: 男<28公斤，女<18公斤"}</div>
-                          <div className={((user.gender == "male")
-                            ? (parseFloat(diagnose.grip_strength) < 28.0) ? "bg-red-500" : "bg-green-700"
-                            : (parseFloat(diagnose.grip_strength) < 18.0) ? "bg-red-500" : "bg-green-700")
-                            + " text-white p-1 rounded-md w-[100px]"
-                            + " flex items-center justify-end pr-2"}
-                          >{diagnose.grip_strength} 公斤</div>
-                        </div>
-                        <div className="text-xl font-bold ml-4">體能表現:</div>
-                        <div className="flex flex-row items-center justify-between">
-                          <div className="ml-14">{"五次起立坐下: >=12 秒"}</div>
-                          <div className={
-                            ((parseFloat(diagnose.chair_standup5) > 12.0) ? "bg-red-500" : "bg-green-700")
-                            + " text-white p-1 rounded-md w-[100px]"
-                            + " flex items-center justify-end pr-2"}
-                          >{diagnose.chair_standup5} 秒</div>
-                        </div>
-                        <div className="flex flex-row mt-1 items-center justify-between">
-                          <div className="ml-8">{"或 六公尺步行速度: >6 秒 (< 1.0 公尺/秒)"}</div>
-                          <div className={
-                            ((parseFloat(diagnose.gait_speed6) > 6.0) ? "bg-red-500" : "bg-green-700")
-                            + " text-white p-1 rounded-md w-[100px]"
-                            + " flex items-center justify-end pr-2"}
-                          >{ diagnose.gait_speed6 } 秒</div>
-                        </div>     
-                        <div className="flex flex-row mt-1 items-center justify-between">
-                          <div className="ml-8">{"或 簡易身體功能量表 SPPB: <= 9 分"}</div>
-                          <div className={
-                            ((parseInt(diagnose.sppb_score) < 10) ? "bg-red-500" : "bg-green-700")
-                            + " text-white p-1 rounded-md w-[100px]"
-                            + " flex items-center justify-end pr-2"}
-                          >{diagnose.sppb_score} 分</div>
-                        </div>  
+                <div className="flex flex-row items-center justify-center">
+                  <div className="w-[500px] h-[100px] text-xl">
+                  </div>
+                  <div className="w-[700px] flex flex-col items-center">
+                    <div className="ml-4 p-4 border-2 border-gray-400 w-full text-xl rounded-2xl">
+                      <div className="text-2xl font-bold mb-2">評估:</div>
+                      <div className="text-xl font-bold ml-4">肌肉力量:</div>
+                      <div className="flex flex-row items-center justify-between">
+                        <div className="ml-8">{"握力: 男<28公斤，女<18公斤"}</div>
+                        <div className={((user.gender == "male")
+                          ? (parseFloat(diagnose.grip_strength) < 28.0) ? "bg-red-500" : "bg-green-700"
+                          : (parseFloat(diagnose.grip_strength) < 18.0) ? "bg-red-500" : "bg-green-700")
+                          + " text-white p-1 rounded-md w-[100px]"
+                          + " flex items-center justify-end pr-2"}
+                        >{diagnose.grip_strength} 公斤</div>
+                      </div>
+                      <div className="text-xl font-bold ml-4">體能表現:</div>
+                      <div className="flex flex-row items-center justify-between">
+                        <div className="ml-14">{"五次起立坐下: >=12 秒"}</div>
+                        <div className={
+                          ((parseFloat(diagnose.chair_standup5) > 12.0) ? "bg-red-500" : "bg-green-700")
+                          + " text-white p-1 rounded-md w-[100px]"
+                          + " flex items-center justify-end pr-2"}
+                        >{diagnose.chair_standup5} 秒</div>
+                      </div>
+                      <div className="flex flex-row mt-1 items-center justify-between">
+                        <div className="ml-8">{"或 六公尺步行速度: >6 秒 (< 1.0 公尺/秒)"}</div>
+                        <div className={
+                          ((parseFloat(diagnose.gait_speed6) > 6.0) ? "bg-red-500" : "bg-green-700")
+                          + " text-white p-1 rounded-md w-[100px]"
+                          + " flex items-center justify-end pr-2"}
+                        >{diagnose.gait_speed6} 秒</div>
+                      </div>
+                      <div className="flex flex-row mt-1 items-center justify-between">
+                        <div className="ml-8">{"或 簡易身體功能量表 SPPB: <= 9 分"}</div>
+                        <div className={
+                          ((parseInt(diagnose.sppb_score) < 10) ? "bg-red-500" : "bg-green-700")
+                          + " text-white p-1 rounded-md w-[100px]"
+                          + " flex items-center justify-end pr-2"}
+                        >{diagnose.sppb_score} 分</div>
+                      </div>
 
-                        <div className="text-xl font-bold mt-2 ml-4">肌肉質量(ASMI): kg/m2</div>
-                        <div className="flex flex-row items-center justify-between">
-                          <div className="ml-14">{"BIA： 男<7.0 ，女< 5.7 "}</div>
-                          <div className={
-                            (
-                              (user.gender == "male") 
+                      <div className="text-xl font-bold mt-2 ml-4">肌肉質量(ASMI): kg/m2</div>
+                      <div className="flex flex-row items-center justify-between">
+                        <div className="ml-14">{"BIA： 男<7.0 ，女< 5.7 "}</div>
+                        <div className={
+                          (
+                            (user.gender == "male")
                               ? ((parseFloat(diagnose.muscle_quantity) < 7.0) ? "bg-red-500" : "bg-green-700")
                               : ((parseFloat(diagnose.muscle_quantity) < 5.7) ? "bg-red-500" : "bg-green-700")
-                            )
-                            + " text-white p-1 rounded-md w-[100px]"
-                            + " flex items-center justify-end pr-2"}
-                          >{diagnose.muscle_quantity} <span className="text-sm ml-1 ">kg/m2</span></div>
-                        </div> 
-                                                                                     
-                      </div>                      
-                    </div>
-                    <div className="w-[550px] h-[100px] p-2 rounded-2xl"></div>
-                  </div>
+                          )
+                          + " text-white p-1 rounded-md w-[100px]"
+                          + " flex items-center justify-end pr-2"}
+                        >{diagnose.muscle_quantity} <span className="text-sm ml-1 ">kg/m2</span></div>
+                      </div>
 
-                <img src={primaryEvaluatePass ? "/img/arrow-down-green.png" : "/img/arrow-down-red.png"}
+                    </div>
+                  </div>
+                  <div className="w-[550px] h-[100px] p-2 rounded-2xl"></div>
+                </div>
+
+                <img src={hospitalEvaluatePass ? "/img/arrow-down-green.png" : "/img/arrow-down-red.png"}
                   className="h-[50px] w-[40px]">
                 </img>
 
@@ -862,24 +904,41 @@ export default function Index(props: any) {
                     <div className="ml-4 p-4 border-2 border-gray-400 w-full text-xl rounded-2xl">
                       <div className="flex flex-row items-center justify-between">
                         <div className="text-2xl font-bold mb-2">診斷:
-                          <span className="text-red-500">
-                            { 
-                              ( 
-                              (!hospitalGripPass && !hospitalASMIPass && !hospitalPerformancePass) 
-                              ? " 嚴重肌少症" 
-                              : ((!hospitalGripPass && !hospitalASMIPass) 
-                              ? " 肌少症"
-                              : "")
+                          {(hospitalGripPass && hospitalASMIPass && hospitalPerformancePass) && (
+                            <span className="text-green-700"> 肌少症可能性低</span>
+                          )}
+
+                          {(!hospitalGripPass && !hospitalASMIPass && !hospitalPerformancePass) && (
+                            <span className="text-red-500"> 嚴重肌少症</span>
+                          )}
+
+                          {(!hospitalGripPass && !hospitalASMIPass && hospitalPerformancePass) && (
+                            <span className="text-red-500"> 肌少症</span>
+                          )}
+
+                          {(hospitalGripPass && hospitalASMIPass && !hospitalPerformancePass) && (
+                            <span className="text-red-500"> 輕微肌少症</span>
+                          )}
+
+                          {/* <span className="text-red-500">
+                            {
+                              (
+                                (!hospitalGripPass && !hospitalASMIPass && !hospitalPerformancePass)
+                                  ? " 嚴重肌少症"
+                                  : ((!hospitalGripPass && !hospitalASMIPass)
+                                    ? " 肌少症"
+                                    : "")
                               )
-                              
+
                             }
-                            </span>
+                          </span> */}
+
                         </div>
 
                         <Button className="bg-primary text-white text-xl -mt-4 w-[100px]"
                           onClick={() => {
                             console.log("in diagnoses page 825:", date)
-                            
+
                           }}
                         >
                           儲存
@@ -889,7 +948,7 @@ export default function Index(props: any) {
                       <div className="flex flex-row items-center justify-between">
 
                         <div className="ml-14 mt-1  text-2xl  font-bold text-red-500">
-                          {clinicalIssue && (
+                          {clinicalIssues && (
                             <div className="flex flex-row items-center justify-start text-xl">
                               - 有臨床問題，請洽相關專科醫師協助。
                             </div>
@@ -929,7 +988,10 @@ export default function Index(props: any) {
                         <Label className="text-xl w-2/12" htmlFor="examiner">診斷者：</Label>
                         <Input className={table_text_size + " w-10/12 -ml-7 border-gray-400"}
                           id="examiner" placeholder="名字"
-                          value={diagnose.dia_examiner}
+                          value={diagnose.hospital_examiner}
+                          onChange={(e) => {
+                            diagnose.hospital_examiner = e.target.value;
+                          }}
                         />
                       </div>
 
@@ -938,7 +1000,10 @@ export default function Index(props: any) {
                       </div>
 
                       <Textarea className="ml-[86px] -mt-6 w-10/12 h-[200px] text-xl border-gray-400"
-                        id="description" value={diagnose.hospital_comments} 
+                        id="hospital_comments" value={diagnose.hospital_comments}
+                        onChange={(e) => {
+                          diagnose.hospital_comments = e.target.value;
+                        }}
                       />
 
                     </div>

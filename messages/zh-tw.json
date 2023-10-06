@@ -103,6 +103,7 @@
     "no-privilege-to-save-to-records-msg": "只有管理員可以儲存至紀錄",
     "no-privilege-to-delete-msg": "只有管理員可以進行刪除",
     "confirm-to-delete-msg": "確認要刪除?",
+    "confirm-to-modify-msg": "確認要修改?",
     "data-management": "資料管理",
     "user-data": "用戶資料",
     "backup": "備份",
@@ -146,7 +147,7 @@
     "datetime": "日期/時間",
     "delete-all": "全部刪除",
     "primary-care": "基層醫療/社區預防",
-    "hostpital-client": "醫院/診所",
+    "hostpital-clinic": "醫院/診所",
     "select-a-user": "請先選擇一個用戶",
     "no-diag-data": "無診斷資料"
   }

@@ -34,7 +34,7 @@ import {
 } from "@/components/ui/select"
 
 export default function Index(props: any) {
-  console.log("start", props);
+  //console.log("start", props);
 
   const router = useRouter();
   const searchParams = useSearchParams()
@@ -66,7 +66,7 @@ export default function Index(props: any) {
 
   const getUsers = async () => {
     const res = await axios.get('/api/users/')
-    //console.log(res.data);
+    console.log(res.data);
     setUserData(res.data);
   }
 
@@ -128,7 +128,7 @@ export default function Index(props: any) {
 
     var data_err_msg = t("data-err-msg") + ":\n";
     data_err_msg = data_err_msg + ((!name_is_empty) ? "" : " - " + t("name-is-empty") + "\n");
-    data_err_msg = data_err_msg + ((!name_is_duplicated) ? "" : " - " + t("name-is-duplicated") + "\n");
+    // data_err_msg = data_err_msg + ((!name_is_duplicated) ? "" : " - " + t("name-is-duplicated") + "\n");
     data_err_msg = data_err_msg + ((!card_no_is_invalid) ? "" : " - " + t("card-no-is-invalid") + "\n");
     data_err_msg = data_err_msg + ((!age_is_NaN) ? "" : " - " + t("age-is-NaN") + "\n");
     data_err_msg = data_err_msg + ((!age_out_range) ? "" : " - " + t("age-out-range") + "\n");
@@ -142,8 +142,15 @@ export default function Index(props: any) {
       return;
     }
 
+    if (name_is_duplicated) {
+      if (!(confirm(t("name-is-duplicated") + ", " + t("confirm-to-modify-msg")))) {
+        return;
+      }
+    }
+
     const res = await axios.post('/api/users/',
       {
+        "id": user.id,
         "name": user.name,
         "card_no": user.card_no,
         "email": user.email,
@@ -155,6 +162,7 @@ export default function Index(props: any) {
       })
 
     console.log(res.data);
+
     if (res.data.success) {
       console.log("Save OK");
       alert(t('save-ok-msg'));
@@ -163,6 +171,7 @@ export default function Index(props: any) {
       console.log("Save failed");
       alert(t('save-failed-msg'));
     }
+
   }
 
   return (
@@ -370,67 +379,6 @@ export default function Index(props: any) {
             )}
           </CardFooter>
         </Card>
-      )
-      }
-
-      {showBinding && (
-        <Card className="w-[550px]">
-          <CardHeader>
-            <CardTitle>用戶：{user.name} 您好，請綁定卡號後進行量測</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid w-full items-center gap-4">
-              <div className="flex flex-row space-y-1.5">
-                <Label className={"w-44 pt-3 " + table_text_size} htmlFor="card_no">ID {t("card-no")}</Label>
-                <Input autoFocus className={table_text_size}
-                  id="card_no"
-                  value={user.card_no}
-                  onChange={
-                    (e) => {
-                      let card_no: string = "";
-                      console.log(e.target.value);
-                      if (e.target.value.length == 10) {
-                        console.log("10 digits detected");
-
-                        card_no = e.target.value;
-                        e.target.value = ""
-                      }
-                      setUser({ ...user, card_no: e.target.value });
-
-                    }
-                  }
-                  placeholder={t("card-msg")}
-                />
-              </div>
-              {user.card_no != "" && (
-                <div className={table_text_size}>已綁定卡號： {user.card_no}</div>
-              )}
-            </div>
-
-          </CardContent>
-          <CardFooter className="flex items-center justify-between">
-            <Button variant="outline" className={'flex ' + table_text_size}
-              onClick={async () => {
-                //setParq_checked(!parq_checked);
-                setShowDataCard(true);
-                setshowBinding(false);
-                setUser({ ...user, card_no: "" });
-              }}
-            >
-              {t("cancel")}
-            </Button>
-            {user.card_no != "" && (
-              <Button className={'flex bg-primary  ' + table_text_size}
-                onClick={async () => {
-                  //setParq_checked(!parq_checked);
-                  //setShowDataCard(false);
-                }}
-              >
-                綁定後開始量測
-              </Button>
-            )}
-          </CardFooter>
-        </Card >
       )
       }
 

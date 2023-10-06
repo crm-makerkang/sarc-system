@@ -6,3 +6,6 @@ export const json_settings_filename = "./Settings/settings.ts"
 export const json_measurements_filename = "./data/measurements.json"
 export const json_in_measure_filename = "./data/in_measure.json"
 export const json_diagnoses_filename = "./data/diagnoses.json"
+
+export const dia_standard: string = "AWGS 2019"
+export const dia_type: string = "primary"
