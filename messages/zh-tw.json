@@ -13,6 +13,8 @@
     "diagnose-records": "診斷紀錄",
     "new-assessment": "新增評估",
     "new-diagnose": "新增診斷",
+    "new-questionnaire": "新增評估問卷",
+    "date-questionnaire": "評估日期",
     "sarc-form": "SARC-CalF",
     "sppb-form": "SPPB",
     "management": "管理",
@@ -149,6 +151,8 @@
     "primary-care": "基層醫療/社區預防",
     "hostpital-clinic": "醫院/診所",
     "select-a-user": "請先選擇一個用戶",
-    "no-diag-data": "無診斷資料"
+    "no-diag-data": "無診斷資料",
+    "sarc-questionnaire": "肌少症評估問卷",
+    "user-name": "用戶姓名"
   }
 }

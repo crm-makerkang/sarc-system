@@ -13,6 +13,8 @@
     "assessments-records": "Assessments records",
     "new-assessment": "New assessment",
     "new-diagnose": "New Diagnose",
+    "new-questionnaire": "New Questionnaire",
+    "date-questionnaire": "Date",
     "sarc-form": "SARC-CalF",
     "sppb-form": "SPPB",
     "management": "Management",
@@ -150,6 +152,8 @@
     "primary-care": "Primary Care",
     "hostpital-clinic": "Hospital/Client",
     "select-a-user": "Please select a user",
-    "no-diag-data": "No diagnosis data"
+    "no-diag-data": "No diagnosis data",
+    "sarc-questionnaire": "Sarcopenia Questionnaire",
+    "user-name": "User Name"
   }
 }

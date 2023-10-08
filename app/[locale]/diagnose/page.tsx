@@ -219,13 +219,13 @@ export default function Index(props: any) {
 
   return (
 
-    <div className="mt-12 flex flex-col w-full items-center justify-evenly ">
+    <div className="mt-12 flex flex-col w-full items-center justify-between ">
 
-      <div className="flex flex-row w-8/12 items-center justify-evenly">
+      <div className="flex flex-row w-8/12 items-center justify-between">
 
         <div className="flex flex-col space-y-1.5">
 
-          <div className="flex flex-row ml-24 justify-start">
+          <div className="flex flex-row ml-24 justify-between">
             <Label className="-ml-24 pt-1 text-2xl" htmlFor="diag_name">姓名：</Label>
             <Input className="text-xl border border-gray-500 w-[200px]"
               id="diag_name"
@@ -250,7 +250,7 @@ export default function Index(props: any) {
                   }
                 }
               }
-              placeholder={t('your-name')}
+              placeholder={t('user-name')}
             />
           </div>
 
