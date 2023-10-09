@@ -1,6 +1,6 @@
 [
   {
-    "calf_grith": "38.5",
+    "calf_grith": "32.5",
     "grip_strength": "31.6",
     "chair_standup5": "8.4",
     "muscle_quantity": "2.2",
@@ -28,7 +28,7 @@
   },
   {
     "datetime": "2023-10-02 13:38",
-    "calf_grith": "23.1",
+    "calf_grith": "23.5",
     "grip_strength": "24.1",
     "chair_standup5": "10.9",
     "muscle_quantity": "9.2",
