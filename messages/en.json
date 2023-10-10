@@ -18,6 +18,7 @@
     "date-questionnaire": "Date",
     "sarc-form": "SARC-CalF",
     "sppb-form": "SPPB",
+    "sppb-full": "Short Physical Performance Battery (SPPB)",
     "management": "Management",
     "status": "Status",
     "amount": "Amount",
@@ -178,6 +179,21 @@
     "points": "points",
     "sum-of-above-five": "(sum of above 5 items)",
     "sarc-risk": "best predicts the need for further, more comprehensive evaluation",
-    "save-questionnaire": "Save Questionnaire"
+    "save-questionnaire": "Save Questionnaire",
+    "save-sppb": "Save SPPB",
+    "sppb-balance-desc": "Balance test: stand unsupported for 10 seconds with feet in three positions",
+    "sppb-walk-desc": "Chair standup test: time for 5 times standup from chair",
+    "sppb-standup-desc": "Walking speed test: time for walking for 4 meters",
+    "sppb-balance-a": "A: Side-by-side stand",
+    "sppb-balance-b": "B: Semi-tandem stand",
+    "sppb-balance-c": "C: Tandem stand",
+    "keep-10s": "Keep 10 seconds=1",
+    "less-10s": "Less than 10 seconds=0",
+    "c-keep-10s": "Keep 10 seconds=2",
+    "c-more-3s": "Keep 3~9.99 seconds=1",
+    "c-less-3s": "less than 3 seconds=0",
+    "sum": "Sum",
+    "unable-to-complete": "Unable to complete=0",
+    "sppb-score-desc": "SPPB score of 3-9 points in persons with possible sarcopenia but no mobility disability indicates frailty; SPPB score of 10 or greater for persons with no sarcopenia and no mobility disability indicates robustness. Persons with a score of 2 or lower who have sarcopenia, potential cachexia, and mobility disability are determined to be disabled."
   }
 }

@@ -18,6 +18,7 @@
     "date-questionnaire": "評估日期",
     "sarc-form": "SARC-CalF",
     "sppb-form": "SPPB",
+    "sppb-full": "簡易身體表現功能量表",
     "management": "管理",
     "status": "狀態",
     "amount": "金額",
@@ -177,6 +178,21 @@
     "points": "分數",
     "sum-of-above-five": "(上述 5 項加總)",
     "sarc-risk": "表示有肌少症風險",
-    "save-questionnaire": "儲存問卷"
+    "save-questionnaire": "儲存問卷",
+    "save-sppb": "儲存量表",
+    "sppb-balance-desc": "平衡測試: 腳用三種不同站法，每種站立 10 秒。三種站法分數加總",
+    "sppb-walk-desc": "行走速度測試: 測量行走四公尺的時間",
+    "sppb-standup-desc": "椅子起站測試: 連續起立坐下五次的時間",
+    "sppb-balance-a": "A: 並排站立",
+    "sppb-balance-b": "B: 半並排站立",
+    "sppb-balance-c": "C: 直線站立",
+    "keep-10s": "保持 10 秒=1",
+    "less-10s": "少於 10 秒=0",
+    "c-keep-10s": "保持 10 秒=2",
+    "c-more-3s": "保持 3~9.99 秒=1",
+    "c-less-3s": "少於 3 秒=0",
+    "sum": "加總",
+    "unable-to-complete": "無法完成=0",
+    "sppb-score-desc": "SPPB 分數： 0-9 分數的人行動能力障礙，10 分數以上的人行動能力正常"
   }
 }
