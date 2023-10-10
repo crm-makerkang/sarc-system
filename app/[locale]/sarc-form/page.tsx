@@ -732,9 +732,23 @@ export default function Index(props: any) {
                 <div className="w-[550px] h-[100px] p-2 rounded-2xl"></div>
               </div>              
             </div>
-            <div className="flex flex-row items-center justify-end mr-8 mb-12">
-              <Button className="text-xl bg-primary">{t("save-questionnaire")}</Button>
+
+            <div className="flex flex-row items-center justify-between mt-4 mb-12 ">
+              <div className="">
+                <Button variant="outline" className="text-xl border-gray-400"
+                  onClick={() => window.location.reload()}
+                >
+                  {t("clear-data")}
+                </Button>
+              </div>
+
+              <div className="">
+                <Button className="text-xl bg-primary">
+                  {t("save-questionnaire")}
+                </Button>
+              </div>
             </div>
+
           </div>          
         </div>
       </div>

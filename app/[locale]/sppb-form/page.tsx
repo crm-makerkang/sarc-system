@@ -101,6 +101,18 @@ export default function Index(props: any) {
   const [sppb3_points, setSppb3_points] = React.useState("4");
   const [sppb_points, setSppb_points] = React.useState("12");
 
+  const [sppb1A_radio_diable, setSppb1A_radio_diable] = React.useState(false);
+  const [sppb1B_radio_diable, setSppb1B_radio_diable] = React.useState(false);
+  const [sppb1C_radio_diable, setSppb1C_radio_diable] = React.useState(false);
+  const [sppb_2_radio_diable, setSppb_2_radio_diable] = React.useState(false);
+  const [sppb_3_radio_diable, setSppb_3_radio_diable] = React.useState(false);
+
+  const [sppb1A_radio_value, setSppb1A_radio_value] = React.useState("0");
+  const [sppb1B_radio_value, setSppb1B_radio_value] = React.useState("0");
+  const [sppb1C_radio_value, setSppb1C_radio_value] = React.useState("0");
+  const [sppb_2_radio_value, setSppb_2_radio_value] = React.useState("0");
+  const [sppb_3_radio_value, setSppb_3_radio_value] = React.useState("0");
+
   const [qcal_points, setQcal_points] = React.useState("0");
   const [sarc_calf_points, setSarc_calF_points] = React.useState("0");
 
@@ -136,14 +148,31 @@ export default function Index(props: any) {
   useEffect(() => {
     for (var i=0; i < userData.length; i++) {
       if (userData[i].id === measurement.uid) {
-        setSppb1A_points( (parseFloat(measurement.balanceA) < 10.0) ? "0" : "1");
-        setSppb1B_points( (parseFloat(measurement.balanceB) < 10.0) ? "0" : "1");
-        if (parseFloat(measurement.balanceC)<3.0){
-          setSppb1C_points("0");
-        } else if (parseFloat(measurement.balanceC)< 10.0){
-          setSppb1C_points("1");
-        } else {
-          setSppb1C_points("2");
+        if (measurement.balanceA != ""){
+          setSppb1A_radio_diable(true);
+          setSppb1A_radio_value((parseFloat(measurement.balanceA) < 10.0) ? "1" : "0");
+          setSppb1A_points((parseFloat(measurement.balanceA) < 10.0) ? "0" : "1");
+        } 
+
+        if (measurement.balanceB != ""){      
+          setSppb1B_radio_diable(true);
+          setSppb1B_radio_value((parseFloat(measurement.balanceB) < 10.0) ? "1" : "0");            
+          setSppb1B_points( (parseFloat(measurement.balanceB) < 10.0) ? "0" : "1");
+        }
+
+        if (measurement.balanceC != ""){
+          setSppb1C_radio_diable(true);
+
+          if (parseFloat(measurement.balanceC)<3.0){
+            setSppb1C_radio_value("2");
+            setSppb1C_points("0");
+          } else if (parseFloat(measurement.balanceC)< 10.0){
+            setSppb1C_radio_value("1");
+            setSppb1C_points("1");
+          } else {
+            setSppb1C_radio_value("0");
+            setSppb1C_points("2");
+          }
         }
 
         if (measurement.chair_standup5=="not-completed") {
@@ -388,18 +417,20 @@ export default function Index(props: any) {
                       <div className="flex flex-row items-center text-xl mt-2 ml-8 w-[320px] ">
                         <img src="/img/sppb_A.png" className="w-[50px] h-[50px]"/>
                         <div className="w-[120px] text-right border border-gray-400 ml-4 p-2 rounded-md">
-                          {measurement.balanceA} {t("cm")}
+                          {measurement.balanceA} {t("seconds")}
                         </div>
                       </div>
 
-                      <RadioGroup defaultValue="0"
+                      <RadioGroup value={sppb1A_radio_value} disabled={sppb1A_radio_diable}
                         className="w-[300px]"                      
                         onValueChange={(e) => {
                           switch (e) {
                             case "0":
+                              setSppb1A_radio_value("0")
                               setSppb1A_points("1");
                               break;
                             case "1":
+                              setSppb1A_radio_value("1")
                               setSppb1A_points("0");
                               break;
                             default:
@@ -427,18 +458,20 @@ export default function Index(props: any) {
                       <div className="flex flex-row items-center text-xl mt-10 ml-8 w-[320px] ">
                         <img src="/img/sppb_B.png" className="w-[50px] h-[70px]"/>
                         <div className="w-[120px] text-right border border-gray-400 ml-4 p-2 rounded-md">
-                          {measurement.balanceB} {t("cm")}
+                          {measurement.balanceB} {t("seconds")}
                         </div>                          
                       </div>
 
-                      <RadioGroup defaultValue="0"
+                      <RadioGroup value={sppb1B_radio_value} disabled={sppb1B_radio_diable}
                         className="w-[300px]"                      
                         onValueChange={(e) => {
                           switch (e) {
                             case "0":
+                              setSppb1B_radio_value("0")
                               setSppb1B_points("1");
                               break;
                             case "1":
+                              setSppb1B_radio_value("1")
                               setSppb1B_points("0");
                               break;
                             default:
@@ -466,21 +499,24 @@ export default function Index(props: any) {
                       <div className="flex flex-row items-center text-xl mt-10 ml-12 w-[320px] ">
                         <img src="/img/sppb_C.png" className="w-[30px] h-[80px]"/>
                         <div className="w-[120px] text-right border border-gray-400 ml-5 p-2 rounded-md">
-                          {measurement.balanceC} {t("cm")}
+                          {measurement.balanceC} {t("seconds")}
                         </div>                          
                       </div>
 
-                      <RadioGroup defaultValue="0"
+                      <RadioGroup value={sppb1C_radio_value} disabled={sppb1C_radio_diable}
                         className="w-[320px]"                      
                         onValueChange={(e) => {
                           switch (e) {
                             case "0":
+                              setSppb1C_radio_value("0");
                               setSppb1C_points("2");
                               break;
                             case "1":
+                              setSppb1C_radio_value("1");
                               setSppb1C_points("1");
                               break;
                             case "2":
+                              setSppb1C_radio_value("2");
                               setSppb1C_points("0");
                               break;
                             default:
@@ -529,7 +565,7 @@ export default function Index(props: any) {
                         </div>                         
                       </div>                        
 
-                      <RadioGroup defaultValue="0"
+                      <RadioGroup defaultValue={sppb_2_radio_value} disabled={sppb_2_radio_diable}
                         className="mt-12 w-[300px]"                      
                         onValueChange={(e) => {
                           switch (e) {
@@ -590,7 +626,7 @@ export default function Index(props: any) {
                         </div>                        
                       </div>  
 
-                      <RadioGroup defaultValue="0"
+                      <RadioGroup defaultValue={sppb_3_radio_value} disabled={sppb_3_radio_diable}
                         className="mt-12 w-[300px]"
                         onValueChange={(e) => {
                           switch (e) {
@@ -663,8 +699,20 @@ export default function Index(props: any) {
 
             </div>
 
-            <div className="flex flex-row items-center justify-end mt-4 mr-8 mb-12">
-              <Button className="text-xl bg-primary">{t("save-sppb")}</Button>
+            <div className="flex flex-row items-center justify-between mt-4 mb-12 ">
+              <div className="">
+                <Button variant="outline" className="text-xl border-gray-400"
+                  onClick={() => window.location.reload()}
+                >
+                  {t("clear-data")}
+                </Button>
+              </div>
+
+              <div className="">
+                <Button className="text-xl bg-primary">
+                  {t("save-sppb")}
+                </Button>
+              </div>
             </div>
           </div>          
         </div>
