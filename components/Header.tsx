@@ -13,11 +13,25 @@ import { useTranslations } from "next-intl"
 import { nav_routes } from "@/models/nav_routes";
 
 import axios from "axios"
+import { clearInterval } from 'timers';
+//import dgram from 'dgram'; // 找不到可以使用 dgram  的方法
 
 export default function Header(test: any) {
   //console.log("in Header", test)
 
   // const res = await axios.get('/api/token/');
+
+  // useEffect(() => {
+  //   const dgram = require('dgram');
+  //   const message = new Buffer('Server?');
+  //   const socket = dgram.createSocket("udp4");
+  //   setInterval(() => {
+  //     console.log("in Header 27: UDP tick");
+  //     socket.send(message, 0, message.length, 24000, '255.255.255.255');
+  //   }, 1000)
+  // }, [])
+
+
 
   const [tab, setTab] = React.useState("");
   const [privilege, setPrivilege] = React.useState(false);
@@ -25,7 +39,7 @@ export default function Header(test: any) {
 
 
   useEffect(() => {
-    console.log("in Hedaer 28:");
+    console.log("in Hedaer 37:");
     const get_privilege = async () => {
       const res = await axios.get('/api/token/')
       //console.log("in Hedaer 31:", res.data, typeof res.data);
