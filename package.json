@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "predev": "node udp_broadcast_out.js &",
+    "xxx_predev": "node udp_broadcast_out.js &",
     "dev": "next dev -p 8089",
     "build": "next build",
     "start": "next start -p 8089",
