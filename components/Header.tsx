@@ -15,6 +15,10 @@ import { nav_routes } from "@/models/nav_routes";
 import axios from "axios"
 import { clearInterval } from 'timers';
 //import dgram from 'dgram'; // 找不到可以使用 dgram  的方法
+// import * as child from 'child_process'; // 也是 Module not found: Can't resolve 'child_process'
+
+// var foo: child.ChildProcess = child.exec('foo.sh');
+// console.log(typeof foo.on);
 
 export default function Header(test: any) {
   //console.log("in Header", test)
@@ -30,7 +34,6 @@ export default function Header(test: any) {
   //     socket.send(message, 0, message.length, 24000, '255.255.255.255');
   //   }, 1000)
   // }, [])
-
 
 
   const [tab, setTab] = React.useState("");

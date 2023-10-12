@@ -22,9 +22,12 @@ socket.on('listening', function () {
       console.log("error", e.message);
     }
 
-    const broadcast_msg = "sarc,ip," + ip_addr + ",8089";
-    const message = Buffer.from(broadcast_msg)
-    socket.send(message, 0, message.length, 24000, '255.255.255.255');
+    if (ip_addr != "") {
+      const broadcast_msg = "sarc,ip," + ip_addr + ",8089";
+      const message = Buffer.from(broadcast_msg)
+      socket.send(message, 0, message.length, 24000, '255.255.255.255');
+    }
+
   }, 1000);
 });
 
