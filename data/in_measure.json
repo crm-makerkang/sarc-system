@@ -1,17 +1,1 @@
-[
-  {
-    "datetime": "",
-    "name": "Alice",
-    "calf_grith": "38.5",
-    "grip_strength": "31.6",
-    "chair_standup5": "8.4",
-    "muscle_quantity": "2.2",
-    "gait_speed4": "5.2",
-    "gait_speed6": "6.7",
-    "balanceA": "9",
-    "balanceB": "9",
-    "balanceC": "9",
-    "uid": "1cfe90ea-d928-4107-abb5-35dea3817a12",
-    "rid": ""
-  }
-]
+[{"datetime":"","calf_grith":"48.5","grip_strength":"31.6","chair_standup5":"8.4","muscle_quantity":"2.2","gait_speed4":"5.2","gait_speed6":"6.7","balanceA":"10.0","balanceB":"10.0","balanceC":"10.0","uid":"d3cc0688-0531-4213-b5d6-6f65ce6b312d","rid":""},{"datetime":"","name":"","calf_grith":"48.42","grip_strength":"28.41","chair_standup5":"28.43","muscle_quantity":"8.4","gait_speed4":"3.56","gait_speed6":"5.31","balanceA":"8.23","balanceB":"5.17","balanceC":"2.95","uid":"1cfe90ea-d928-4107-abb5-35dea3817a12","rid":""}]
