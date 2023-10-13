@@ -8,7 +8,7 @@ socket.on('listening', function () {
 });
 
 socket.on('message', function (message, remote) {
-  console.log('SERVER RECEIVED:', remote.address + ':' + remote.port + ' - ' + message);
+  console.log('iBox RECEIVED:', remote.address + ':' + remote.port + ' - ' + message);
   const response = "iBox ack";
   socket.send(response, 0, response.length, remote.port, remote.address);
 });

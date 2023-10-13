@@ -28,11 +28,11 @@ socket.on('listening', function () {
       socket.send(message, 0, message.length, 24000, '255.255.255.255');
     }
 
-  }, 1000);
+  }, 5000);
 });
 
 socket.on('message', function (message, remote) {
-  console.log('CLIENT RECEIVED: ', remote.address + ':' + remote.port + ' - ' + message);
+  console.log('Sarc-System RECEIVED: ', remote.address + ':' + remote.port + ' - ' + message);
 });
 
 socket.bind('8888');
