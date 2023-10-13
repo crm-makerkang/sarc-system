@@ -298,7 +298,7 @@ export default function Index(props: any) {
                 <Label className={"w-44 pt-3 " + table_text_size} htmlFor="gender">{t('bio-gender')}*</Label>
 
                 <select id="gender_select" className={
-                  "w-24 -ml-12 p-1 border rounded-md text-gray-500 " +
+                  "w-24 -ml-8 p-1 border rounded-md text-gray-500 " +
                   "focus:border-gray-500 focus:outline-none focus:border-2 focus:rounded-xl " +
                   table_text_size}
                   onChange={(e) => {
@@ -372,7 +372,10 @@ export default function Index(props: any) {
 
             {dataModified && privacy && (
               <Button className={'bg-primary  ' + table_text_size}
-                onClick={async () => { saveUser() }}
+                onClick={async () => {
+                  saveUser();
+                  if (searchParams.get('id') != null) window.location.href = '/users';
+                }}
               >
                 {t("save-data")}
               </Button>
