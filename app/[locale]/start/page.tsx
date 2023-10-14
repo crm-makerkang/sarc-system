@@ -143,8 +143,13 @@ export default function Index(props: any) {
     }
 
     if (name_is_duplicated) {
-      if (!(confirm(t("name-is-duplicated") + ", " + t("confirm-to-modify-msg")))) {
+      if (searchParams.get('id') == null) {
+        alert(t("name-is-duplicated"));
         return;
+      } else {
+        if (!(confirm(t("name-is-duplicated") + ", " + t("confirm-to-modify-msg")))) {
+          return;
+        }
       }
     }
 
@@ -221,7 +226,8 @@ export default function Index(props: any) {
                 />
               </div>
 
-              {showSearch && matchedList.length > 0 && (
+              {/* {showSearch && matchedList.length > 0 && ( */}
+              {false && matchedList.length > 0 && (
                 <div className="">
                   <ul
                     className="absolute w-[660px] ml-32 -mt-4 py-2 px-8 bg-gray-200 

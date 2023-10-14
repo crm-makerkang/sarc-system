@@ -85,6 +85,9 @@ export default function Index(props: any) {
     "balanceA": "",
     "balanceB": "",
     "balanceC": "",
+    "asm": "",
+    "tug": "",
+    "walk_400m": "",
     "uid": "",
     "rid": ""
   });

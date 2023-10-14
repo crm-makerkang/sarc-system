@@ -60,6 +60,9 @@ export default function Home(props: any) {
     balanceA: "",
     balanceB: "",
     balanceC: "",
+    asm: "",
+    tug: "",
+    walk_400m: "",
     uid: "",
     rid: ""
   })
@@ -150,6 +153,9 @@ export default function Home(props: any) {
         balanceA: "",
         balanceB: "",
         balanceC: "",
+        asm: "",
+        tug: "",
+        walk_400m: "",
         uid: "",
         rid: ""
       };
@@ -165,6 +171,10 @@ export default function Home(props: any) {
       measure_tmp.balanceA = (data_measuring[index].balanceA == undefined)? "" : data_measuring[index].balanceA;
       measure_tmp.balanceB = (data_measuring[index].balanceB == undefined)? "" : data_measuring[index].balanceB;
       measure_tmp.balanceC = (data_measuring[index].balanceC == undefined)? "" : data_measuring[index].balanceC;
+      
+      measure_tmp.asm = (data_measuring[index].asm == undefined)? "" : data_measuring[index].asm;
+      measure_tmp.tug = (data_measuring[index].tug == undefined)? "" : data_measuring[index].tug;
+      measure_tmp.walk_400m = (data_measuring[index].walk_400m == undefined)? "" : data_measuring[index].walk_400m;
 
       setMeasurement(measure_tmp);
     }

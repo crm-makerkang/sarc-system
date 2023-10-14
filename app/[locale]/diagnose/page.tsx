@@ -105,7 +105,10 @@ export default function Index(props: any) {
     sppb_score: "",
     primary_comments: "",
     clinicalIssues: "",
-    hospital_comments: ""
+    hospital_comments: "",
+    asm: "",
+    tug: "",
+    walk_400m: ""
   });
 
   const [vaildUser, setVaildUser] = React.useState(false);
@@ -1014,9 +1017,196 @@ export default function Index(props: any) {
             </div>
           )}
         </div>
-
-
       </div>
+
+      <div className="flex flex-col h-full w-8/12 justify-evenly mt-4 rounded-2xl bg-white opacity-95">
+        <div className="flex flex-row w-full items-center justify-center">
+        {(assessmentStandard == "EWGSOP2") && (
+            <div className="w-7/12 mt-4">
+              {/* EWGSOP2 評估*/}
+              <div className="flex flex-col w-full h-full mx-4 items-center justify-center">
+                <div className="flex flex-row items-center justify-center">
+                  <div className="w-[500px] h-[100px] text-xl">
+                  </div>
+                  <div className="w-[700px] flex flex-col items-center">
+                    <div className="ml-4 p-4 border-2 border-gray-400 w-full text-xl rounded-2xl">
+                      <div className="text-2xl font-bold mb-2">Assessment:</div>
+                      <div className="text-xl font-bold ml-4">Low muscle strength:</div>
+                      <div className="flex flex-row items-center justify-between">
+                        <div className="ml-8">{"Handgrip: Men < 27kg，Women < 16kg"}</div>
+                        <div className={((user.gender == "male")
+                          ? (parseFloat(diagnose.grip_strength) < 28.0) ? "bg-red-500" : "bg-green-700"
+                          : (parseFloat(diagnose.grip_strength) < 18.0) ? "bg-red-500" : "bg-green-700")
+                          + " text-white p-1 rounded-md w-[100px]"
+                          + " flex items-center justify-end pr-2"}
+                        >{diagnose.grip_strength} kg</div>                        
+                      </div>
+
+                      <div className="flex flex-row items-center justify-between mt-2">
+                        <div className="ml-8">{"Chair stand test (5 rises): > 15 seconds"}</div>
+                        <div className={
+                          ((parseFloat(diagnose.chair_standup5) > 15.0) ? "bg-red-500" : "bg-green-700")
+                          + " text-white p-1 rounded-md w-[100px]"
+                          + " flex items-center justify-end pr-2"}
+                        >{diagnose.chair_standup5} s</div>
+                      </div>                      
+
+                      <div className="text-xl font-bold mt-2 ml-4">Low muscle quantity:</div>
+                      <div className="flex flex-row items-center justify-between">
+                        <div className="flex flex-col">
+                          <div className="ml-8 mt-2">{"Appendicular Skeletal Muscle Mass(ASM):"}</div>
+                          <div className="ml-14">{"Men < 20 kg，Women < 15 kg"}</div>
+                        </div>
+                        <div className={
+                          (
+                            (user.gender == "male")
+                              ? ((parseFloat(diagnose.asm) < 20.0) ? "bg-red-500" : "bg-green-700")
+                              : ((parseFloat(diagnose.asm) < 15.0) ? "bg-red-500" : "bg-green-700")
+                          )
+                          + " text-white p-1 rounded-md w-[100px]"
+                          + " flex items-center justify-end pr-2"}
+                        >  {diagnose.asm} kg
+                        </div>                        
+                      </div>
+
+                      <div className="flex flex-row items-center justify-between">
+                        <div className="flex flex-col">
+                          <div className="ml-8 mt-4 ">{"ASMI/height2:"}</div>
+                          <div className="ml-14">{"Men < 7.0 kg/m2 ，Women < 5.5 kg/m2"}</div>
+                        </div>
+                        <div className={
+                          (
+                            (user.gender == "male")
+                              ? ((parseFloat(diagnose.muscle_quantity) < 7.0) ? "bg-red-500" : "bg-green-700")
+                              : ((parseFloat(diagnose.muscle_quantity) < 5.7) ? "bg-red-500" : "bg-green-700")
+                          )
+                          + " text-white p-1 rounded-md w-[100px]"
+                          + " flex items-center justify-end pr-2"}
+                        >  {diagnose.muscle_quantity} <span className="text-sm ml-1 ">kg/m2</span>
+                        </div>                        
+                      </div>
+
+                      <div className="text-xl font-bold mt-4 ml-4">Physical performance:</div>
+                      <div className="flex flex-row mt-1 items-center justify-between">
+                        <div className="ml-8">{"Gait speed (4m): > 3.2s (< 0.8 m/s)"}</div>
+                        <div className={
+                          ((parseFloat(diagnose.gait_speed6) > 6.0) ? "bg-red-500" : "bg-green-700")
+                          + " text-white p-1 rounded-md w-[100px]"
+                          + " flex items-center justify-end pr-2"}
+                        >{diagnose.gait_speed4} s</div>
+                      </div>
+                      <div className="flex flex-row mt-1 items-center justify-between">
+                        <div className="ml-8">{"Gait speed (6m): > 4.8s (< 0.8 m/s)"}</div>
+                        <div className={
+                          ((parseFloat(diagnose.gait_speed6) > 6.0) ? "bg-red-500" : "bg-green-700")
+                          + " text-white p-1 rounded-md w-[100px]"
+                          + " flex items-center justify-end pr-2"}
+                        >{diagnose.gait_speed6} s</div>
+                      </div>                      
+                      <div className="flex flex-row mt-1 items-center justify-between">
+                        <div className="ml-8">{"SPPB: <= 8 point score"}</div>
+                        <div className={
+                          ((parseInt(diagnose.sppb_score) < 10) ? "bg-red-500" : "bg-green-700")
+                          + " text-white p-1 rounded-md w-[100px]"
+                          + " flex items-center justify-end pr-2"}
+                        >{diagnose.sppb_score} point</div>
+                      </div>
+                      <div className="flex flex-row mt-1 items-center justify-between">
+                        <div className="ml-8">{"Timed-Up and G(TUG, 3m): >= 20s"}</div>
+                        <div className={
+                          ((parseFloat(diagnose.tug) > 20.0) ? "bg-red-500" : "bg-green-700")
+                          + " text-white p-1 rounded-md w-[100px]"
+                          + " flex items-center justify-end pr-2"}
+                        >{diagnose.tug} s</div>
+                      </div> 
+                      <div className="flex flex-row mt-1 items-center justify-between">
+                        <div className="ml-8">{"400m walk test: >= 6 min"}</div>
+                        <div className={
+                          ((parseFloat(diagnose.walk_400m) > 20.0) ? "bg-red-500" : "bg-green-700")
+                          + " text-white p-1 rounded-md w-[100px]"
+                          + " flex items-center justify-end pr-2"}
+                        >{diagnose.walk_400m} s</div>
+                      </div> 
+
+                    </div>
+                  </div>
+                  <div className="w-[550px] h-[100px] p-2 rounded-2xl"></div>
+                </div>
+
+                <img src={hospitalEvaluatePass ? "/img/arrow-down-green.png" : "/img/arrow-down-red.png"}
+                  className="h-[50px] w-[40px]">
+                </img>
+
+              </div>
+
+              {/* EWGSOP2 診斷 */}
+              <div className="flex flex-col w-full h-full mx-4 mb-8 items-center justify-center">
+                <div className="flex flex-row items-center justify-center">
+                  <div className="w-[500px] h-[100px] text-xl">
+                  </div>
+                  <div className="w-[700px] flex flex-col items-center">
+                    <div className="ml-4 p-4 border-2 border-gray-400 w-full text-xl rounded-2xl">
+                      <div className="flex flex-row items-center justify-between">
+                        <div className="text-2xl font-bold mb-2">Diagnose:
+                          {(hospitalGripPass && hospitalASMIPass && hospitalPerformancePass) && (
+                            <span className="text-green-700"> Low Risk for Sarcopenia</span>
+                          )}
+
+                          {(!hospitalGripPass && !hospitalASMIPass && !hospitalPerformancePass) && (
+                            <span className="text-red-500"> Severe Sarcopenia</span>
+                          )}
+
+                          {(!hospitalGripPass && !hospitalASMIPass && hospitalPerformancePass) && (
+                            <span className="text-red-500"> Sarcopenia</span>
+                          )}
+
+                          {(hospitalGripPass && hospitalASMIPass && !hospitalPerformancePass) && (
+                            <span className="text-red-500"> Mild Sarcopenia</span>
+                          )}
+
+                        </div>
+
+                        <Button className="bg-primary text-white text-xl -mt-4 w-[100px]"
+                          onClick={() => {
+                            console.log("in diagnoses page 825:", date)
+
+                          }}
+                        >
+                        Save
+                        </Button>
+                      </div>
+
+                      <div className="flex flex-row items-center justify-start mt-4">
+                        <Label className="text-xl w-2/12" htmlFor="examiner">Docter：</Label>
+                        <Input className={table_text_size + " w-4/5 ml-2 border-gray-400"}
+                          id="ewgsop2_docter" placeholder="Name"
+                          value={diagnose.hospital_examiner}
+                          onChange={(e) => {
+                            diagnose.hospital_examiner = e.target.value;
+                          }}
+                        />
+                      </div>
+
+                      <div className="mt-2">
+                        Comemnts:
+                      </div>
+
+                      <Textarea className="ml-[120px] -mt-6 w-4/5 h-[200px] text-xl border-gray-400"
+                        id="hospital_comments" value={diagnose.hospital_comments}
+                        onChange={(e) => {
+                          diagnose.hospital_comments = e.target.value;
+                        }}
+                      />
+
+                    </div>
+                  </div>
+                  <div className="w-[550px] h-[100px] p-2 rounded-2xl"></div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>      
 
     </div >
 

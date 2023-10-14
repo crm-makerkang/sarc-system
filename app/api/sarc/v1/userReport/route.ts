@@ -78,6 +78,9 @@ export async function POST(request: NextRequest) {
       "balanceA": "",
       "balanceB": "",
       "balanceC": "",
+      "asm": "",
+      "tug": "",
+      "walk_400m": "",
       "uid": "",
       "rid": ""
     };

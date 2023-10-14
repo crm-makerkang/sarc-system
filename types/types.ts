@@ -22,6 +22,9 @@ export type Measurement = {
   balanceA: string,
   balanceB: string,
   balanceC: string,
+  asm: string,
+  tug: string,
+  walk_400m: string
   uid: string,
   rid: string
 }
@@ -53,5 +56,8 @@ export type Diagnose = {
   sppb_score: string,
   primary_comments: string,
   clinicalIssues: string,
-  hospital_comments: string
+  hospital_comments: string,
+  asm: string,
+  tug: string,
+  walk_400m: string
 }
