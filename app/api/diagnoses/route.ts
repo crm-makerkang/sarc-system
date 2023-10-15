@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   console.log("measurements POST Mewthod");
 
-  if (request.nextUrl.searchParams.get("cmd") == "writeToDiagnoses") {
+  if (request.nextUrl.searchParams.get("cmd") == "newDiagnoses") {
     dataToWrite = readDiagnoses();
     fileToWrite = json_diagnoses_filename;
 
@@ -85,7 +85,10 @@ export async function POST(request: NextRequest) {
       })
       return response;
     }
-  } else {
+  } else if (request.nextUrl.searchParams.get("cmd") == "modifyDiagnoses") {
+    
+  } 
+  else {
     return NextResponse.json({
       message: "cmd incorrected",
       success: false,

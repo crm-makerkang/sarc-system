@@ -92,7 +92,7 @@ export default function Index(props: any) {
     "rid": ""
   });
 
-  const [vaildUser, setVaildUser] = React.useState(false);
+  const [validUser, setValidUser] = React.useState(false);
 
   const [date, setDate] = React.useState<Date>(); // shadcn date picker
 
@@ -218,7 +218,7 @@ export default function Index(props: any) {
 
       <div className="flex flex-row w-8/12 items-center justify-between">
 
-        <div className="flex flex-row w-4/12 items-center justify-start">
+        <div className="flex flex-row w-3/12 items-center justify-start">
           <div className="flex flex-col space-y-1.5">
             <div className="flex flex-row">
               <Label className="pt-1 text-2xl">{t("name")}：</Label>
@@ -228,7 +228,7 @@ export default function Index(props: any) {
                 onChange={
                   (e) => {
                     setUser({ ...user, name: e.target.value });
-                    setVaildUser(false);
+                    setValidUser(false);
                     let matched = 0;
                     let toMatchedList: any = [];
                     userData.map((user, index) => {
@@ -263,7 +263,7 @@ export default function Index(props: any) {
                             if (userData[i].name === item) {
                               console.log(userData[i]);
                               setUser(userData[i]);
-                              setVaildUser(true);
+                              setValidUser(true);
                               break;
                             }
                           }
@@ -282,7 +282,7 @@ export default function Index(props: any) {
           </div>
 
         </div>
-        <div className="w-4/12 text-3xl font-bold">{t("sppb-full")}</div>
+        <div className="w-7/12 text-3xl font-bold text-center -ml-32">{t("sppb-full")}</div>
 
         <div className="w-2/12"></div>
 
@@ -323,20 +323,20 @@ export default function Index(props: any) {
 
                     <div className="mt-4 bg-white w-[250px] flex flex-row">
                       <div className="w-[80px] ">{t("name")}：</div>
-                      <div className="ml-4">{user.name = (vaildUser) ? user.name : ""}</div>
+                      <div className="ml-4">{user.name = (validUser) ? user.name : ""}</div>
                     </div>
                     <div className="mt-4 bg-white w-[250px] flex flex-row">
                       <div className="w-[80px] ">{t("age")}：</div>
-                      <div className="ml-4">{user.age = (vaildUser) ? user.age : ""}</div>
+                      <div className="ml-4">{user.age = (validUser) ? user.age : ""}</div>
                     </div>
                     <div className="mt-4 bg-white w-[250px] flex flex-row">
                       <div className="w-[80px] ">{t("gender")}：</div>
                       <div className="ml-4">
-                        {(vaildUser) ? (user.gender == "male" ? t("male") : t("female")) : ""}
+                        {(validUser) ? (user.gender == "male" ? t("male") : t("female")) : ""}
                       </div>
                     </div>
 
-                    {vaildUser && (
+                    {validUser && (
                       <>
                         <div className="w-full h-[2px] mt-2 bg-gray-400"></div>
 
@@ -348,7 +348,7 @@ export default function Index(props: any) {
                           <Button className="mt-1 border-gray-400 text-xl" variant={"outline"}
                             onClick={() => {
                               console.log("in sarc-f page 264:", measurements);
-                              if (vaildUser) {
+                              if (validUser) {
                                 if (showMeasurementList) {
                                   setShowMeasurementList(false);
                                   //setShowSearch(false);

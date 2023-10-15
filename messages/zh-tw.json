@@ -193,6 +193,8 @@
     "c-less-3s": "少於 3 秒=0",
     "sum": "加總",
     "unable-to-complete": "無法完成=0",
-    "sppb-score-desc": "SPPB 分數： 0-9 分數的人行動能力障礙，10 分數以上的人行動能力正常"
+    "sppb-score-desc": "SPPB 分數： 0-9 分數的人行動能力障礙，10 分數以上的人行動能力正常",
+    "select-date": "選擇日期",
+    "dia-date": "診斷日期"
   }
 }

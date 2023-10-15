@@ -4,9 +4,11 @@ import * as React from "react"
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from 'next-intl';
-import { ArrowDown, Check, X, Dot } from "lucide-react"
+import { ArrowDown, Check, X, Dot, Plus } from "lucide-react"
 import { DateTime } from "luxon";
-import { UserInfo, Diagnose } from "@/types/types"
+import moment from 'moment';
+import { UserInfo, Diagnose, Measurement } from "@/types/types"
+import { v4 as uuidv4 } from 'uuid';
 
 import { table_text_size, dia_type, dia_standard } from "@/Settings/settings"
 
@@ -45,6 +47,7 @@ import {
 
 import axios from "axios";
 import { jsPDF } from "jspdf"
+import { validate } from "uuid";
 
 export default function Index(props: any) {
   //console.log("in diagnose page 50:", props);
@@ -57,9 +60,12 @@ export default function Index(props: any) {
   const [assessmentType, setAssessmentType] = React.useState(t("primary-care"));
   const [showStandard, setShowStandard] = React.useState(false);
   const [showType, setShowType] = React.useState(false);
+  const [showNewDiagnose, setShowNewDiagnose] = React.useState(false);
   const [locale, setLocale] = React.useState(props.params.locale);
 
   const [showSearch, setShowSearch] = React.useState(false);
+  const [showMeasurementList, setShowMeasurementList] = React.useState(false);
+  const [measurementList, setMeasurementList] = React.useState([["", ""]]);
   const [showDiagnoseList, setShowDiagnoseList] = React.useState(false);
   const [diagnoseList, setDiagnoseList] = React.useState([["", ""]]);
 
@@ -75,6 +81,27 @@ export default function Index(props: any) {
     age: "",
     height: "",
     weight: ""
+  });
+
+
+  const [measurements, setMeasurements] = React.useState<Measurement[]>([]);
+  const [measurement, setMeasurement] = React.useState<Measurement>({
+    "datetime": "",
+    "name": "",
+    "calf_grith": "0",
+    "grip_strength": "",
+    "chair_standup5": "",
+    "muscle_quantity": "",
+    "gait_speed4": "",
+    "gait_speed6": "",
+    "balanceA": "",
+    "balanceB": "",
+    "balanceC": "",
+    "asm": "",
+    "tug": "",
+    "walk_400m": "",
+    "uid": "",
+    "rid": ""
   });
 
   const [diagnoses, setDiagnoses] = React.useState<Diagnose[]>([]);
@@ -111,7 +138,7 @@ export default function Index(props: any) {
     walk_400m: ""
   });
 
-  const [vaildUser, setVaildUser] = React.useState(false);
+  const [validUser, setValidUser] = React.useState(false);
 
   const [date, setDate] = React.useState<Date>(); // shadcn date picker
 
@@ -134,16 +161,61 @@ export default function Index(props: any) {
     setUserData(res.data);
   }
 
+  const getMeasurements = async () => {
+    const res = await axios.get('/api/measurements/')
+    // console.log("in diagnose page 166:", res.data);
+    setMeasurements(res.data);
+  }
+
   const getDiagnoses = async () => {
     const res = await axios.get('/api/diagnoses/')
-    console.log("in diagnoses page 136:", res.data);
+    // console.log("in diagnoses page 136:", res.data);
     setDiagnoses(res.data);
+  }
+
+  const newDiagnose = () => {
+    const momentNow = moment().format(); // moment,js => 2023-10-15T21:34:52+08:00
+    console.log("in diagnose page 178:", typeof momentNow, momentNow);
+    const blankDiagnose: Diagnose = {
+      calf_grith: "",
+      grip_strength: "",
+      chair_standup5: "",
+      muscle_quantity: "",
+      gait_speed4: "",
+      gait_speed6: "",
+      balanceA: "",
+      balanceB: "",
+      balanceC: "",
+      uid: "",
+      rid: "",
+      dia_id: uuidv4(),
+      dia_datetime: momentNow.substring(0, 10),
+      dia_result: "",
+      primary_examiner: "",
+      hospital_examiner: "",
+      sarc_f_Q1: "",
+      sarc_f_Q2: "",
+      sarc_f_Q3: "",
+      sarc_f_Q4: "",
+      sarc_f_Q5: "",
+      sarc_f_score: "",
+      sarc_calf_score: "",
+      sppb_score: "",
+      primary_comments: "",
+      clinicalIssues: "",
+      hospital_comments: "",
+      asm: "",
+      tug: "",
+      walk_400m: ""
+    }
+    console.log(blankDiagnose);
+    setDiagnose(blankDiagnose);
   }
 
   useEffect(() => {
     getUsers();
+    getMeasurements();
     getDiagnoses();
-    //const nowDateTime = DateTime.now().toString();
     setDate(new Date());
 
     if (dia_standard == "AWGS 2019") {
@@ -163,7 +235,12 @@ export default function Index(props: any) {
   }, [])
 
   useEffect(() => {
-    // Primary screening
+
+    const diagnose_date = Date.parse(diagnose.dia_datetime);
+    // @ts-ignore // 實在沒辦法，只好用粗暴的解法
+    setDate(diagnose_date);
+
+    // AWGS 2019 Primary screening
     (((user.gender == "male")
       ? ((parseFloat(diagnose.calf_grith) < 34.0) ? true : false)
       : ((parseFloat(diagnose.calf_grith) < 33.0) ? true : false))
@@ -171,7 +248,7 @@ export default function Index(props: any) {
       || (parseInt(diagnose.sarc_calf_score) > 10))
       ? setPrimaryScreeningPass(false) : setPrimaryScreeningPass(true);
 
-    // Primary evaluate
+    // AWGS 2019 Primary evaluate
     (((user.gender == "male")
       ? ((parseFloat(diagnose.grip_strength) < 28.0) ? true : false)
       : ((parseFloat(diagnose.grip_strength) < 18.0) ? true : false))
@@ -179,7 +256,7 @@ export default function Index(props: any) {
       ? setPrimaryEvaluatePass(false) : setPrimaryEvaluatePass(true);
 
 
-    // Hospital Screening
+    // AWGS 2019 Hospital Screening
     if (diagnose.clinicalIssues == "Y") {
       setClinicalIssues(true);
       setHospitalScreeningPass(false);
@@ -190,7 +267,7 @@ export default function Index(props: any) {
     }
 
 
-    // Hospital evaluate
+    // AWGS 2019 Hospital evaluate
     const gripPass = ((user.gender == "male")
       ? ((parseFloat(diagnose.grip_strength) < 28.0) ? false : true)
       : ((parseFloat(diagnose.grip_strength) < 18.0) ? false : true))
@@ -208,6 +285,8 @@ export default function Index(props: any) {
     setHospitalASMIPass(ASMIPass);
 
     setHospitalEvaluatePass(gripPass && performancePass && ASMIPass);
+
+    // EWGSOP2 evaluate
 
   }, [diagnose])
 
@@ -236,7 +315,7 @@ export default function Index(props: any) {
               onChange={
                 (e) => {
                   setUser({ ...user, name: e.target.value });
-                  setVaildUser(false);
+                  setValidUser(false);
                   let matched = 0;
                   let toMatchedList: any = [];
                   userData.map((user, index) => {
@@ -271,7 +350,7 @@ export default function Index(props: any) {
                           if (userData[i].name === item) {
                             console.log(userData[i]);
                             setUser(userData[i]);
-                            setVaildUser(true);
+                            setValidUser(true);
                             break;
                           }
                         }
@@ -292,7 +371,7 @@ export default function Index(props: any) {
         <div className="flex flex-col ">
           <Button className="text-2xl" variant={"outline"}
             onClick={() => {
-              if (vaildUser) {
+              if (validUser) {
                 if (showDiagnoseList) {
                   setShowDiagnoseList(false);
                   setShowSearch(false);
@@ -347,6 +426,7 @@ export default function Index(props: any) {
                           setDiagnose(diagnoses[parseInt(item[0])]);
                         }
                         setShowDiagnoseList(false);
+                        setShowNewDiagnose(false);
                       }
                     }
                   >
@@ -483,7 +563,7 @@ export default function Index(props: any) {
                   <div className="w-[300px] h-[190px] ml-[200px] text-xl rounded-2xl mt-3">
                     <div className="flex flex-col items-start justify-start p-4 ml-10">
 
-                      <div className=" bg-white">診斷日期：</div>
+                      <div className=" bg-white">{t("dia-date")}：</div>
                       <Popover>
                         <PopoverTrigger asChild>
                           <Button
@@ -494,7 +574,7 @@ export default function Index(props: any) {
                             ) + " text-xl w-[220px]  border-gray-400"}
                           >
                             <CalendarIcon className="mr-2 h-4 w-4" />
-                            {date ? format(date, "yyyy-MM-dd") : <span>Pick a date</span>}
+                            {date ? format(date, "yyyy-MM-dd") : <span>{t("select-date")}</span>}
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0">
@@ -507,39 +587,105 @@ export default function Index(props: any) {
                         </PopoverContent>
                       </Popover>
 
-                      <div className="mt-4 bg-white">姓名：
-                        <span className="ml-4">{user.name = (vaildUser) ? user.name : ""}</span>
+                      <div className="mt-4 bg-white w-[250px] flex flex-row">
+                        <div className="w-[80px] ">{t("name")}：</div>
+                        <div className="ml-4">{user.name = (validUser) ? user.name : ""}</div>
                       </div>
-                      <div className="mt-2 bg-white">年齡：
-                        <span className="ml-4">{user.age = (vaildUser) ? user.age : ""}</span>
+                      <div className="mt-4 bg-white w-[250px] flex flex-row">
+                        <div className="w-[80px] ">{t("age")}：</div>
+                        <div className="ml-4">{user.age = (validUser) ? user.age : ""}</div>
                       </div>
-                      <div className="mt-2 bg-white">性別：
-                        <span className="ml-4">
-                          {(vaildUser) ? (user.gender == "male" ? "男" : "女") : ""}
-                        </span>
-                      </div>
+                      <div className="mt-4 bg-white w-[250px] flex flex-row">
+                        <div className="w-[80px] ">{t("gender")}：</div>
+                        <div className="ml-4">
+                          {(validUser) ? (user.gender == "male" ? t("male") : t("female")) : ""}
+                        </div>
+                      </div>                      
+                      
 
-                      {vaildUser && (
-                        <>
+                      <Button className="mt-4 bg-primary text-xl mt-12 z-10" 
+                        onClick={() => {
+                          if (validUser){
+                            console.log(showNewDiagnose)
+                            newDiagnose();                         
+                            setShowNewDiagnose(!showNewDiagnose);
+                          } else {
+                            alert(t("select-a-user"))
+                          }
+
+                        }}
+                      >
+                        <Plus></Plus>{t("new-diagnose")}
+                      </Button>                      
+
+                      <div className="w-full h-[2px] mt-2 bg-gray-400"></div>
+
+                      {showNewDiagnose && (
+                        <div className="z-10">
                           <div className="w-full h-[2px] mt-2 bg-gray-400"></div>
 
-                          <div className="mt-4 bg-white">{t("new-diagnose")}：</div>
+                          <div className="flex flex-col ">
+                            <Button className="mt-1 border-gray-400 text-xl" variant={"outline"}
+                              onClick={() => {
+                                console.log("in sarc-f page 264:", measurements);
+                                if (validUser) {
+                                  if (showMeasurementList) {
+                                    setShowMeasurementList(false);
+                                    //setShowSearch(false);
+                                    return;
+                                  }
 
-                          <Button className="w-[220px] mt-2 text-lg border-gray-400" variant={"outline"}
-                          >
-                            取得量測資料
-                          </Button>
+                                  let matched = 0;
+                                  let toMatchedList: any = [];
+                                  for (let i = 0; i < measurements.length; i++) {
+                                    if (measurements[i].uid == user.id) {
+                                      toMatchedList[matched] = [i.toString(), measurements[i].datetime];
+                                      matched++;
+                                    } 
+                                  }
+                                  setMeasurementList(toMatchedList);
+                                  if (matched == 0) {
+                                    toMatchedList[matched] = ["0", t("no-mesaurement-data")];
+                                  }
 
-                          <Button className="w-[220px] mt-2 text-lg border-gray-400" variant={"outline"}
-                          >
-                            取得 SARC-ClaF 問卷
-                          </Button>
+                                  setShowMeasurementList(true);
+                                  setShowSearch(false);
 
-                          <Button className="w-[220px] mt-2 text-lg border-gray-400" variant={"outline"}
-                          >
-                            取得 SPPB 量表
-                          </Button>
-                        </>
+                                } else {
+                                  alert(t("select-a-user"));
+                                }
+                              }}
+                            >
+                              {t('measurement-records')}
+                              <ArrowDown className="ml-2 h-6 w-6" />
+                            </Button>
+                            {showMeasurementList && (
+                              <div className="">
+                                <ul
+                                  className="z-10 absolute w-[300px] py-2 px-8 bg-gray-200 
+                                            border border-gray-200 rounded-md  ">
+                                  {measurementList.map((item, index) => {
+                                    return <li key={index}
+                                      className={"py-2 cursor-pointer " + table_text_size}
+                                      onClick={
+                                        () => {
+                                          if (item[1] != t("no-mesaurement-data")) {
+                                            setMeasurement(measurements[parseInt(item[0])]);
+                                          }
+                                          console.log("in sarc-f page 377:", measurements[parseInt(item[0])]);
+                                          setShowMeasurementList(false);
+                                        }
+                                      }
+                                    >
+                                      {item[1]}
+                                    </li>
+                                  })}
+                                </ul>
+                              </div>
+                            )} 
+                          </div>
+
+                        </div>
                       )}
 
                     </div>
@@ -710,7 +856,7 @@ export default function Index(props: any) {
                 <div className="flex flex-row items-start justify-center">
                   <div className="w-[300px] h-[190px] ml-[200px] text-xl rounded-2xl mt-3">
                     <div className="flex flex-col items-start justify-start p-4 ml-10">
-                      <div className=" bg-white">診斷日期：</div>
+                      <div className=" bg-white">{t("dia-date")}：</div>
                       <Popover>
                         <PopoverTrigger asChild>
                           <Button
@@ -734,20 +880,20 @@ export default function Index(props: any) {
                         </PopoverContent>
                       </Popover>
 
-                      <div className="mt-4 bg-white">姓名：
-                        <span className="ml-4">{user.name = (vaildUser) ? user.name : ""}</span>
+                      <div className="mt-4 bg-white ">{t("name")}：
+                        <div className="ml-4">{user.name = (validUser) ? user.name : ""}</div>
                       </div>
-                      <div className="mt-2 bg-white">年齡：
-                        <span className="ml-4">{user.age = (vaildUser) ? user.age : ""}</span>
+                      <div className="mt-2 bg-white">{t("age")}：
+                        <div className="ml-4">{user.age = (validUser) ? user.age : ""}</div>
                       </div>
-                      <div className="mt-2 bg-white">性別：
-                        <span className="ml-4">
-                          {(vaildUser) ? (user.gender == "male" ? "男" : "女") : ""}
-                        </span>
+                      <div className="mt-2 bg-white">{t("gender")}：
+                        <div className="ml-4">
+                          {(validUser) ? t(user.gender) : ""}
+                        </div>
                       </div>
 
-                      {vaildUser && (
-                        <>
+                      {validUser && (
+                        <div className="z-10">
                           <div className="w-full h-[2px] mt-2 bg-gray-400"></div>
 
                           <div className="mt-4 bg-white">{t("new-diagnose")}：</div>
@@ -766,7 +912,7 @@ export default function Index(props: any) {
                           >
                             取得 SPPB 量表
                           </Button>
-                        </>
+                        </div>
                       )}
 
                     </div>
@@ -778,7 +924,7 @@ export default function Index(props: any) {
                       <div className="flex flex-row justify-start">
                         <input type="checkbox" className="mt-1 ml-4 w-4 h-4" checked={clinicalIssues}
                           onChange={(e) => {
-                            if (vaildUser) {
+                            if (validUser) {
                               setClinicalIssues(e.target.checked);
                             }
                           }}
@@ -1019,15 +1165,78 @@ export default function Index(props: any) {
         </div>
       </div>
 
-      <div className="flex flex-col h-full w-8/12 justify-evenly mt-4 rounded-2xl bg-white opacity-95">
+      <div className="flex flex-col h-full w-8/12 justify-evenly  rounded-2xl bg-white opacity-95">
         <div className="flex flex-row w-full items-center justify-center">
-        {(assessmentStandard == "EWGSOP2") && (
+          {(assessmentStandard == "EWGSOP2") && (
             <div className="w-7/12 mt-4">
               {/* EWGSOP2 評估*/}
               <div className="flex flex-col w-full h-full mx-4 items-center justify-center">
-                <div className="flex flex-row items-center justify-center">
-                  <div className="w-[500px] h-[100px] text-xl">
+                <div className="flex flex-row items-start justify-center">
+                  <div className="w-[300px] h-[190px] ml-[200px] text-xl rounded-2xl mt-3">
+                    <div className="flex flex-col items-start justify-start p-4 ml-10">
+
+                      <div className=" bg-white">{t("dia-date")}：：</div>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant={"outline"}
+                            className={cn(
+                              "justify-start text-left font-normal",
+                              !date && "text-muted-foreground"
+                            ) + " text-xl w-[220px]  border-gray-400"}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {date ? format(date, "yyyy-MM-dd") : <span>{t("select-date")}</span>}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0">
+                          <Calendar
+                            mode="single"
+                            selected={date}
+                            onSelect={setDate}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+
+                      <div className="mt-4 bg-white ">{t("name")}：
+                        <div className="ml-4">{user.name = (validUser) ? user.name : ""}</div>
+                      </div>
+                      <div className="mt-2 bg-white">{t("age")}：
+                        <div className="ml-4">{user.age = (validUser) ? user.age : ""}</div>
+                      </div>
+                      <div className="mt-2 bg-white">{t("gender")}：
+                        <div className="ml-4">
+                          {(validUser) ? t(user.gender) : ""}
+                        </div>
+                      </div>
+
+                      {validUser && (
+                        <div className="z-10">
+                          <div className="w-full h-[2px] mt-2 bg-gray-400"></div>
+
+                          <div className="mt-4 bg-white">{t("new-diagnose")}：</div>
+
+                          <Button className="w-[220px] mt-2 text-lg border-gray-400" variant={"outline"}
+                          >
+                            取得量測資料
+                          </Button>
+
+                          <Button className="w-[220px] mt-2 text-lg border-gray-400" variant={"outline"}
+                          >
+                            取得 SARC-ClaF 問卷
+                          </Button>
+
+                          <Button className="w-[220px] mt-2 text-lg border-gray-400" variant={"outline"}
+                          >
+                            取得 SPPB 量表
+                          </Button>
+                        </div>
+                      )}
+
+                    </div>
                   </div>
+
                   <div className="w-[700px] flex flex-col items-center">
                     <div className="ml-4 p-4 border-2 border-gray-400 w-full text-xl rounded-2xl">
                       <div className="text-2xl font-bold mb-2">Assessment:</div>

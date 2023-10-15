@@ -194,6 +194,8 @@
     "c-less-3s": "less than 3 seconds=0",
     "sum": "Sum",
     "unable-to-complete": "Unable to complete=0",
-    "sppb-score-desc": "SPPB score of 3-9 points in persons with possible sarcopenia but no mobility disability indicates frailty; SPPB score of 10 or greater for persons with no sarcopenia and no mobility disability indicates robustness. Persons with a score of 2 or lower who have sarcopenia, potential cachexia, and mobility disability are determined to be disabled."
+    "sppb-score-desc": "SPPB score of 3-9 points in persons with possible sarcopenia but no mobility disability indicates frailty; SPPB score of 10 or greater for persons with no sarcopenia and no mobility disability indicates robustness. Persons with a score of 2 or lower who have sarcopenia, potential cachexia, and mobility disability are determined to be disabled.",
+    "select-date": "Select Date",
+    "dia-date": "Date"
   }
 }
