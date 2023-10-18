@@ -212,6 +212,86 @@ export default function Index(props: any) {
     setDiagnose(blankDiagnose);
   }
 
+  const setNewDiagnose = (selected_measurement: Measurement) => {
+
+    // check SPPB score
+    var sppb_score = "";
+    if (
+      selected_measurement.balanceA == "" ||
+      selected_measurement.balanceB == "" ||
+      selected_measurement.balanceC == "" ||
+      selected_measurement.gait_speed4 == "" ||
+      selected_measurement.chair_standup5 == "") {
+      sppb_score = "";
+    } else {
+      var sppb_A = parseFloat(selected_measurement.balanceA);
+      var sppb_B = parseFloat(selected_measurement.balanceB);
+      var sppb_C = parseFloat(selected_measurement.balanceC);
+      var gait4 = parseFloat(selected_measurement.gait_speed4);
+      var standup5 = parseFloat(selected_measurement.chair_standup5);
+      sppb_A = (sppb_A < 10) ? 0 : 1;
+      sppb_B = (sppb_B < 10) ? 0 : 1;
+      if (sppb_C < 3) {
+        sppb_C = 0;
+      } else if (sppb_C < 10) {
+        sppb_C = 1;
+      } else {
+        sppb_C = 2;
+      }
+
+      if (selected_measurement.gait_speed4 == "-1") {
+        gait4 = 0;
+      } else {
+        if (parseFloat(selected_measurement.gait_speed4) < 4.82) {
+          gait4 = 4;
+        } else if (parseFloat(selected_measurement.gait_speed4) < 6.20) {
+          gait4 = 3;
+        } else if (parseFloat(selected_measurement.gait_speed4) < 8.71) {
+          gait4 = 2;
+        } else {
+          gait4 = 1;
+        }
+      }
+
+      if (selected_measurement.chair_standup5 == "-1") {
+        standup5 = 0;
+      } else {
+        if (parseFloat(selected_measurement.chair_standup5) < 11.2) {
+          standup5 = 4;
+        } else if (parseFloat(selected_measurement.chair_standup5) < 13.7) {
+          standup5 = 3;
+        } else if (parseFloat(selected_measurement.chair_standup5) < 16.7) {
+          standup5 = 2;
+        } else if (parseFloat(selected_measurement.chair_standup5) < 60.1) {
+          standup5 = 1;
+        } else {
+          standup5 = 0;
+        }
+      }
+
+      sppb_score = (sppb_A + sppb_B + sppb_C + gait4 + standup5).toString();
+
+    }
+
+    // setMeasurement(measurements[parseInt(item[0])]);
+    setDiagnose({
+      ...diagnose,
+      calf_grith: selected_measurement.calf_grith,
+      grip_strength: selected_measurement.grip_strength,
+      chair_standup5: selected_measurement.chair_standup5,
+      muscle_quantity: selected_measurement.muscle_quantity,
+      gait_speed4: selected_measurement.gait_speed4,
+      gait_speed6: selected_measurement.gait_speed6,
+      balanceA: selected_measurement.balanceA,
+      balanceB: selected_measurement.balanceB,
+      balanceC: selected_measurement.balanceC,
+      sppb_score: sppb_score,
+      asm: selected_measurement.asm,
+      tug: selected_measurement.tug,
+      walk_400m: selected_measurement.walk_400m,
+    })
+  }
+
   useEffect(() => {
     getUsers();
     getMeasurements();
@@ -423,6 +503,7 @@ export default function Index(props: any) {
                     onClick={
                       () => {
                         if (item[1] != t("no-diag-data")) {
+                          setClinicalIssues(false);
                           setDiagnose(diagnoses[parseInt(item[0])]);
                         }
                         setShowDiagnoseList(false);
@@ -600,14 +681,13 @@ export default function Index(props: any) {
                         <div className="ml-4">
                           {(validUser) ? (user.gender == "male" ? t("male") : t("female")) : ""}
                         </div>
-                      </div>                      
-                      
+                      </div>
 
-                      <Button className="mt-4 bg-primary text-xl mt-12 z-10" 
+                      <Button className="mt-4 bg-primary text-xl mt-12 z-10"
                         onClick={() => {
-                          if (validUser){
+                          if (validUser) {
                             console.log(showNewDiagnose)
-                            newDiagnose();                         
+                            newDiagnose();
                             setShowNewDiagnose(!showNewDiagnose);
                           } else {
                             alert(t("select-a-user"))
@@ -616,14 +696,12 @@ export default function Index(props: any) {
                         }}
                       >
                         <Plus></Plus>{t("new-diagnose")}
-                      </Button>                      
+                      </Button>
 
                       <div className="w-full h-[2px] mt-2 bg-gray-400"></div>
 
                       {showNewDiagnose && (
-                        <div className="z-10">
-                          <div className="w-full h-[2px] mt-2 bg-gray-400"></div>
-
+                        <div className="z-10 mt-2">
                           <div className="flex flex-col ">
                             <Button className="mt-1 border-gray-400 text-xl" variant={"outline"}
                               onClick={() => {
@@ -641,7 +719,7 @@ export default function Index(props: any) {
                                     if (measurements[i].uid == user.id) {
                                       toMatchedList[matched] = [i.toString(), measurements[i].datetime];
                                       matched++;
-                                    } 
+                                    }
                                   }
                                   setMeasurementList(toMatchedList);
                                   if (matched == 0) {
@@ -670,9 +748,10 @@ export default function Index(props: any) {
                                       onClick={
                                         () => {
                                           if (item[1] != t("no-mesaurement-data")) {
-                                            setMeasurement(measurements[parseInt(item[0])]);
+                                            // const selected_measurement = measurements[parseInt(item[0])];
+                                            setNewDiagnose(measurements[parseInt(item[0])]);
                                           }
-                                          console.log("in sarc-f page 377:", measurements[parseInt(item[0])]);
+                                          console.log("in sarc-f page 377:");
                                           setShowMeasurementList(false);
                                         }
                                       }
@@ -682,7 +761,7 @@ export default function Index(props: any) {
                                   })}
                                 </ul>
                               </div>
-                            )} 
+                            )}
                           </div>
 
                         </div>
@@ -693,33 +772,42 @@ export default function Index(props: any) {
                   {/* 基層篩檢 */}
                   <div className="w-[700px] flex flex-col items-center">
                     <div className="mt-4 ml-4 p-4 border-2 border-gray-400 w-full text-xl rounded-2xl">
-                      <div className="text-2xl font-bold mb-2">篩檢:</div>
+                      <div className="text-2xl font-bold mb-2">{t("screening")}:</div>
                       <div className="flex flex-row items-center justify-between">
-                        <div className="ml-14">{"小腿圍： 男<34公分，女<33公分"}</div>
+                        <div className="ml-14">
+                          {
+                            t("calf-grith") + ": " + t("male") + " < 34" + t("cm") +
+                            ": " + t("female") + " < 33" + t("cm")
+                          }
+                        </div>
                         <div className={((user.gender == "male")
                           ? (parseInt(diagnose.calf_grith) < 34) ? "bg-red-500" : "bg-green-700"
                           : (parseInt(diagnose.calf_grith) < 33) ? "bg-red-500" : "bg-green-700")
                           + " text-white p-1 rounded-md w-[100px]"
                           + " flex items-center justify-end pr-2"}
                         >
-                          {diagnose.calf_grith} 公分</div>
+                          {diagnose.calf_grith} {t("cm")}</div>
                       </div>
                       <div className="flex flex-row items-center justify-between">
-                        <div className="ml-8">{"或 SARC-F 問卷 >= 4 分"}</div>
+                        <div className="ml-8">
+                          {t("or") + " SARC-F" + " >= 4 " + t("points1")}
+                        </div>
                         <div className={
                           ((parseInt(diagnose.sarc_f_score) > 3) ? "bg-red-500" : "bg-green-700")
                           + " text-white p-1 rounded-md w-[100px]"
                           + " flex items-center justify-end pr-2 mt-1"}
-                        >  {(diagnose.sarc_f_score == "") ? "" : diagnose.sarc_f_score} 分
+                        >  {((diagnose.sarc_f_score == "") ? "" : diagnose.sarc_f_score) + t("points1")}
                         </div>
                       </div>
                       <div className="flex flex-row items-center justify-between">
-                        <div className="ml-8">{"或 SARC-CalF 問卷 >= 11 分"}</div>
+                        <div className="ml-8">
+                          {t("or") + " SARC-CalF" + " >= 11 " + t("points1")}
+                        </div>
                         <div className={
                           ((parseInt(diagnose.sarc_calf_score) > 10) ? "bg-red-500" : "bg-green-700")
                           + " text-white p-1 rounded-md w-[100px]"
                           + " flex items-center justify-end pr-2 mt-1"}
-                        >  {(diagnose.sarc_calf_score == "") ? "" : diagnose.sarc_calf_score} 分
+                        >  {((diagnose.sarc_calf_score == "") ? "" : diagnose.sarc_calf_score) + t("points1")}
                         </div>
                       </div>
                     </div>
@@ -739,25 +827,29 @@ export default function Index(props: any) {
                   <div className="w-[500px] h-[100px] text-xl"></div>
                   <div className="w-[700px] flex flex-col items-center">
                     <div className="ml-4 p-4 border-2 border-gray-400 w-full text-xl rounded-2xl">
-                      <div className="text-2xl font-bold mb-2">評估:</div>
-                      <div className="text-xl font-bold ml-4">肌肉力量:</div>
+                      <div className="text-2xl font-bold mb-2">{t("assessments")}:</div>
+                      <div className="text-xl font-bold ml-4">{t("muscle-strength")}:</div>
                       <div className="flex flex-row items-center justify-between">
-                        <div className="ml-14">{"握力: 男<28公斤，女<18公斤"}</div>
+                        <div className="ml-14">
+                          {t("grip-strength") + ": " + t("male") + " < 28" + t("kgs") + ", " + t("female") + " < 18" + t("kgs")}
+                        </div>
                         <div className={((user.gender == "male")
                           ? (parseInt(diagnose.grip_strength) < 28) ? "bg-red-500" : "bg-green-700"
                           : (parseInt(diagnose.grip_strength) < 18) ? "bg-red-500" : "bg-green-700")
                           + " text-white p-1 rounded-md w-[100px]"
                           + " flex items-center justify-end pr-2"}
-                        >{diagnose.grip_strength} 公斤</div>
+                        >{diagnose.grip_strength} {t("kgs")}</div>
                       </div>
-                      <div className="text-xl font-bold ml-4">體能表現:</div>
+                      <div className="text-xl font-bold ml-4">{t("physical-performance")}:</div>
                       <div className="flex flex-row items-center justify-between">
-                        <div className="ml-14">{"五次起立坐下: >=12 秒"}</div>
+                        <div className="ml-14">
+                          {t("five-standups") + ": >= 12 " + t("seconds")}
+                        </div>
                         <div className={
                           ((parseFloat(diagnose.chair_standup5) > 12.0) ? "bg-red-500" : "bg-green-700")
                           + " text-white p-1 rounded-md w-[100px]"
                           + " flex items-center justify-end pr-2"}
-                        >{diagnose.chair_standup5} 秒</div>
+                        >{diagnose.chair_standup5} {t("seconds")}</div>
                       </div>
                     </div>
                   </div>
@@ -777,65 +869,86 @@ export default function Index(props: any) {
                   <div className="w-[700px] flex flex-col items-center">
                     <div className="ml-4 p-4 border-2 border-gray-400 w-full text-xl rounded-2xl">
                       <div className="flex flex-row items-center justify-between">
-                        <div className="text-2xl font-bold mb-2">診斷:
+                        <div className="text-2xl font-bold mb-2">{t("diagnose")}:
                           {(primaryEvaluatePass && primaryScreeningPass) && (
-                            <span className="text-green-700"> 肌少症可能性低</span>
+                            <span className="text-green-700"> {t("low-risk-sarc")}</span>
                           )}
                           {!(primaryEvaluatePass && primaryScreeningPass) && (
-                            <span className="text-red-500"> 可能肌少症</span>
+                            <span className="text-red-500">  {t("possible-sarc")}</span>
                           )}
                         </div>
 
                         <Button className="bg-primary text-white text-xl -mt-4 w-[100px]"
                           onClick={() => {
-                            console.log("in diagnoses oage 373:", date)
-                            //setDate(new Date("2023-10-05"));
+                            alert("Can not save in Demo Mode");
                           }}
                         >
-                          儲存
+                          {t("save-new-diagnose")}
                         </Button>
                       </div>
 
-                      {(primaryEvaluatePass && primaryScreeningPass) && (
-                        <div className="ml-16">
-                          <div className="flex flex-row items-center justify-start">
-                            1.
-                            <div className="ml-2">此為初步診斷，若有疑慮，請諮詢醫師</div></div>
-                          <div>2. 請注重營養及保持運動</div>
-                        </div>
-                      )}
-
-                      {!(primaryEvaluatePass && primaryScreeningPass) && (
-                        <div className="ml-16">
-                          <div className="flex flex-row items-center justify-start">
-                            1.
-                            <div className="ml-2">此為初步診斷，請至醫院進行進一步診斷確認</div></div>
-                          <div>2. 請諮詢醫師進行『營養及運動生活型態調整』</div>
-                        </div>
-                      )}
-
-
-                      <div className="flex flex-row items-center justify-start mt-4">
-                        <Label className="text-xl w-2/12" htmlFor="examiner">診斷者：</Label>
-                        <Input className={table_text_size + " w-10/12 -ml-7 border-gray-400"}
-                          id="examiner" placeholder="名字"
-                          value={diagnose.primary_examiner}
-                          onChange={(e) => {
-                            setDiagnose({ ...diagnose, primary_examiner: e.target.value });
-                          }}
-                        />
+                      <div className="ml-16">
+                        <div className="flex flex-row items-center justify-start">
+                          1.
+                          <div className="ml-2">{t("primary-diagnose")}</div></div>
+                        <div>2. {t("consult-docter")}</div>
                       </div>
 
-                      <div className="mt-2">
-                        備註:
-                      </div>
 
-                      <Textarea className="ml-[86px] -mt-6 w-10/12 h-[200px] text-xl border-gray-400"
-                        id="description" value={diagnose.primary_comments}
-                        onChange={(e) => {
-                          setDiagnose({ ...diagnose, primary_comments: e.target.value });
-                        }}
-                      />
+
+                      {(locale == "zh-tw") && (
+                        <>
+                          <div className="flex flex-row items-center justify-start mt-4">
+                            <Label className="text-xl w-2/12 font-normal" htmlFor="examiner">{t("diagnostician")}:</Label>
+                            <Input className={table_text_size + " w-10/12 -ml-7 border-gray-400"}
+                              id="examiner" placeholder={t("name")}
+                              value={diagnose.primary_examiner}
+                              onChange={(e) => {
+                                setDiagnose({ ...diagnose, primary_examiner: e.target.value });
+                              }}
+                            />
+                          </div>
+
+                          <div className="mt-2">
+                            {t("comments")}:
+                          </div>
+
+                          <Textarea className="ml-[82px] -mt-6 w-10/12 h-[200px] text-xl border-gray-400"
+                            id="description" value={diagnose.primary_comments}
+                            onChange={(e) => {
+                              setDiagnose({ ...diagnose, primary_comments: e.target.value });
+                            }}
+                          />
+                        </>
+                      )}
+
+                      {(locale == "en") && (
+                        <>
+                          <div className="flex flex-row items-center justify-start mt-4">
+                            <Label className="text-xl w-3/12 font-normal" htmlFor="examiner">{t("diagnostician")}:</Label>
+                            <Input className={table_text_size + " w-10/12  border-gray-400"}
+                              id="examiner" placeholder={t("name")}
+                              value={diagnose.primary_examiner}
+                              onChange={(e) => {
+                                setDiagnose({ ...diagnose, primary_examiner: e.target.value });
+                              }}
+                            />
+                          </div>
+
+                          <div className="flex flex-row items-start justify-start mt-4">
+                            <div className="mt-2 w-3/12">
+                              {t("comments")}:
+                            </div>
+
+                            <Textarea className=" w-10/12 h-[200px] text-xl border-gray-400"
+                              id="description" value={diagnose.primary_comments}
+                              onChange={(e) => {
+                                setDiagnose({ ...diagnose, primary_comments: e.target.value });
+                              }}
+                            />
+                          </div>
+                        </>
+                      )}
 
 
                     </div>
@@ -856,6 +969,7 @@ export default function Index(props: any) {
                 <div className="flex flex-row items-start justify-center">
                   <div className="w-[300px] h-[190px] ml-[200px] text-xl rounded-2xl mt-3">
                     <div className="flex flex-col items-start justify-start p-4 ml-10">
+
                       <div className=" bg-white">{t("dia-date")}：</div>
                       <Popover>
                         <PopoverTrigger asChild>
@@ -867,7 +981,7 @@ export default function Index(props: any) {
                             ) + " text-xl w-[220px]  border-gray-400"}
                           >
                             <CalendarIcon className="mr-2 h-4 w-4" />
-                            {date ? format(date, "yyyy-MM-dd") : <span>Pick a date</span>}
+                            {date ? format(date, "yyyy-MM-dd") : <span>{t("select-date")}</span>}
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0">
@@ -880,38 +994,101 @@ export default function Index(props: any) {
                         </PopoverContent>
                       </Popover>
 
-                      <div className="mt-4 bg-white ">{t("name")}：
+                      <div className="mt-4 bg-white w-[250px] flex flex-row">
+                        <div className="w-[80px] ">{t("name")}：</div>
                         <div className="ml-4">{user.name = (validUser) ? user.name : ""}</div>
                       </div>
-                      <div className="mt-2 bg-white">{t("age")}：
+                      <div className="mt-4 bg-white w-[250px] flex flex-row">
+                        <div className="w-[80px] ">{t("age")}：</div>
                         <div className="ml-4">{user.age = (validUser) ? user.age : ""}</div>
                       </div>
-                      <div className="mt-2 bg-white">{t("gender")}：
+                      <div className="mt-4 bg-white w-[250px] flex flex-row">
+                        <div className="w-[80px] ">{t("gender")}：</div>
                         <div className="ml-4">
-                          {(validUser) ? t(user.gender) : ""}
+                          {(validUser) ? (user.gender == "male" ? t("male") : t("female")) : ""}
                         </div>
                       </div>
 
-                      {validUser && (
-                        <div className="z-10">
-                          <div className="w-full h-[2px] mt-2 bg-gray-400"></div>
+                      <Button className="mt-4 bg-primary text-xl mt-12 z-10"
+                        onClick={() => {
+                          if (validUser) {
+                            console.log(showNewDiagnose)
+                            newDiagnose();
+                            setShowNewDiagnose(!showNewDiagnose);
+                          } else {
+                            alert(t("select-a-user"))
+                          }
 
-                          <div className="mt-4 bg-white">{t("new-diagnose")}：</div>
+                        }}
+                      >
+                        <Plus></Plus>{t("new-diagnose")}
+                      </Button>
 
-                          <Button className="w-[220px] mt-2 text-lg border-gray-400" variant={"outline"}
-                          >
-                            取得量測資料
-                          </Button>
+                      <div className="w-full h-[2px] mt-2 bg-gray-400"></div>
 
-                          <Button className="w-[220px] mt-2 text-lg border-gray-400" variant={"outline"}
-                          >
-                            取得 SARC-ClaF 問卷
-                          </Button>
+                      {showNewDiagnose && (
+                        <div className="z-10 mt-2">
+                          <div className="flex flex-col ">
+                            <Button className="mt-1 border-gray-400 text-xl" variant={"outline"}
+                              onClick={() => {
+                                console.log("in sarc-f page 264:", measurements);
+                                if (validUser) {
+                                  if (showMeasurementList) {
+                                    setShowMeasurementList(false);
+                                    //setShowSearch(false);
+                                    return;
+                                  }
 
-                          <Button className="w-[220px] mt-2 text-lg border-gray-400" variant={"outline"}
-                          >
-                            取得 SPPB 量表
-                          </Button>
+                                  let matched = 0;
+                                  let toMatchedList: any = [];
+                                  for (let i = 0; i < measurements.length; i++) {
+                                    if (measurements[i].uid == user.id) {
+                                      toMatchedList[matched] = [i.toString(), measurements[i].datetime];
+                                      matched++;
+                                    }
+                                  }
+                                  setMeasurementList(toMatchedList);
+                                  if (matched == 0) {
+                                    toMatchedList[matched] = ["0", t("no-mesaurement-data")];
+                                  }
+
+                                  setShowMeasurementList(true);
+                                  setShowSearch(false);
+
+                                } else {
+                                  alert(t("select-a-user"));
+                                }
+                              }}
+                            >
+                              {t('measurement-records')}
+                              <ArrowDown className="ml-2 h-6 w-6" />
+                            </Button>
+                            {showMeasurementList && (
+                              <div className="">
+                                <ul
+                                  className="z-10 absolute w-[300px] py-2 px-8 bg-gray-200 border border-gray-200 rounded-md  ">
+                                  {measurementList.map((item, index) => {
+                                    return <li key={index}
+                                      className={"py-2 cursor-pointer " + table_text_size}
+                                      onClick={
+                                        () => {
+                                          if (item[1] != t("no-mesaurement-data")) {
+                                            // const selected_measurement = measurements[parseInt(item[0])];
+                                            setNewDiagnose(measurements[parseInt(item[0])]);
+                                          }
+                                          console.log("in sarc-f page 377:");
+                                          setShowMeasurementList(false);
+                                        }
+                                      }
+                                    >
+                                      {item[1]}
+                                    </li>
+                                  })}
+                                </ul>
+                              </div>
+                            )}
+                          </div>
+
                         </div>
                       )}
 
@@ -920,7 +1097,7 @@ export default function Index(props: any) {
                   {/* 醫院篩檢 */}
                   <div className="w-[700px] flex flex-col items-center">
                     <div className="mt-4 ml-4 p-4 border-2 border-gray-400 w-full text-xl rounded-2xl">
-                      <div className="text-2xl font-bold mb-2">篩檢:</div>
+                      <div className="text-2xl font-bold mb-2">{t("screening")}:</div>
                       <div className="flex flex-row justify-start">
                         <input type="checkbox" className="mt-1 ml-4 w-4 h-4" checked={clinicalIssues}
                           onChange={(e) => {
@@ -929,41 +1106,49 @@ export default function Index(props: any) {
                             }
                           }}
                         />
-                        <div className="text-xl font-bold mb-2 ml-4">呈現任一臨床問題:</div>
+                        <div className="text-xl font-bold mb-2 ml-4">{t("with-clinical-issues")}:</div>
                       </div>
                       <div className="text-xl mb-2 ml-4">
-                        <div>功能下降及受限; 不明原因體重減輕; 憂鬱; 認知障礙; 反覆性跌倒;</div>
-                        <div>營養不良; 慢性疾病(心衰竭; 慢性阻塞性肺病; 糖尿病; 慢性腎臟病等)</div>
+                        {t("with-hospital-issues-msg")}
                       </div>
 
                       <div className="w-11/12 h-[2px] bg-gray-400 m-4"> </div>
 
                       <div className="flex flex-row items-center justify-between">
-                        <div className="ml-8">{"或 小腿圍： 男<34公分，女<33公分"}</div>
+                        <div className="ml-14">
+                          {
+                            t("calf-grith") + ": " + t("male") + " < 34" + t("cm") +
+                            ": " + t("female") + " < 33" + t("cm")
+                          }
+                        </div>
                         <div className={((user.gender == "male")
                           ? (parseInt(diagnose.calf_grith) < 34) ? "bg-red-500" : "bg-green-700"
                           : (parseInt(diagnose.calf_grith) < 33) ? "bg-red-500" : "bg-green-700")
                           + " text-white p-1 rounded-md w-[100px]"
                           + " flex items-center justify-end pr-2"}
                         >
-                          {diagnose.calf_grith} 公分</div>
+                          {diagnose.calf_grith} {t("cm")}</div>
                       </div>
                       <div className="flex flex-row items-center justify-between">
-                        <div className="ml-8">{"或 SARC-F 問卷 >= 4 分"}</div>
+                        <div className="ml-8">
+                          {t("or") + " SARC-F" + " >= 4 " + t("points1")}
+                        </div>
                         <div className={
                           ((parseInt(diagnose.sarc_f_score) > 3) ? "bg-red-500" : "bg-green-700")
                           + " text-white p-1 rounded-md w-[100px]"
                           + " flex items-center justify-end pr-2 mt-1"}
-                        >  {(diagnose.sarc_f_score == "") ? "" : diagnose.sarc_f_score} 分
+                        >  {((diagnose.sarc_f_score == "") ? "" : diagnose.sarc_f_score) + t("points1")}
                         </div>
                       </div>
                       <div className="flex flex-row items-center justify-between">
-                        <div className="ml-8">{"或 SARC-CalF 問卷 >= 11 分"}</div>
+                        <div className="ml-8">
+                          {t("or") + " SARC-CalF" + " >= 11 " + t("points1")}
+                        </div>
                         <div className={
                           ((parseInt(diagnose.sarc_calf_score) > 10) ? "bg-red-500" : "bg-green-700")
                           + " text-white p-1 rounded-md w-[100px]"
                           + " flex items-center justify-end pr-2 mt-1"}
-                        >  {(diagnose.sarc_calf_score == "") ? "" : diagnose.sarc_calf_score} 分
+                        >  {((diagnose.sarc_calf_score == "") ? "" : diagnose.sarc_calf_score) + t("points1")}
                         </div>
                       </div>
                     </div>
@@ -982,28 +1167,32 @@ export default function Index(props: any) {
                   </div>
                   <div className="w-[700px] flex flex-col items-center">
                     <div className="ml-4 p-4 border-2 border-gray-400 w-full text-xl rounded-2xl">
-                      <div className="text-2xl font-bold mb-2">評估:</div>
-                      <div className="text-xl font-bold ml-4">肌肉力量:</div>
+                      <div className="text-2xl font-bold mb-2">{t("assessments")}:</div>
+                      <div className="text-xl font-bold ml-4">{t("muscle-strength")}:</div>
                       <div className="flex flex-row items-center justify-between">
-                        <div className="ml-8">{"握力: 男<28公斤，女<18公斤"}</div>
+                        <div className="ml-14">
+                          {t("grip-strength") + ": " + t("male") + " < 28" + t("kgs") + ", " + t("female") + " < 18" + t("kgs")}
+                        </div>
                         <div className={((user.gender == "male")
-                          ? (parseFloat(diagnose.grip_strength) < 28.0) ? "bg-red-500" : "bg-green-700"
-                          : (parseFloat(diagnose.grip_strength) < 18.0) ? "bg-red-500" : "bg-green-700")
+                          ? (parseInt(diagnose.grip_strength) < 28) ? "bg-red-500" : "bg-green-700"
+                          : (parseInt(diagnose.grip_strength) < 18) ? "bg-red-500" : "bg-green-700")
                           + " text-white p-1 rounded-md w-[100px]"
                           + " flex items-center justify-end pr-2"}
-                        >{diagnose.grip_strength} 公斤</div>
+                        >{diagnose.grip_strength} {t("kgs")}</div>
                       </div>
-                      <div className="text-xl font-bold ml-4">體能表現:</div>
+                      <div className="text-xl font-bold ml-4">{t("physical-performance")}:</div>
                       <div className="flex flex-row items-center justify-between">
-                        <div className="ml-14">{"五次起立坐下: >=12 秒"}</div>
+                        <div className="ml-14">
+                          {t("five-standups") + ": >= 12 " + t("seconds")}
+                        </div>
                         <div className={
                           ((parseFloat(diagnose.chair_standup5) > 12.0) ? "bg-red-500" : "bg-green-700")
                           + " text-white p-1 rounded-md w-[100px]"
                           + " flex items-center justify-end pr-2"}
-                        >{diagnose.chair_standup5} 秒</div>
+                        >{diagnose.chair_standup5} {t("seconds")}</div>
                       </div>
                       <div className="flex flex-row mt-1 items-center justify-between">
-                        <div className="ml-8">{"或 六公尺步行速度: >6 秒 (< 1.0 公尺/秒)"}</div>
+                        <div className="ml-8">{t("or") + t("gait_speed6_criteria")}</div>
                         <div className={
                           ((parseFloat(diagnose.gait_speed6) > 6.0) ? "bg-red-500" : "bg-green-700")
                           + " text-white p-1 rounded-md w-[100px]"
@@ -1011,7 +1200,7 @@ export default function Index(props: any) {
                         >{diagnose.gait_speed6} 秒</div>
                       </div>
                       <div className="flex flex-row mt-1 items-center justify-between">
-                        <div className="ml-8">{"或 簡易身體功能量表 SPPB: <= 9 分"}</div>
+                        <div className="ml-8">{t("or") + t("sppb_criteria")}</div>
                         <div className={
                           ((parseInt(diagnose.sppb_score) < 10) ? "bg-red-500" : "bg-green-700")
                           + " text-white p-1 rounded-md w-[100px]"
@@ -1019,9 +1208,9 @@ export default function Index(props: any) {
                         >{diagnose.sppb_score} 分</div>
                       </div>
 
-                      <div className="text-xl font-bold mt-2 ml-4">肌肉質量(ASMI): kg/m2</div>
+                      <div className="text-xl font-bold mt-2 ml-4">{t("muscle-quantity")}(ASMI): kg/m2</div>
                       <div className="flex flex-row items-center justify-between">
-                        <div className="ml-14">{"BIA： 男<7.0 ，女< 5.7 "}</div>
+                        <div className="ml-14">{"BIA： " + t("male") + " < 7.0 , " + t("female") + " < 5.7 "}</div>
                         <div className={
                           (
                             (user.gender == "male")
@@ -1052,45 +1241,31 @@ export default function Index(props: any) {
                   <div className="w-[700px] flex flex-col items-center">
                     <div className="ml-4 p-4 border-2 border-gray-400 w-full text-xl rounded-2xl">
                       <div className="flex flex-row items-center justify-between">
-                        <div className="text-2xl font-bold mb-2">診斷:
+                        <div className="text-2xl font-bold mb-2">{t("diagnose")}:
                           {(hospitalGripPass && hospitalASMIPass && hospitalPerformancePass) && (
-                            <span className="text-green-700"> 肌少症可能性低</span>
+                            <span className="text-green-700"> {t("low-risk-sarc")}</span>
                           )}
 
                           {(!hospitalGripPass && !hospitalASMIPass && !hospitalPerformancePass) && (
-                            <span className="text-red-500"> 嚴重肌少症</span>
+                            <span className="text-red-500"> {t("severe-sarc")}</span>
                           )}
 
                           {(!hospitalGripPass && !hospitalASMIPass && hospitalPerformancePass) && (
-                            <span className="text-red-500"> 肌少症</span>
+                            <span className="text-red-500"> {t("sarcpenia")}</span>
                           )}
 
                           {(hospitalGripPass && hospitalASMIPass && !hospitalPerformancePass) && (
-                            <span className="text-red-500"> 輕微肌少症</span>
+                            <span className="text-red-500"> {t("mild-sarc")}</span>
                           )}
-
-                          {/* <span className="text-red-500">
-                            {
-                              (
-                                (!hospitalGripPass && !hospitalASMIPass && !hospitalPerformancePass)
-                                  ? " 嚴重肌少症"
-                                  : ((!hospitalGripPass && !hospitalASMIPass)
-                                    ? " 肌少症"
-                                    : "")
-                              )
-
-                            }
-                          </span> */}
 
                         </div>
 
                         <Button className="bg-primary text-white text-xl -mt-4 w-[100px]"
                           onClick={() => {
-                            console.log("in diagnoses page 825:", date)
-
+                            alert("Can not save in Demo Mode");
                           }}
                         >
-                          儲存
+                          {t("save-new-diagnose")}
                         </Button>
                       </div>
 
@@ -1099,31 +1274,31 @@ export default function Index(props: any) {
                         <div className="ml-14 mt-1  text-2xl  font-bold text-red-500">
                           {clinicalIssues && (
                             <div className="flex flex-row items-center justify-start text-xl">
-                              - 有臨床問題，請洽相關專科醫師協助。
+                              {t("has-clinical-issue-msg")}
                             </div>
                           )}
 
                           {!primaryScreeningPass && (
                             <div className="flex flex-row items-center justify-start text-xl">
-                              - 小腿圍 或 <div className="text-lg ml-1 mr-1">SRAC-F</div> 問卷低於標準
+                              {t("calf-or-sarc-low-msg")}
                             </div>
                           )}
 
                           {!hospitalGripPass && (
                             <div className="flex flex-row items-center justify-start text-xl">
-                              - 低肌肉力量
+                              {t("low-muscle-strength-msg")}
                             </div>
                           )}
 
                           {!hospitalASMIPass && (
                             <div className="flex flex-row items-center justify-start text-xl">
-                              - 低肌肉質量
+                              {t("low-muscle-quantity-msg")}
                             </div>
                           )}
 
                           {!hospitalPerformancePass && (
                             <div className="flex flex-row items-center justify-start text-xl">
-                              - 低體能表現
+                              {t("low-phyical-performance")}
                             </div>
                           )}
 
@@ -1131,29 +1306,59 @@ export default function Index(props: any) {
 
                       </div>
 
+                      {(locale == "zh-tw") && (
+                        <>
+                          <div className="flex flex-row items-center justify-start mt-4">
+                            <Label className="text-xl w-2/12 font-normal" htmlFor="examiner">{t("diagnostician")}:</Label>
+                            <Input className={table_text_size + " w-10/12 -ml-7 border-gray-400"}
+                              id="examiner" placeholder={t("name")}
+                              value={diagnose.primary_examiner}
+                              onChange={(e) => {
+                                setDiagnose({ ...diagnose, hospital_examiner: e.target.value });
+                              }}
+                            />
+                          </div>
 
+                          <div className="mt-2">
+                            {t("comments")}:
+                          </div>
 
-                      <div className="flex flex-row items-center justify-start mt-4">
-                        <Label className="text-xl w-2/12" htmlFor="examiner">診斷者：</Label>
-                        <Input className={table_text_size + " w-10/12 -ml-7 border-gray-400"}
-                          id="examiner" placeholder="名字"
-                          value={diagnose.hospital_examiner}
-                          onChange={(e) => {
-                            diagnose.hospital_examiner = e.target.value;
-                          }}
-                        />
-                      </div>
+                          <Textarea className="ml-[82px] -mt-6 w-10/12 h-[200px] text-xl border-gray-400"
+                            id="description" value={diagnose.hospital_comments}
+                            onChange={(e) => {
+                              setDiagnose({ ...diagnose, hospital_comments: e.target.value });
+                            }}
+                          />
+                        </>
+                      )}
 
-                      <div className="mt-2">
-                        備註:
-                      </div>
+                      {(locale == "en") && (
+                        <>
+                          <div className="flex flex-row items-center justify-start mt-4">
+                            <Label className="text-xl w-3/12 font-normal" htmlFor="examiner">{t("diagnostician")}:</Label>
+                            <Input className={table_text_size + " w-10/12 border-gray-400"}
+                              id="examiner" placeholder={t("name")}
+                              value={diagnose.primary_examiner}
+                              onChange={(e) => {
+                                setDiagnose({ ...diagnose, hospital_examiner: e.target.value });
+                              }}
+                            />
+                          </div>
 
-                      <Textarea className="ml-[86px] -mt-6 w-10/12 h-[200px] text-xl border-gray-400"
-                        id="hospital_comments" value={diagnose.hospital_comments}
-                        onChange={(e) => {
-                          diagnose.hospital_comments = e.target.value;
-                        }}
-                      />
+                          <div className="flex flex-row items-start justify-start mt-4">
+                            <div className="mt-2 w-3/12">
+                              {t("comments")}:
+                            </div>
+
+                            <Textarea className="w-10/12 h-[200px] text-xl border-gray-400"
+                              id="description" value={diagnose.hospital_comments}
+                              onChange={(e) => {
+                                setDiagnose({ ...diagnose, hospital_comments: e.target.value });
+                              }}
+                            />
+                          </div>
+                        </>
+                      )}
 
                     </div>
                   </div>
@@ -1175,7 +1380,7 @@ export default function Index(props: any) {
                   <div className="w-[300px] h-[190px] ml-[200px] text-xl rounded-2xl mt-3">
                     <div className="flex flex-col items-start justify-start p-4 ml-10">
 
-                      <div className=" bg-white">{t("dia-date")}：：</div>
+                      <div className=" bg-white">{t("dia-date")}：</div>
                       <Popover>
                         <PopoverTrigger asChild>
                           <Button
@@ -1199,38 +1404,101 @@ export default function Index(props: any) {
                         </PopoverContent>
                       </Popover>
 
-                      <div className="mt-4 bg-white ">{t("name")}：
+                      <div className="mt-4 bg-white w-[250px] flex flex-row">
+                        <div className="w-[80px] ">{t("name")}：</div>
                         <div className="ml-4">{user.name = (validUser) ? user.name : ""}</div>
                       </div>
-                      <div className="mt-2 bg-white">{t("age")}：
+                      <div className="mt-4 bg-white w-[250px] flex flex-row">
+                        <div className="w-[80px] ">{t("age")}：</div>
                         <div className="ml-4">{user.age = (validUser) ? user.age : ""}</div>
                       </div>
-                      <div className="mt-2 bg-white">{t("gender")}：
+                      <div className="mt-4 bg-white w-[250px] flex flex-row">
+                        <div className="w-[80px] ">{t("gender")}：</div>
                         <div className="ml-4">
-                          {(validUser) ? t(user.gender) : ""}
+                          {(validUser) ? (user.gender == "male" ? t("male") : t("female")) : ""}
                         </div>
                       </div>
 
-                      {validUser && (
-                        <div className="z-10">
-                          <div className="w-full h-[2px] mt-2 bg-gray-400"></div>
+                      <Button className="mt-4 bg-primary text-xl mt-12 z-10"
+                        onClick={() => {
+                          if (validUser) {
+                            console.log(showNewDiagnose)
+                            newDiagnose();
+                            setShowNewDiagnose(!showNewDiagnose);
+                          } else {
+                            alert(t("select-a-user"))
+                          }
 
-                          <div className="mt-4 bg-white">{t("new-diagnose")}：</div>
+                        }}
+                      >
+                        <Plus></Plus>{t("new-diagnose")}
+                      </Button>
 
-                          <Button className="w-[220px] mt-2 text-lg border-gray-400" variant={"outline"}
-                          >
-                            取得量測資料
-                          </Button>
+                      <div className="w-full h-[2px] mt-2 bg-gray-400"></div>
 
-                          <Button className="w-[220px] mt-2 text-lg border-gray-400" variant={"outline"}
-                          >
-                            取得 SARC-ClaF 問卷
-                          </Button>
+                      {showNewDiagnose && (
+                        <div className="z-10 mt-2">
+                          <div className="flex flex-col ">
+                            <Button className="mt-1 border-gray-400 text-xl" variant={"outline"}
+                              onClick={() => {
+                                console.log("in sarc-f page 264:", measurements);
+                                if (validUser) {
+                                  if (showMeasurementList) {
+                                    setShowMeasurementList(false);
+                                    //setShowSearch(false);
+                                    return;
+                                  }
 
-                          <Button className="w-[220px] mt-2 text-lg border-gray-400" variant={"outline"}
-                          >
-                            取得 SPPB 量表
-                          </Button>
+                                  let matched = 0;
+                                  let toMatchedList: any = [];
+                                  for (let i = 0; i < measurements.length; i++) {
+                                    if (measurements[i].uid == user.id) {
+                                      toMatchedList[matched] = [i.toString(), measurements[i].datetime];
+                                      matched++;
+                                    }
+                                  }
+                                  setMeasurementList(toMatchedList);
+                                  if (matched == 0) {
+                                    toMatchedList[matched] = ["0", t("no-mesaurement-data")];
+                                  }
+
+                                  setShowMeasurementList(true);
+                                  setShowSearch(false);
+
+                                } else {
+                                  alert(t("select-a-user"));
+                                }
+                              }}
+                            >
+                              {t('measurement-records')}
+                              <ArrowDown className="ml-2 h-6 w-6" />
+                            </Button>
+                            {showMeasurementList && (
+                              <div className="">
+                                <ul
+                                  className="z-10 absolute w-[300px] py-2 px-8 bg-gray-200 border border-gray-200 rounded-md  ">
+                                  {measurementList.map((item, index) => {
+                                    return <li key={index}
+                                      className={"py-2 cursor-pointer " + table_text_size}
+                                      onClick={
+                                        () => {
+                                          if (item[1] != t("no-mesaurement-data")) {
+                                            // const selected_measurement = measurements[parseInt(item[0])];
+                                            setNewDiagnose(measurements[parseInt(item[0])]);
+                                          }
+                                          console.log("in sarc-f page 377:");
+                                          setShowMeasurementList(false);
+                                        }
+                                      }
+                                    >
+                                      {item[1]}
+                                    </li>
+                                  })}
+                                </ul>
+                              </div>
+                            )}
+                          </div>
+
                         </div>
                       )}
 
@@ -1248,7 +1516,7 @@ export default function Index(props: any) {
                           : (parseFloat(diagnose.grip_strength) < 18.0) ? "bg-red-500" : "bg-green-700")
                           + " text-white p-1 rounded-md w-[100px]"
                           + " flex items-center justify-end pr-2"}
-                        >{diagnose.grip_strength} kg</div>                        
+                        >{diagnose.grip_strength} kg</div>
                       </div>
 
                       <div className="flex flex-row items-center justify-between mt-2">
@@ -1258,7 +1526,7 @@ export default function Index(props: any) {
                           + " text-white p-1 rounded-md w-[100px]"
                           + " flex items-center justify-end pr-2"}
                         >{diagnose.chair_standup5} s</div>
-                      </div>                      
+                      </div>
 
                       <div className="text-xl font-bold mt-2 ml-4">Low muscle quantity:</div>
                       <div className="flex flex-row items-center justify-between">
@@ -1275,7 +1543,7 @@ export default function Index(props: any) {
                           + " text-white p-1 rounded-md w-[100px]"
                           + " flex items-center justify-end pr-2"}
                         >  {diagnose.asm} kg
-                        </div>                        
+                        </div>
                       </div>
 
                       <div className="flex flex-row items-center justify-between">
@@ -1292,7 +1560,7 @@ export default function Index(props: any) {
                           + " text-white p-1 rounded-md w-[100px]"
                           + " flex items-center justify-end pr-2"}
                         >  {diagnose.muscle_quantity} <span className="text-sm ml-1 ">kg/m2</span>
-                        </div>                        
+                        </div>
                       </div>
 
                       <div className="text-xl font-bold mt-4 ml-4">Physical performance:</div>
@@ -1311,7 +1579,7 @@ export default function Index(props: any) {
                           + " text-white p-1 rounded-md w-[100px]"
                           + " flex items-center justify-end pr-2"}
                         >{diagnose.gait_speed6} s</div>
-                      </div>                      
+                      </div>
                       <div className="flex flex-row mt-1 items-center justify-between">
                         <div className="ml-8">{"SPPB: <= 8 point score"}</div>
                         <div className={
@@ -1327,7 +1595,7 @@ export default function Index(props: any) {
                           + " text-white p-1 rounded-md w-[100px]"
                           + " flex items-center justify-end pr-2"}
                         >{diagnose.tug} s</div>
-                      </div> 
+                      </div>
                       <div className="flex flex-row mt-1 items-center justify-between">
                         <div className="ml-8">{"400m walk test: >= 6 min"}</div>
                         <div className={
@@ -1335,7 +1603,7 @@ export default function Index(props: any) {
                           + " text-white p-1 rounded-md w-[100px]"
                           + " flex items-center justify-end pr-2"}
                         >{diagnose.walk_400m} s</div>
-                      </div> 
+                      </div>
 
                     </div>
                   </div>
@@ -1356,56 +1624,124 @@ export default function Index(props: any) {
                   <div className="w-[700px] flex flex-col items-center">
                     <div className="ml-4 p-4 border-2 border-gray-400 w-full text-xl rounded-2xl">
                       <div className="flex flex-row items-center justify-between">
-                        <div className="text-2xl font-bold mb-2">Diagnose:
+                        <div className="text-2xl font-bold mb-2">{t("diagnose")}:
                           {(hospitalGripPass && hospitalASMIPass && hospitalPerformancePass) && (
-                            <span className="text-green-700"> Low Risk for Sarcopenia</span>
+                            <span className="text-green-700"> {t("low-risk-sarc")}</span>
                           )}
 
                           {(!hospitalGripPass && !hospitalASMIPass && !hospitalPerformancePass) && (
-                            <span className="text-red-500"> Severe Sarcopenia</span>
+                            <span className="text-red-500"> {t("severe-sarc")}</span>
                           )}
 
                           {(!hospitalGripPass && !hospitalASMIPass && hospitalPerformancePass) && (
-                            <span className="text-red-500"> Sarcopenia</span>
+                            <span className="text-red-500"> {t("sarcpenia")}</span>
                           )}
 
                           {(hospitalGripPass && hospitalASMIPass && !hospitalPerformancePass) && (
-                            <span className="text-red-500"> Mild Sarcopenia</span>
+                            <span className="text-red-500"> {t("mild-sarc")}</span>
                           )}
 
                         </div>
 
                         <Button className="bg-primary text-white text-xl -mt-4 w-[100px]"
                           onClick={() => {
-                            console.log("in diagnoses page 825:", date)
-
+                            alert("Can not save in Demo Mode");
                           }}
                         >
-                        Save
+                          {t("save-new-diagnose")}
                         </Button>
                       </div>
 
-                      <div className="flex flex-row items-center justify-start mt-4">
-                        <Label className="text-xl w-2/12" htmlFor="examiner">Docter：</Label>
-                        <Input className={table_text_size + " w-4/5 ml-2 border-gray-400"}
-                          id="ewgsop2_docter" placeholder="Name"
-                          value={diagnose.hospital_examiner}
-                          onChange={(e) => {
-                            diagnose.hospital_examiner = e.target.value;
-                          }}
-                        />
+                      <div className="flex flex-row items-center justify-between">
+
+                        <div className="ml-14 mt-1  text-2xl  font-bold text-red-500">
+                          {clinicalIssues && (
+                            <div className="flex flex-row items-center justify-start text-xl">
+                              {t("has-clinical-issue-msg")}
+                            </div>
+                          )}
+
+                          {!primaryScreeningPass && (
+                            <div className="flex flex-row items-center justify-start text-xl">
+                              {t("calf-or-sarc-low-msg")}
+                            </div>
+                          )}
+
+                          {!hospitalGripPass && (
+                            <div className="flex flex-row items-center justify-start text-xl">
+                              {t("low-muscle-strength-msg")}
+                            </div>
+                          )}
+
+                          {!hospitalASMIPass && (
+                            <div className="flex flex-row items-center justify-start text-xl">
+                              {t("low-muscle-quantity-msg")}
+                            </div>
+                          )}
+
+                          {!hospitalPerformancePass && (
+                            <div className="flex flex-row items-center justify-start text-xl">
+                              {t("low-phyical-performance")}
+                            </div>
+                          )}
+
+                        </div>
+
                       </div>
 
-                      <div className="mt-2">
-                        Comemnts:
-                      </div>
+                      {(locale == "zh-tw") && (
+                        <>
+                          <div className="flex flex-row items-center justify-start mt-4">
+                            <Label className="text-xl w-2/12 font-normal" htmlFor="examiner">{t("diagnostician")}:</Label>
+                            <Input className={table_text_size + " w-10/12 -ml-7 border-gray-400"}
+                              id="examiner" placeholder={t("name")}
+                              value={diagnose.primary_examiner}
+                              onChange={(e) => {
+                                setDiagnose({ ...diagnose, hospital_examiner: e.target.value });
+                              }}
+                            />
+                          </div>
 
-                      <Textarea className="ml-[120px] -mt-6 w-4/5 h-[200px] text-xl border-gray-400"
-                        id="hospital_comments" value={diagnose.hospital_comments}
-                        onChange={(e) => {
-                          diagnose.hospital_comments = e.target.value;
-                        }}
-                      />
+                          <div className="mt-2">
+                            {t("comments")}:
+                          </div>
+
+                          <Textarea className="ml-[82px] -mt-6 w-10/12 h-[200px] text-xl border-gray-400"
+                            id="description" value={diagnose.hospital_comments}
+                            onChange={(e) => {
+                              setDiagnose({ ...diagnose, hospital_comments: e.target.value });
+                            }}
+                          />
+                        </>
+                      )}
+
+                      {(locale == "en") && (
+                        <>
+                          <div className="flex flex-row items-center justify-start mt-4">
+                            <Label className="text-xl w-3/12 font-normal" htmlFor="examiner">{t("diagnostician")}:</Label>
+                            <Input className={table_text_size + " w-10/12 border-gray-400"}
+                              id="examiner" placeholder={t("name")}
+                              value={diagnose.primary_examiner}
+                              onChange={(e) => {
+                                setDiagnose({ ...diagnose, hospital_examiner: e.target.value });
+                              }}
+                            />
+                          </div>
+
+                          <div className="flex flex-row items-start justify-start mt-4">
+                            <div className="mt-2 w-3/12">
+                              {t("comments")}:
+                            </div>
+
+                            <Textarea className="w-10/12 h-[200px] text-xl border-gray-400"
+                              id="description" value={diagnose.hospital_comments}
+                              onChange={(e) => {
+                                setDiagnose({ ...diagnose, hospital_comments: e.target.value });
+                              }}
+                            />
+                          </div>
+                        </>
+                      )}
 
                     </div>
                   </div>
@@ -1415,7 +1751,7 @@ export default function Index(props: any) {
             </div>
           )}
         </div>
-      </div>      
+      </div>
 
     </div >
 

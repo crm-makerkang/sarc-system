@@ -124,7 +124,7 @@ export default function Index(props: any) {
     //console.log(res.data);
     setUserData(res.data);
   }
-  
+
   const getMeasurements = async () => {
     const res = await axios.get('/api/measurements/')
     console.log("in sppb page 115:", res.data);
@@ -139,37 +139,37 @@ export default function Index(props: any) {
   }, [])
 
   useEffect(() => {
-    const sppb1points= (parseInt(sppb1A_points) + parseInt(sppb1B_points) + parseInt(sppb1C_points));
+    const sppb1points = (parseInt(sppb1A_points) + parseInt(sppb1B_points) + parseInt(sppb1C_points));
     setSppb1total_points(
       sppb1points.toString()
     );
 
     setSppb_points((sppb1points + parseInt(sppb2_points) + parseInt(sppb3_points)).toString());
-    
+
   }, [sppb1A_points, sppb1B_points, sppb1C_points, sppb2_points, sppb3_points])
 
   useEffect(() => {
-    for (var i=0; i < userData.length; i++) {
+    for (var i = 0; i < userData.length; i++) {
       if (userData[i].id === measurement.uid) {
-        if (measurement.balanceA != ""){
+        if (measurement.balanceA != "") {
           setSppb1A_radio_diable(true);
           setSppb1A_radio_value((parseFloat(measurement.balanceA) < 10.0) ? "1" : "0");
           setSppb1A_points((parseFloat(measurement.balanceA) < 10.0) ? "0" : "1");
-        } 
-
-        if (measurement.balanceB != ""){      
-          setSppb1B_radio_diable(true);
-          setSppb1B_radio_value((parseFloat(measurement.balanceB) < 10.0) ? "1" : "0");            
-          setSppb1B_points( (parseFloat(measurement.balanceB) < 10.0) ? "0" : "1");
         }
 
-        if (measurement.balanceC != ""){
+        if (measurement.balanceB != "") {
+          setSppb1B_radio_diable(true);
+          setSppb1B_radio_value((parseFloat(measurement.balanceB) < 10.0) ? "1" : "0");
+          setSppb1B_points((parseFloat(measurement.balanceB) < 10.0) ? "0" : "1");
+        }
+
+        if (measurement.balanceC != "") {
           setSppb1C_radio_diable(true);
 
-          if (parseFloat(measurement.balanceC)<3.0){
+          if (parseFloat(measurement.balanceC) < 3.0) {
             setSppb1C_radio_value("2");
             setSppb1C_points("0");
-          } else if (parseFloat(measurement.balanceC)< 10.0){
+          } else if (parseFloat(measurement.balanceC) < 10.0) {
             setSppb1C_radio_value("1");
             setSppb1C_points("1");
           } else {
@@ -178,35 +178,35 @@ export default function Index(props: any) {
           }
         }
 
-        if (measurement.chair_standup5=="not-completed") {
+        if (measurement.gait_speed4 == "-1") {
           setSppb2_points("0");
         } else {
-          if (parseFloat(measurement.chair_standup5) < 4.82) {
+          if (parseFloat(measurement.gait_speed4) < 4.82) {
             setSppb2_points("4");
-          } else if (parseFloat(measurement.chair_standup5) < 6.20) {
+          } else if (parseFloat(measurement.gait_speed4) < 6.21) {
             setSppb2_points("3");
-          } else if (parseFloat(measurement.chair_standup5) < 8.70) {
+          } else if (parseFloat(measurement.gait_speed4) < 8.71) {
             setSppb2_points("2");
           } else {
             setSppb2_points("1");
-          } 
+          }
         }
-        
-        if (measurement.gait_speed4=="not-completed") {
+
+        if (measurement.chair_standup5 == "-1") {
           setSppb3_points("0");
         } else {
-          if (parseFloat(measurement.gait_speed4) < 11.2) {
+          if (parseFloat(measurement.chair_standup5) < 11.19) {
             setSppb3_points("4");
-          } else if (parseFloat(measurement.gait_speed4) < 13.7) {
+          } else if (parseFloat(measurement.chair_standup5) < 13.7) {
             setSppb3_points("3");
-          } else if (parseFloat(measurement.gait_speed4) < 16.7) {
+          } else if (parseFloat(measurement.chair_standup5) < 16.7) {
             setSppb3_points("2");
-          } else if (parseFloat(measurement.gait_speed4) < 60.0) {
+          } else if (parseFloat(measurement.chair_standup5) < 60.1) {
             setSppb3_points("1");
           } else {
             setSppb3_points("0");
           }
-        }        
+        }
         break;
       }
     }
@@ -361,7 +361,7 @@ export default function Index(props: any) {
                                   if (measurements[i].uid == user.id) {
                                     toMatchedList[matched] = [i.toString(), measurements[i].datetime];
                                     matched++;
-                                  } 
+                                  }
                                 }
                                 setMeasurementList(toMatchedList);
                                 if (matched == 0) {
@@ -402,7 +402,7 @@ export default function Index(props: any) {
                                 })}
                               </ul>
                             </div>
-                          )} 
+                          )}
                         </div>
 
                       </>
@@ -418,14 +418,14 @@ export default function Index(props: any) {
                     <div className="text-xl ml-4  ">{t("sppb-balance-a")}</div>
                     <div className="flex flex-row items-center justify-between">
                       <div className="flex flex-row items-center text-xl mt-2 ml-8 w-[320px] ">
-                        <img src="/img/sppb_A.png" className="w-[50px] h-[50px]"/>
+                        <img src="/img/sppb_A.png" className="w-[50px] h-[50px]" />
                         <div className="w-[120px] text-right border border-gray-400 ml-4 p-2 rounded-md">
                           {measurement.balanceA} {t("seconds")}
                         </div>
                       </div>
 
                       <RadioGroup value={sppb1A_radio_value} disabled={sppb1A_radio_diable}
-                        className="w-[300px]"                      
+                        className="w-[300px]"
                         onValueChange={(e) => {
                           switch (e) {
                             case "0":
@@ -456,17 +456,17 @@ export default function Index(props: any) {
                       </Label>
                     </div>
 
-                    <div className="text-xl ml-4 mt-8 -mb-8">{t("sppb-balance-b")}</div>                    
+                    <div className="text-xl ml-4 mt-8 -mb-8">{t("sppb-balance-b")}</div>
                     <div className="flex flex-row items-center justify-between">
                       <div className="flex flex-row items-center text-xl mt-10 ml-8 w-[320px] ">
-                        <img src="/img/sppb_B.png" className="w-[50px] h-[70px]"/>
+                        <img src="/img/sppb_B.png" className="w-[50px] h-[70px]" />
                         <div className="w-[120px] text-right border border-gray-400 ml-4 p-2 rounded-md">
                           {measurement.balanceB} {t("seconds")}
-                        </div>                          
+                        </div>
                       </div>
 
                       <RadioGroup value={sppb1B_radio_value} disabled={sppb1B_radio_diable}
-                        className="w-[300px]"                      
+                        className="w-[300px]"
                         onValueChange={(e) => {
                           switch (e) {
                             case "0":
@@ -497,17 +497,17 @@ export default function Index(props: any) {
                       </Label>
                     </div>
 
-                    <div className="text-xl ml-4 mt-8 -mb-8">{t("sppb-balance-c")}</div>                    
-                    <div className="flex flex-row items-center justify-between">                     
+                    <div className="text-xl ml-4 mt-8 -mb-8">{t("sppb-balance-c")}</div>
+                    <div className="flex flex-row items-center justify-between">
                       <div className="flex flex-row items-center text-xl mt-10 ml-12 w-[320px] ">
-                        <img src="/img/sppb_C.png" className="w-[30px] h-[80px]"/>
+                        <img src="/img/sppb_C.png" className="w-[30px] h-[80px]" />
                         <div className="w-[120px] text-right border border-gray-400 ml-5 p-2 rounded-md">
                           {measurement.balanceC} {t("seconds")}
-                        </div>                          
+                        </div>
                       </div>
 
                       <RadioGroup value={sppb1C_radio_value} disabled={sppb1C_radio_diable}
-                        className="w-[320px]"                      
+                        className="w-[320px]"
                         onValueChange={(e) => {
                           switch (e) {
                             case "0":
@@ -550,13 +550,13 @@ export default function Index(props: any) {
                       <div className="flex flex-col">
                         <div className="text-xl font-bold mt-6 ">
                           {t("sum")} :
-                        </div>                      
+                        </div>
                       </div>
-                      <Label className="text-xl text-right w-[80px] mt-6 ml-2 p-1 pr-2 border border-gray-400 rounded-md " 
+                      <Label className="text-xl text-right w-[80px] mt-6 ml-2 p-1 pr-2 border border-gray-400 rounded-md "
                       >
                         {sppb1total_points}
                       </Label>
-                    </div>                    
+                    </div>
 
                     <div className="h-[2px] w-full mt-4 bg-gray-400"></div>
 
@@ -565,11 +565,11 @@ export default function Index(props: any) {
                       <div className="text-xl mt-6 ml-8 w-[320px] ">
                         <div className="w-[120px] text-right border border-gray-400  p-2 rounded-md">
                           {measurement.chair_standup5} {t("seconds")}
-                        </div>                         
-                      </div>                        
+                        </div>
+                      </div>
 
                       <RadioGroup defaultValue={sppb_2_radio_value} disabled={sppb_2_radio_diable}
-                        className="mt-12 w-[300px]"                      
+                        className="mt-12 w-[300px]"
                         onValueChange={(e) => {
                           switch (e) {
                             case "0":
@@ -580,13 +580,13 @@ export default function Index(props: any) {
                               break;
                             case "2":
                               setSppb2_points("2");
-                            break;
+                              break;
                             case "3":
                               setSppb2_points("1");
                               break;
                             case "4":
                               setSppb2_points("0");
-                              break;                                                              
+                              break;
                             default:
                               break;
                           }
@@ -594,24 +594,24 @@ export default function Index(props: any) {
                       >
                         <div className="flex items-center space-x-2">
                           <RadioGroupItem value="0" />
-                          <Label className="text-lg" >{"< 4.82 "+t("seconds")+"=4"}</Label>
+                          <Label className="text-lg" >{"< 4.82 " + t("seconds") + "=4"}</Label>
                         </div>
                         <div className="flex items-center space-x-2">
                           <RadioGroupItem value="1" />
-                          <Label className="text-lg">{"4.82 ~ 6.20 "+t("seconds")+"=3"}</Label>
+                          <Label className="text-lg">{"4.82 ~ 6.20 " + t("seconds") + "=3"}</Label>
                         </div>
                         <div className="flex items-center space-x-2">
                           <RadioGroupItem value="2" />
-                          <Label className="text-lg">{"6.21 ~ 8.70 "+t("seconds")+"=2"}</Label>
+                          <Label className="text-lg">{"6.21 ~ 8.70 " + t("seconds") + "=2"}</Label>
                         </div>
                         <div className="flex items-center space-x-2">
                           <RadioGroupItem value="3" />
-                          <Label className="text-lg">{"> 8.70 "+t("seconds")+"=1"}</Label>
+                          <Label className="text-lg">{"> 8.70 " + t("seconds") + "=1"}</Label>
                         </div>
                         <div className="flex items-center space-x-2">
                           <RadioGroupItem value="4" />
                           <Label className="text-lg">{t("unable-to-complete")}</Label>
-                        </div>                                                
+                        </div>
                       </RadioGroup>
 
                       <Label className="text-xl text-right border border-gray-500 w-[100px] p-1 pr-2 rounded-md">
@@ -626,8 +626,8 @@ export default function Index(props: any) {
                       <div className="text-xl mt-6 ml-8 w-[320px]">
                         <div className="w-[120px] text-right border border-gray-400  p-2 rounded-md">
                           {measurement.gait_speed4} {t("seconds")}
-                        </div>                        
-                      </div>  
+                        </div>
+                      </div>
 
                       <RadioGroup defaultValue={sppb_3_radio_value} disabled={sppb_3_radio_diable}
                         className="mt-12 w-[300px]"
@@ -647,7 +647,7 @@ export default function Index(props: any) {
                               break;
                             case "4":
                               setSppb3_points("0");
-                              break;                              
+                              break;
                             default:
                               break;
                           }
@@ -655,45 +655,45 @@ export default function Index(props: any) {
                       >
                         <div className="flex items-center space-x-2">
                           <RadioGroupItem value="0" />
-                          <Label className="text-lg" >{"< 11.19 "+t("seconds")+"=4"}</Label>
+                          <Label className="text-lg" >{"< 11.19 " + t("seconds") + "=4"}</Label>
                         </div>
                         <div className="flex items-center space-x-2">
                           <RadioGroupItem value="1" />
-                          <Label className="text-lg">{"11.2 ~ 13.69 "+t("seconds")+"=3"}</Label>
+                          <Label className="text-lg">{"11.2 ~ 13.69 " + t("seconds") + "=3"}</Label>
                         </div>
                         <div className="flex items-center space-x-2">
                           <RadioGroupItem value="2" />
-                          <Label className="text-lg">{"13.7 ~ 16.69 "+t("seconds")+"=2"}</Label>
+                          <Label className="text-lg">{"13.7 ~ 16.69 " + t("seconds") + "=2"}</Label>
                         </div>
                         <div className="flex items-center space-x-2">
                           <RadioGroupItem value="3" />
-                          <Label className="text-lg">{"16.7 ~ 59.9 "+t("seconds")+"=1"}</Label>
+                          <Label className="text-lg">{"16.7 ~ 59.9 " + t("seconds") + "=1"}</Label>
                         </div>
                         <div className="flex items-center space-x-2">
                           <RadioGroupItem value="4" />
-                          <Label className="text-lg">{"> 60 "+t("seconds")+"/"+t("unable-to-complete")}</Label>
-                        </div>                        
+                          <Label className="text-lg">{"> 60 " + t("seconds") + "/" + t("unable-to-complete")}</Label>
+                        </div>
                       </RadioGroup>
 
                       <Label className="text-xl text-right border border-gray-500 w-[100px] p-1 pr-2 rounded-md">
                         {sppb3_points}
                       </Label>
-                    </div> 
+                    </div>
 
                     <div className="h-[2px] w-full mt-4 bg-gray-400"></div>
 
                     <div className="flex flex-row items-center justify-between">
                       <div className="flex flex-col">
                         <div className="text-xl font-bold mt-6 w-[550px] text-justify ">
-                         {t("sppb-score-desc")}
-                        </div>                      
+                          {t("sppb-score-desc")}
+                        </div>
                       </div>
                       <Label className={"text-xl text-right w-[90px] mt-6 p-1 pr-2 rounded-md text-white " +
-                                        (parseInt(sppb_points) > 9 ? "bg-green-700" : "bg-red-500")}
+                        (parseInt(sppb_points) > 9 ? "bg-green-700" : "bg-red-500")}
                       >
                         {sppb_points}
                       </Label>
-                    </div> 
+                    </div>
 
                   </div>
                 </div>
@@ -717,7 +717,7 @@ export default function Index(props: any) {
                 </Button>
               </div>
             </div>
-          </div>          
+          </div>
         </div>
       </div>
     </div >

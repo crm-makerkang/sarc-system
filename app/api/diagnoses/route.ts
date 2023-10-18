@@ -86,8 +86,13 @@ export async function POST(request: NextRequest) {
       return response;
     }
   } else if (request.nextUrl.searchParams.get("cmd") == "modifyDiagnoses") {
-    
-  } 
+
+    // not implemented
+    return NextResponse.json({
+      message: "cnot implemented",
+      success: false,
+    })
+  }
   else {
     return NextResponse.json({
       message: "cmd incorrected",
