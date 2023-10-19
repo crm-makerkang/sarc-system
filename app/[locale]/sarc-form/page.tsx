@@ -110,7 +110,7 @@ export default function Index(props: any) {
     //console.log(res.data);
     setUserData(res.data);
   }
-  
+
   const getMeasurements = async () => {
     const res = await axios.get('/api/measurements/')
     // console.log("in sarc-form page 116:", res.data);
@@ -126,19 +126,19 @@ export default function Index(props: any) {
 
   useEffect(() => {
     setSarc_F_points(
-      (parseInt(q1_points) + parseInt(q2_points) + parseInt(q3_points) + 
-       parseInt(q4_points) + parseInt(q5_points)).toString()
+      (parseInt(q1_points) + parseInt(q2_points) + parseInt(q3_points) +
+        parseInt(q4_points) + parseInt(q5_points)).toString()
     );
 
     setSarc_calF_points(
       (parseInt(q1_points) + parseInt(q2_points) + parseInt(q3_points) +
-       parseInt(q4_points) + parseInt(q5_points) + 
-       parseInt(qcal_points)).toString()
+        parseInt(q4_points) + parseInt(q5_points) +
+        parseInt(qcal_points)).toString()
     );
   }, [q1_points, q2_points, q3_points, q4_points, q5_points, qcal_points])
 
   useEffect(() => {
-    for (var i=0; i < userData.length; i++) {
+    for (var i = 0; i < userData.length; i++) {
       if (userData[i].id === measurement.uid) {
         if (userData[i].gender === "male") {
           setQcal_points((parseFloat(measurement.calf_grith) < 34.0) ? "10" : "0");
@@ -361,7 +361,7 @@ export default function Index(props: any) {
                                   if (measurements[i].uid == user.id) {
                                     toMatchedList[matched] = [i.toString(), measurements[i].datetime];
                                     matched++;
-                                  } 
+                                  }
                                 }
                                 setMeasurementList(toMatchedList);
                                 if (matched == 0) {
@@ -402,7 +402,7 @@ export default function Index(props: any) {
                                 })}
                               </ul>
                             </div>
-                          )} 
+                          )}
                         </div>
 
                       </>
@@ -422,7 +422,7 @@ export default function Index(props: any) {
                       </div>
 
                       <RadioGroup defaultValue="0"
-                        className="w-[200px]"                      
+                        className="w-[200px]"
                         onValueChange={(e) => {
                           switch (e) {
                             case "0":
@@ -458,14 +458,14 @@ export default function Index(props: any) {
                       </Label>
                     </div>
 
-                    <div className="text-xl font-bold ml-4 mt-8 -mb-8">{t("assist-in-walk")}:</div>                    
+                    <div className="text-xl font-bold ml-4 mt-8 -mb-8">{t("assist-in-walk")}:</div>
                     <div className="flex flex-row items-center justify-between">
                       <div className="text-xl mt-6 ml-8 w-[320px] ">
                         {t("sarc-f-Q2-desc")}
                       </div>
 
                       <RadioGroup defaultValue="0"
-                        className="w-[200px]"                      
+                        className="w-[200px]"
                         onValueChange={(e) => {
                           switch (e) {
                             case "0":
@@ -501,14 +501,14 @@ export default function Index(props: any) {
                       </Label>
                     </div>
 
-                    <div className="text-xl font-bold ml-4 mt-8 -mb-8">{t("rise-from-chair")}:</div>                    
+                    <div className="text-xl font-bold ml-4 mt-8 -mb-8">{t("rise-from-chair")}:</div>
                     <div className="flex flex-row items-center justify-between">
                       <div className="text-xl mt-6 ml-8 w-[320px] ">
                         {t("sarc-f-Q3-desc")}
-                      </div>                      
+                      </div>
 
                       <RadioGroup defaultValue="0"
-                        className="w-[200px]"                      
+                        className="w-[200px]"
                         onValueChange={(e) => {
                           switch (e) {
                             case "0":
@@ -548,10 +548,10 @@ export default function Index(props: any) {
                     <div className="flex flex-row items-center justify-between">
                       <div className="text-xl mt-6 ml-8 w-[320px] ">
                         {t("sarc-f-Q4-desc")}
-                      </div>                        
+                      </div>
 
                       <RadioGroup defaultValue="0"
-                        className="w-[200px]"                      
+                        className="w-[200px]"
                         onValueChange={(e) => {
                           switch (e) {
                             case "0":
@@ -591,7 +591,7 @@ export default function Index(props: any) {
                     <div className="flex flex-row items-center justify-between">
                       <div className="text-xl mt-6 ml-8 w-[320px]">
                         {t("sarc-f-Q5-desc")}
-                      </div>  
+                      </div>
 
                       <RadioGroup defaultValue="0"
                         className="w-[200px]"
@@ -628,29 +628,29 @@ export default function Index(props: any) {
                       <Label className="text-xl text-right border border-gray-500 w-[100px] p-1 pr-2 rounded-md">
                         {q5_points}
                       </Label>
-                    </div> 
+                    </div>
 
                     <div className="h-[2px] w-full mt-4 bg-gray-400"></div>
 
                     <div className="flex flex-row items-center justify-between">
                       <div className="flex flex-col">
                         <div className="text-xl font-bold mt-6 ">
-                         {"SARC-F " + t("points") + t("sum-of-above-five") + ": >= 4 " + t("point") + " " + t("sarc-risk") }
-                        </div>                      
+                          {"SARC-F " + t("points") + t("sum-of-above-five") + ": >= 4 " + t("point") + " " + t("sarc-risk")}
+                        </div>
                       </div>
                       <Label className={"text-xl text-right w-[100px] mt-6 p-1  pr-2 rounded-md text-white " +
-                                        (parseInt(sarc_f_points) < 5 ? "bg-green-700" : "bg-red-500")}
+                        (parseInt(sarc_f_points) < 5 ? "bg-green-700" : "bg-red-500")}
                       >
                         {sarc_f_points}
                       </Label>
-                    </div> 
+                    </div>
 
                   </div>
                 </div>
                 <div className="w-[550px] h-[100px] p-2 rounded-2xl"></div>
               </div>
 
-              <img src={ (parseInt(sarc_f_points) < 5) ? "/img/arrow-down-green.png" : "/img/arrow-down-red.png"}
+              <img src={(parseInt(sarc_f_points) < 5) ? "/img/arrow-down-green.png" : "/img/arrow-down-red.png"}
                 className="h-[50px] w-[40px]">
               </img>
 
@@ -667,14 +667,14 @@ export default function Index(props: any) {
                     <div className="flex flex-row items-center justify-between">
 
                       <div className="text-xl font-bold ml-4 ">
-                        { "SARC-F " + t("points") }: 
-                      </div>                      
+                        {"SARC-F " + t("points")}:
+                      </div>
 
                       <Label className="text-xl text-right border border-gray-500 w-[100px] 
                                         -mt-4 p-1 pr-2 rounded-md">
                         {sarc_f_points}
                       </Label>
-                    </div> 
+                    </div>
 
                     <div className="w-full flex items-center justify-center">
                       <Plus className="h-[50px] w-[50px]"></Plus>
@@ -684,31 +684,31 @@ export default function Index(props: any) {
                     <div className="flex flex-row items-center justify-start">
                       <div className="text-xl font-bold  mt-1 ml-4 ]">
                         {t("calf-grith")}:
-                      </div>  
+                      </div>
 
 
-                        <Input
-                          className="w-[100px] text-xl text-right ml-2 pr-2  border-gray-400"
-                          value={measurement.calf_grith}
-                          onChange={(e) => {
-                            setMeasurement({
-                              ...measurement,
-                              calf_grith: e.target.value,
-                            });
-                          }} 
-                        /> 
-                        <span className="ml-1">{t("cm")}</span>
+                      <Input
+                        className="w-[100px] text-xl text-right ml-2 pr-2  border-gray-400"
+                        value={measurement.calf_grith}
+                        onChange={(e) => {
+                          setMeasurement({
+                            ...measurement,
+                            calf_grith: e.target.value,
+                          });
+                        }}
+                      />
+                      <span className="ml-1">{t("cm")}</span>
 
-                    </div> 
+                    </div>
 
                     <div className="flex flex-row items-center justify-between">
                       <div className="flex flex-col mt-4">
                         <div className="ml-14">
-                          {t("male")+">=34"+t("cm")+"，"+t("female")+">=33"+t("cm")+" = 0"}
+                          {t("male") + ">=34" + t("cm") + "，" + t("female") + ">=33" + t("cm") + " = 0"}
                         </div>
                         <div className="ml-14">
-                        {t("male")+"<34"+t("cm")+"，"+t("female")+"<33"+t("cm")+" = 10"}
-                          </div>
+                          {t("male") + "<34" + t("cm") + "，" + t("female") + "<33" + t("cm") + " = 10"}
+                        </div>
                       </div>
                       <Label className="text-xl text-right border border-gray-500 w-[100px] p-1 pr-2 rounded-md">
                         {qcal_points}
@@ -720,20 +720,20 @@ export default function Index(props: any) {
                     <div className="flex flex-row items-center justify-between">
                       <div className="flex flex-col">
                         <div className="text-xl font-bold mt-8 ">
-                        {"SARC-CalF " + t("points")  + ": >= 11 " + t("point") + " " + t("sarc-risk") }
-                        </div>                      
+                          {"SARC-CalF " + t("points") + ": >= 11 " + t("point") + " " + t("sarc-risk")}
+                        </div>
                       </div>
                       <Label className={"text-xl text-right text-white  w-[100px] mt-4 p-1 pr-2 rounded-md" +
-                                       ((parseInt(sarc_calf_points) < 11) ? " bg-green-700 " : " bg-red-500 ") }
+                        ((parseInt(sarc_calf_points) < 11) ? " bg-green-700 " : " bg-red-500 ")}
                       >
                         {sarc_calf_points}
                       </Label>
-                    </div>                     
+                    </div>
 
                   </div>
                 </div>
                 <div className="w-[550px] h-[100px] p-2 rounded-2xl"></div>
-              </div>              
+              </div>
             </div>
 
             <div className="flex flex-row items-center justify-between mt-4 mb-12 ">
@@ -746,13 +746,15 @@ export default function Index(props: any) {
               </div>
 
               <div className="">
-                <Button className="text-xl bg-primary">
+                <Button className="text-xl bg-primary"
+                  onClick={() => alert("Can not save in Demo Mode")}
+                >
                   {t("save-questionnaire")}
                 </Button>
               </div>
             </div>
 
-          </div>          
+          </div>
         </div>
       </div>
     </div >

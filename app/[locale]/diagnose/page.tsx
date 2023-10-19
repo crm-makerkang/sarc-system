@@ -783,7 +783,7 @@ export default function Index(props: any) {
                         <div className={((user.gender == "male")
                           ? (parseInt(diagnose.calf_grith) < 34) ? "bg-red-500" : "bg-green-700"
                           : (parseInt(diagnose.calf_grith) < 33) ? "bg-red-500" : "bg-green-700")
-                          + " text-white p-1 rounded-md w-[100px]"
+                          + " text-white p-1 rounded-md w-[120px]"
                           + " flex items-center justify-end pr-2"}
                         >
                           {diagnose.calf_grith} {t("cm")}</div>
@@ -794,9 +794,9 @@ export default function Index(props: any) {
                         </div>
                         <div className={
                           ((parseInt(diagnose.sarc_f_score) > 3) ? "bg-red-500" : "bg-green-700")
-                          + " text-white p-1 rounded-md w-[100px]"
+                          + " text-white p-1 rounded-md w-[120px]"
                           + " flex items-center justify-end pr-2 mt-1"}
-                        >  {((diagnose.sarc_f_score == "") ? "" : diagnose.sarc_f_score) + t("points1")}
+                        >  {((diagnose.sarc_f_score == "") ? "" : diagnose.sarc_f_score) + " " + t("points1")}
                         </div>
                       </div>
                       <div className="flex flex-row items-center justify-between">
@@ -805,9 +805,9 @@ export default function Index(props: any) {
                         </div>
                         <div className={
                           ((parseInt(diagnose.sarc_calf_score) > 10) ? "bg-red-500" : "bg-green-700")
-                          + " text-white p-1 rounded-md w-[100px]"
+                          + " text-white p-1 rounded-md w-[120px]"
                           + " flex items-center justify-end pr-2 mt-1"}
-                        >  {((diagnose.sarc_calf_score == "") ? "" : diagnose.sarc_calf_score) + t("points1")}
+                        >  {((diagnose.sarc_calf_score == "") ? "" : diagnose.sarc_calf_score) + " " + t("points1")}
                         </div>
                       </div>
                     </div>
@@ -836,7 +836,7 @@ export default function Index(props: any) {
                         <div className={((user.gender == "male")
                           ? (parseInt(diagnose.grip_strength) < 28) ? "bg-red-500" : "bg-green-700"
                           : (parseInt(diagnose.grip_strength) < 18) ? "bg-red-500" : "bg-green-700")
-                          + " text-white p-1 rounded-md w-[100px]"
+                          + " text-white p-1 rounded-md w-[120px]"
                           + " flex items-center justify-end pr-2"}
                         >{diagnose.grip_strength} {t("kgs")}</div>
                       </div>
@@ -847,7 +847,7 @@ export default function Index(props: any) {
                         </div>
                         <div className={
                           ((parseFloat(diagnose.chair_standup5) > 12.0) ? "bg-red-500" : "bg-green-700")
-                          + " text-white p-1 rounded-md w-[100px]"
+                          + " text-white p-1 rounded-md w-[120px]"
                           + " flex items-center justify-end pr-2"}
                         >{diagnose.chair_standup5} {t("seconds")}</div>
                       </div>
@@ -878,9 +878,9 @@ export default function Index(props: any) {
                           )}
                         </div>
 
-                        <Button className="bg-primary text-white text-xl -mt-4 w-[100px]"
+                        <Button className="bg-primary text-white text-xl -mt-4 w-[120px]"
                           onClick={() => {
-                            alert("Can not save in Demo Mode");
+                            alert("Demo mode not support");
                           }}
                         >
                           {t("save-new-diagnose")}
@@ -1124,7 +1124,7 @@ export default function Index(props: any) {
                         <div className={((user.gender == "male")
                           ? (parseInt(diagnose.calf_grith) < 34) ? "bg-red-500" : "bg-green-700"
                           : (parseInt(diagnose.calf_grith) < 33) ? "bg-red-500" : "bg-green-700")
-                          + " text-white p-1 rounded-md w-[100px]"
+                          + " text-white p-1 rounded-md w-[120px]"
                           + " flex items-center justify-end pr-2"}
                         >
                           {diagnose.calf_grith} {t("cm")}</div>
@@ -1135,9 +1135,9 @@ export default function Index(props: any) {
                         </div>
                         <div className={
                           ((parseInt(diagnose.sarc_f_score) > 3) ? "bg-red-500" : "bg-green-700")
-                          + " text-white p-1 rounded-md w-[100px]"
+                          + " text-white p-1 rounded-md w-[120px]"
                           + " flex items-center justify-end pr-2 mt-1"}
-                        >  {((diagnose.sarc_f_score == "") ? "" : diagnose.sarc_f_score) + t("points1")}
+                        >  {((diagnose.sarc_f_score == "") ? "" : diagnose.sarc_f_score) + " " + t("points1")}
                         </div>
                       </div>
                       <div className="flex flex-row items-center justify-between">
@@ -1146,9 +1146,9 @@ export default function Index(props: any) {
                         </div>
                         <div className={
                           ((parseInt(diagnose.sarc_calf_score) > 10) ? "bg-red-500" : "bg-green-700")
-                          + " text-white p-1 rounded-md w-[100px]"
+                          + " text-white p-1 rounded-md w-[120px]"
                           + " flex items-center justify-end pr-2 mt-1"}
-                        >  {((diagnose.sarc_calf_score == "") ? "" : diagnose.sarc_calf_score) + t("points1")}
+                        >  {((diagnose.sarc_calf_score == "") ? "" : diagnose.sarc_calf_score) + " " + t("points1")}
                         </div>
                       </div>
                     </div>
@@ -1176,7 +1176,7 @@ export default function Index(props: any) {
                         <div className={((user.gender == "male")
                           ? (parseInt(diagnose.grip_strength) < 28) ? "bg-red-500" : "bg-green-700"
                           : (parseInt(diagnose.grip_strength) < 18) ? "bg-red-500" : "bg-green-700")
-                          + " text-white p-1 rounded-md w-[100px]"
+                          + " text-white p-1 rounded-md w-[120px]"
                           + " flex items-center justify-end pr-2"}
                         >{diagnose.grip_strength} {t("kgs")}</div>
                       </div>
@@ -1187,7 +1187,7 @@ export default function Index(props: any) {
                         </div>
                         <div className={
                           ((parseFloat(diagnose.chair_standup5) > 12.0) ? "bg-red-500" : "bg-green-700")
-                          + " text-white p-1 rounded-md w-[100px]"
+                          + " text-white p-1 rounded-md w-[120px]"
                           + " flex items-center justify-end pr-2"}
                         >{diagnose.chair_standup5} {t("seconds")}</div>
                       </div>
@@ -1195,7 +1195,7 @@ export default function Index(props: any) {
                         <div className="ml-8">{t("or") + t("gait_speed6_criteria")}</div>
                         <div className={
                           ((parseFloat(diagnose.gait_speed6) > 6.0) ? "bg-red-500" : "bg-green-700")
-                          + " text-white p-1 rounded-md w-[100px]"
+                          + " text-white p-1 rounded-md w-[120px]"
                           + " flex items-center justify-end pr-2"}
                         >{diagnose.gait_speed6} 秒</div>
                       </div>
@@ -1203,7 +1203,7 @@ export default function Index(props: any) {
                         <div className="ml-8">{t("or") + t("sppb_criteria")}</div>
                         <div className={
                           ((parseInt(diagnose.sppb_score) < 10) ? "bg-red-500" : "bg-green-700")
-                          + " text-white p-1 rounded-md w-[100px]"
+                          + " text-white p-1 rounded-md w-[120px]"
                           + " flex items-center justify-end pr-2"}
                         >{diagnose.sppb_score} 分</div>
                       </div>
@@ -1217,7 +1217,7 @@ export default function Index(props: any) {
                               ? ((parseFloat(diagnose.muscle_quantity) < 7.0) ? "bg-red-500" : "bg-green-700")
                               : ((parseFloat(diagnose.muscle_quantity) < 5.7) ? "bg-red-500" : "bg-green-700")
                           )
-                          + " text-white p-1 rounded-md w-[100px]"
+                          + " text-white p-1 rounded-md w-[120px]"
                           + " flex items-center justify-end pr-2"}
                         >{diagnose.muscle_quantity} <span className="text-sm ml-1 ">kg/m2</span></div>
                       </div>
@@ -1260,9 +1260,9 @@ export default function Index(props: any) {
 
                         </div>
 
-                        <Button className="bg-primary text-white text-xl -mt-4 w-[100px]"
+                        <Button className="bg-primary text-white text-xl -mt-4 w-[120px]"
                           onClick={() => {
-                            alert("Can not save in Demo Mode");
+                            alert("Demo mode not support");
                           }}
                         >
                           {t("save-new-diagnose")}
@@ -1514,7 +1514,7 @@ export default function Index(props: any) {
                         <div className={((user.gender == "male")
                           ? (parseFloat(diagnose.grip_strength) < 28.0) ? "bg-red-500" : "bg-green-700"
                           : (parseFloat(diagnose.grip_strength) < 18.0) ? "bg-red-500" : "bg-green-700")
-                          + " text-white p-1 rounded-md w-[100px]"
+                          + " text-white p-1 rounded-md w-[120px]"
                           + " flex items-center justify-end pr-2"}
                         >{diagnose.grip_strength} kg</div>
                       </div>
@@ -1523,7 +1523,7 @@ export default function Index(props: any) {
                         <div className="ml-8">{"Chair stand test (5 rises): > 15 seconds"}</div>
                         <div className={
                           ((parseFloat(diagnose.chair_standup5) > 15.0) ? "bg-red-500" : "bg-green-700")
-                          + " text-white p-1 rounded-md w-[100px]"
+                          + " text-white p-1 rounded-md w-[120px]"
                           + " flex items-center justify-end pr-2"}
                         >{diagnose.chair_standup5} s</div>
                       </div>
@@ -1540,7 +1540,7 @@ export default function Index(props: any) {
                               ? ((parseFloat(diagnose.asm) < 20.0) ? "bg-red-500" : "bg-green-700")
                               : ((parseFloat(diagnose.asm) < 15.0) ? "bg-red-500" : "bg-green-700")
                           )
-                          + " text-white p-1 rounded-md w-[100px]"
+                          + " text-white p-1 rounded-md w-[120px]"
                           + " flex items-center justify-end pr-2"}
                         >  {diagnose.asm} kg
                         </div>
@@ -1557,7 +1557,7 @@ export default function Index(props: any) {
                               ? ((parseFloat(diagnose.muscle_quantity) < 7.0) ? "bg-red-500" : "bg-green-700")
                               : ((parseFloat(diagnose.muscle_quantity) < 5.7) ? "bg-red-500" : "bg-green-700")
                           )
-                          + " text-white p-1 rounded-md w-[100px]"
+                          + " text-white p-1 rounded-md w-[120px]"
                           + " flex items-center justify-end pr-2"}
                         >  {diagnose.muscle_quantity} <span className="text-sm ml-1 ">kg/m2</span>
                         </div>
@@ -1568,7 +1568,7 @@ export default function Index(props: any) {
                         <div className="ml-8">{"Gait speed (4m): > 3.2s (< 0.8 m/s)"}</div>
                         <div className={
                           ((parseFloat(diagnose.gait_speed6) > 6.0) ? "bg-red-500" : "bg-green-700")
-                          + " text-white p-1 rounded-md w-[100px]"
+                          + " text-white p-1 rounded-md w-[120px]"
                           + " flex items-center justify-end pr-2"}
                         >{diagnose.gait_speed4} s</div>
                       </div>
@@ -1576,7 +1576,7 @@ export default function Index(props: any) {
                         <div className="ml-8">{"Gait speed (6m): > 4.8s (< 0.8 m/s)"}</div>
                         <div className={
                           ((parseFloat(diagnose.gait_speed6) > 6.0) ? "bg-red-500" : "bg-green-700")
-                          + " text-white p-1 rounded-md w-[100px]"
+                          + " text-white p-1 rounded-md w-[120px]"
                           + " flex items-center justify-end pr-2"}
                         >{diagnose.gait_speed6} s</div>
                       </div>
@@ -1584,15 +1584,15 @@ export default function Index(props: any) {
                         <div className="ml-8">{"SPPB: <= 8 point score"}</div>
                         <div className={
                           ((parseInt(diagnose.sppb_score) < 10) ? "bg-red-500" : "bg-green-700")
-                          + " text-white p-1 rounded-md w-[100px]"
+                          + " text-white p-1 rounded-md w-[120px]"
                           + " flex items-center justify-end pr-2"}
-                        >{diagnose.sppb_score} point</div>
+                        >{diagnose.sppb_score} points</div>
                       </div>
                       <div className="flex flex-row mt-1 items-center justify-between">
                         <div className="ml-8">{"Timed-Up and G(TUG, 3m): >= 20s"}</div>
                         <div className={
                           ((parseFloat(diagnose.tug) > 20.0) ? "bg-red-500" : "bg-green-700")
-                          + " text-white p-1 rounded-md w-[100px]"
+                          + " text-white p-1 rounded-md w-[120px]"
                           + " flex items-center justify-end pr-2"}
                         >{diagnose.tug} s</div>
                       </div>
@@ -1600,7 +1600,7 @@ export default function Index(props: any) {
                         <div className="ml-8">{"400m walk test: >= 6 min"}</div>
                         <div className={
                           ((parseFloat(diagnose.walk_400m) > 20.0) ? "bg-red-500" : "bg-green-700")
-                          + " text-white p-1 rounded-md w-[100px]"
+                          + " text-white p-1 rounded-md w-[120px]"
                           + " flex items-center justify-end pr-2"}
                         >{diagnose.walk_400m} s</div>
                       </div>
@@ -1643,9 +1643,9 @@ export default function Index(props: any) {
 
                         </div>
 
-                        <Button className="bg-primary text-white text-xl -mt-4 w-[100px]"
+                        <Button className="bg-primary text-white text-xl -mt-4 w-[120px]"
                           onClick={() => {
-                            alert("Can not save in Demo Mode");
+                            alert("Demo mode not support");
                           }}
                         >
                           {t("save-new-diagnose")}
@@ -1655,18 +1655,6 @@ export default function Index(props: any) {
                       <div className="flex flex-row items-center justify-between">
 
                         <div className="ml-14 mt-1  text-2xl  font-bold text-red-500">
-                          {clinicalIssues && (
-                            <div className="flex flex-row items-center justify-start text-xl">
-                              {t("has-clinical-issue-msg")}
-                            </div>
-                          )}
-
-                          {!primaryScreeningPass && (
-                            <div className="flex flex-row items-center justify-start text-xl">
-                              {t("calf-or-sarc-low-msg")}
-                            </div>
-                          )}
-
                           {!hospitalGripPass && (
                             <div className="flex flex-row items-center justify-start text-xl">
                               {t("low-muscle-strength-msg")}

@@ -132,7 +132,7 @@ export function DataTableMeasuring<TData, TValue>({
 
       <div className="flex items-center py-4">
         <Button id="addNewUserButton" className="bg-primary text-xl"
-          onClick={() => { alert("Not implement yet") }}
+          onClick={() => { alert("Demo mode not support") }}
         >
           {t("manual-add")}
         </Button>

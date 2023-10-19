@@ -136,7 +136,7 @@ export default function Home(props: any) {
                 window.location.href = '/start';
               }}
             >
-              確定
+              I understand
             </Button>
           </CardFooter>
         </Card>
@@ -255,7 +255,7 @@ export default function Home(props: any) {
                 window.location.href = '/start';
               }}
             >
-              確定
+              我了解
             </Button>
           </CardFooter>
         </Card>

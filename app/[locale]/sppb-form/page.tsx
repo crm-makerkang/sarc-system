@@ -712,7 +712,9 @@ export default function Index(props: any) {
               </div>
 
               <div className="">
-                <Button className="text-xl bg-primary">
+                <Button className="text-xl bg-primary"
+                  onClick={() => alert("Demo mode not support")}
+                >
                   {t("save-sppb")}
                 </Button>
               </div>

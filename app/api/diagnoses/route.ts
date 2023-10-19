@@ -89,7 +89,7 @@ export async function POST(request: NextRequest) {
 
     // not implemented
     return NextResponse.json({
-      message: "cnot implemented",
+      message: "not implemented",
       success: false,
     })
   }

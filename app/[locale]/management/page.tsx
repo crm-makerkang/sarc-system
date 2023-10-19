@@ -253,7 +253,7 @@ export default function Index(props: any) {
                           }
                         }
                       >
-                        {t("delete-all")}
+                        {t("delete-all-msg")}
                       </Button>
                       <div className="mt-2 bg-gray-300  w-full h-[2px]"></div>
                     </div>
