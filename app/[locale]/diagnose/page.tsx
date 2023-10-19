@@ -1197,7 +1197,7 @@ export default function Index(props: any) {
                           ((parseFloat(diagnose.gait_speed6) > 6.0) ? "bg-red-500" : "bg-green-700")
                           + " text-white p-1 rounded-md w-[120px]"
                           + " flex items-center justify-end pr-2"}
-                        >{diagnose.gait_speed6} 秒</div>
+                        >{diagnose.gait_speed6} {t("seconds")}</div>
                       </div>
                       <div className="flex flex-row mt-1 items-center justify-between">
                         <div className="ml-8">{t("or") + t("sppb_criteria")}</div>
@@ -1205,7 +1205,7 @@ export default function Index(props: any) {
                           ((parseInt(diagnose.sppb_score) < 10) ? "bg-red-500" : "bg-green-700")
                           + " text-white p-1 rounded-md w-[120px]"
                           + " flex items-center justify-end pr-2"}
-                        >{diagnose.sppb_score} 分</div>
+                        >{diagnose.sppb_score} {t("points1")}</div>
                       </div>
 
                       <div className="text-xl font-bold mt-2 ml-4">{t("muscle-quantity")}(ASMI): kg/m2</div>
