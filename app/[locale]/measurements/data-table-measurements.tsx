@@ -239,7 +239,7 @@ export function DataTableMeasurements<TData, TValue>({
                       {/* {t(column.id)} next-intl not works */}
                       {i == 0 ? t("name") : null}
                       {i == 1 ? t("datetime") : null}
-                      {i == 2 ? t("calf-grith") : null}
+                      {i == 2 ? t("calf-girth") : null}
                       {i == 3 ? t("grip-strength") : null}
                       {i == 4 ? t("chair-standup") + t("5times") : null}
                       {i == 5 ? t("muscle-quantity") : null}

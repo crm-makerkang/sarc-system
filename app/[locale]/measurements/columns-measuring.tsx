@@ -61,18 +61,18 @@ export const columns_measuring: ColumnDef<Measurement>[] = [
     }
   },
   {
-    id: "calf_grith",
-    accessorKey: "calf_grith",
+    id: "calf_girth",
+    accessorKey: "calf_girth",
     header: () => {
       const t = useTranslations('sarc');
-      return <div className="flex flex-row items-center justify-center">{t("calf-grith")}</div>
+      return <div className="flex flex-row items-center justify-center">{t("calf-girth")}</div>
     },
     cell: ({ row }) => {
       const t = useTranslations('sarc');
       return (
         <div className="flex flex-row items-center justify-center">
-          <span >{row.original.calf_grith}
-            <span className="text-sm">{(row.original.calf_grith != undefined) ? t('cm') : ""}</span>
+          <span >{row.original.calf_girth}
+            <span className="text-sm">{(row.original.calf_girth != undefined) ? t('cm') : ""}</span>
           </span>
         </div>
       )
@@ -199,19 +199,18 @@ export const columns_measuring: ColumnDef<Measurement>[] = [
     },
     cell: ({ row }) => {
       const t = useTranslations('sarc');
-      if ((row.original.balanceA != undefined)  || (row.original.balanceB != undefined) || (row.original.balanceC != undefined))
-      {
+      if ((row.original.balanceA != undefined) || (row.original.balanceB != undefined) || (row.original.balanceC != undefined)) {
         return (
           <div className="flex items-center justify-center">
             <div className="flex items-center justify-center">
               <img src="/img/sppb_A.png" className="w-[20px]"></img>
-              { row.original.balanceA }
+              {row.original.balanceA}
               <span className="text-sm">{t('seconds')}</span>
               <img src="/img/sppb_B.png" className="w-[18px] ml-2"></img>
-              { row.original.balanceB }
+              {row.original.balanceB}
               <span className="text-sm">{t('seconds')}</span>
               <img src="/img/sppb_C.png" className="w-[10px] ml-3"></img>
-              { row.original.balanceC }
+              {row.original.balanceC}
               <span className="text-sm">{t('seconds')}</span>
             </div>
           </div>
@@ -247,7 +246,7 @@ export const columns_measuring: ColumnDef<Measurement>[] = [
                     // save to records
                     const new_record = {
                       "datetime": row.original.datetime,
-                      "calf_grith": row.original.calf_grith,
+                      "calf_girth": row.original.calf_girth,
                       "grip_strength": row.original.grip_strength,
                       "chair_standup5": row.original.chair_standup5,
                       "muscle_quantity": row.original.muscle_quantity,
@@ -280,7 +279,7 @@ export const columns_measuring: ColumnDef<Measurement>[] = [
                       alert(t("delete-failed-msg"));
                     }
                   }
-                  
+
                 }
               }
             >
@@ -293,7 +292,7 @@ export const columns_measuring: ColumnDef<Measurement>[] = [
                   console.log("in measurement page 296:", row.index, row.original)
                   window.location.href = "/measurements?did=" + row.index.toString();
                 }
-            }
+              }
             >
               <div className={table_text_size}>{t("edit")}</div>
             </DropdownMenuItem>

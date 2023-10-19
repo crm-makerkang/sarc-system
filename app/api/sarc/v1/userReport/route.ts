@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
     var new_in_measure: Measurement = {
       "datetime": "",
       "name": "",
-      "calf_grith": "",
+      "calf_girth": "",
       "grip_strength": "",
       "chair_standup5": "",
       "muscle_quantity": "",
@@ -127,7 +127,7 @@ export async function POST(request: NextRequest) {
       }
       break;
     case "a6":
-      in_measuring[in_measure_index].calf_grith =
+      in_measuring[in_measure_index].calf_girth =
         (post_data.data.report.SkipTest) ? "" : post_data.data.report.Value.toString();
       break;
     default:

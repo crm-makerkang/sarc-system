@@ -277,7 +277,7 @@ export function DataTableMeasuring<TData, TValue>({
                   > <div className={table_text_size}>
                       {/* {t(column.id)} next-intl not works */}
                       {i == 0 ? t("name") : null}
-                      {i == 1 ? t("calf-grith") : null}
+                      {i == 1 ? t("calf-girth") : null}
                       {i == 2 ? t("grip-strength") : null}
                       {i == 3 ? t("chair-standup") + t("5times") : null}
                       {i == 4 ? t("muscle-quantity") : null}

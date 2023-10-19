@@ -13,7 +13,7 @@ export type UserInfo = {
 export type Measurement = {
   datetime: string,
   name: string,
-  calf_grith: string,
+  calf_girth: string,
   grip_strength: string,
   chair_standup5: string,
   muscle_quantity: string,
@@ -30,7 +30,7 @@ export type Measurement = {
 }
 
 export type Diagnose = {
-  calf_grith: string,
+  calf_girth: string,
   grip_strength: string,
   chair_standup5: string,
   muscle_quantity: string,

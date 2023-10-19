@@ -76,7 +76,7 @@ export default function Index(props: any) {
   const [measurement, setMeasurement] = React.useState<Measurement>({
     "datetime": "",
     "name": "",
-    "calf_grith": "0",
+    "calf_girth": "0",
     "grip_strength": "",
     "chair_standup5": "",
     "muscle_quantity": "",
@@ -342,7 +342,7 @@ export default function Index(props: any) {
 
                         {/* <div className="mt-4 bg-white">{t("new-questionnaire")}：</div> */}
 
-                        <div className="text-lg mt-4 w-[200px]">{t("get-calf-grith-from-measurement-or-input")}</div>
+                        <div className="text-lg mt-4 w-[200px]">{t("get-calf-girth-from-measurement-or-input")}</div>
 
                         <div className="flex flex-col ">
                           <Button className="mt-1 border-gray-400 text-xl" variant={"outline"}

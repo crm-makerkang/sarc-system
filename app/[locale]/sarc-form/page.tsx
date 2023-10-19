@@ -76,7 +76,7 @@ export default function Index(props: any) {
   const [measurement, setMeasurement] = React.useState<Measurement>({
     "datetime": "",
     "name": "",
-    "calf_grith": "0",
+    "calf_girth": "0",
     "grip_strength": "",
     "chair_standup5": "",
     "muscle_quantity": "",
@@ -141,9 +141,9 @@ export default function Index(props: any) {
     for (var i = 0; i < userData.length; i++) {
       if (userData[i].id === measurement.uid) {
         if (userData[i].gender === "male") {
-          setQcal_points((parseFloat(measurement.calf_grith) < 34.0) ? "10" : "0");
+          setQcal_points((parseFloat(measurement.calf_girth) < 34.0) ? "10" : "0");
         } else {
-          setQcal_points((parseFloat(measurement.calf_grith) < 33.0) ? "10" : "0");
+          setQcal_points((parseFloat(measurement.calf_girth) < 33.0) ? "10" : "0");
         }
         break;
       }
@@ -342,7 +342,7 @@ export default function Index(props: any) {
 
                         {/* <div className="mt-4 bg-white">{t("new-questionnaire")}：</div> */}
 
-                        <div className="text-lg mt-4 w-[200px]">{t("get-calf-grith-from-measurement-or-input")}</div>
+                        <div className="text-lg mt-4 w-[200px]">{t("get-calf-girth-from-measurement-or-input")}</div>
 
                         <div className="flex flex-col ">
                           <Button className="mt-1 border-gray-400 text-xl" variant={"outline"}
@@ -683,17 +683,17 @@ export default function Index(props: any) {
 
                     <div className="flex flex-row items-center justify-start">
                       <div className="text-xl font-bold  mt-1 ml-4 ]">
-                        {t("calf-grith")}:
+                        {t("calf-girth")}:
                       </div>
 
 
                       <Input
                         className="w-[100px] text-xl text-right ml-2 pr-2  border-gray-400"
-                        value={measurement.calf_grith}
+                        value={measurement.calf_girth}
                         onChange={(e) => {
                           setMeasurement({
                             ...measurement,
-                            calf_grith: e.target.value,
+                            calf_girth: e.target.value,
                           });
                         }}
                       />

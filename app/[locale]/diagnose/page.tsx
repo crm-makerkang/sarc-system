@@ -88,7 +88,7 @@ export default function Index(props: any) {
   const [measurement, setMeasurement] = React.useState<Measurement>({
     "datetime": "",
     "name": "",
-    "calf_grith": "0",
+    "calf_girth": "0",
     "grip_strength": "",
     "chair_standup5": "",
     "muscle_quantity": "",
@@ -106,7 +106,7 @@ export default function Index(props: any) {
 
   const [diagnoses, setDiagnoses] = React.useState<Diagnose[]>([]);
   const [diagnose, setDiagnose] = React.useState<Diagnose>({
-    calf_grith: "",
+    calf_girth: "",
     grip_strength: "",
     chair_standup5: "",
     muscle_quantity: "",
@@ -177,7 +177,7 @@ export default function Index(props: any) {
     const momentNow = moment().format(); // moment,js => 2023-10-15T21:34:52+08:00
     console.log("in diagnose page 178:", typeof momentNow, momentNow);
     const blankDiagnose: Diagnose = {
-      calf_grith: "",
+      calf_girth: "",
       grip_strength: "",
       chair_standup5: "",
       muscle_quantity: "",
@@ -276,7 +276,7 @@ export default function Index(props: any) {
     // setMeasurement(measurements[parseInt(item[0])]);
     setDiagnose({
       ...diagnose,
-      calf_grith: selected_measurement.calf_grith,
+      calf_girth: selected_measurement.calf_girth,
       grip_strength: selected_measurement.grip_strength,
       chair_standup5: selected_measurement.chair_standup5,
       muscle_quantity: selected_measurement.muscle_quantity,
@@ -322,8 +322,8 @@ export default function Index(props: any) {
 
     // AWGS 2019 Primary screening
     (((user.gender == "male")
-      ? ((parseFloat(diagnose.calf_grith) < 34.0) ? true : false)
-      : ((parseFloat(diagnose.calf_grith) < 33.0) ? true : false))
+      ? ((parseFloat(diagnose.calf_girth) < 34.0) ? true : false)
+      : ((parseFloat(diagnose.calf_girth) < 33.0) ? true : false))
       || (parseInt(diagnose.sarc_f_score) > 3)
       || (parseInt(diagnose.sarc_calf_score) > 10))
       ? setPrimaryScreeningPass(false) : setPrimaryScreeningPass(true);
@@ -776,17 +776,17 @@ export default function Index(props: any) {
                       <div className="flex flex-row items-center justify-between">
                         <div className="ml-14">
                           {
-                            t("calf-grith") + ": " + t("male") + " < 34" + t("cm") +
+                            t("calf-girth") + ": " + t("male") + " < 34" + t("cm") +
                             ": " + t("female") + " < 33" + t("cm")
                           }
                         </div>
                         <div className={((user.gender == "male")
-                          ? (parseInt(diagnose.calf_grith) < 34) ? "bg-red-500" : "bg-green-700"
-                          : (parseInt(diagnose.calf_grith) < 33) ? "bg-red-500" : "bg-green-700")
+                          ? (parseInt(diagnose.calf_girth) < 34) ? "bg-red-500" : "bg-green-700"
+                          : (parseInt(diagnose.calf_girth) < 33) ? "bg-red-500" : "bg-green-700")
                           + " text-white p-1 rounded-md w-[120px]"
                           + " flex items-center justify-end pr-2"}
                         >
-                          {diagnose.calf_grith} {t("cm")}</div>
+                          {diagnose.calf_girth} {t("cm")}</div>
                       </div>
                       <div className="flex flex-row items-center justify-between">
                         <div className="ml-8">
@@ -1117,17 +1117,17 @@ export default function Index(props: any) {
                       <div className="flex flex-row items-center justify-between">
                         <div className="ml-14">
                           {
-                            t("calf-grith") + ": " + t("male") + " < 34" + t("cm") +
+                            t("calf-girth") + ": " + t("male") + " < 34" + t("cm") +
                             ": " + t("female") + " < 33" + t("cm")
                           }
                         </div>
                         <div className={((user.gender == "male")
-                          ? (parseInt(diagnose.calf_grith) < 34) ? "bg-red-500" : "bg-green-700"
-                          : (parseInt(diagnose.calf_grith) < 33) ? "bg-red-500" : "bg-green-700")
+                          ? (parseInt(diagnose.calf_girth) < 34) ? "bg-red-500" : "bg-green-700"
+                          : (parseInt(diagnose.calf_girth) < 33) ? "bg-red-500" : "bg-green-700")
                           + " text-white p-1 rounded-md w-[120px]"
                           + " flex items-center justify-end pr-2"}
                         >
-                          {diagnose.calf_grith} {t("cm")}</div>
+                          {diagnose.calf_girth} {t("cm")}</div>
                       </div>
                       <div className="flex flex-row items-center justify-between">
                         <div className="ml-8">

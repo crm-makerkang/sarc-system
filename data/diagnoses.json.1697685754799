@@ -1,6 +1,6 @@
 [
   {
-    "calf_grith": "35.50",
+    "calf_girth": "35.50",
     "grip_strength": "22.61",
     "chair_standup5": "8.43",
     "muscle_quantity": "6.27",
@@ -30,7 +30,7 @@
     "hospital_comments": "No sarcopenia"
   },
   {
-    "calf_grith": "32.52",
+    "calf_girth": "32.52",
     "grip_strength": "16.57",
     "chair_standup5": "12.53",
     "muscle_quantity": "5.63",

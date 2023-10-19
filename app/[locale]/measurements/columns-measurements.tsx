@@ -83,18 +83,18 @@ export const columns_measurements: ColumnDef<Measurement>[] = [
     }
   },
   {
-    id: "calf_grith",
-    accessorKey: "calf_grith",
+    id: "calf_girth",
+    accessorKey: "calf_girth",
     header: () => {
       const t = useTranslations('sarc');
-      return <div className="flex flex-row items-center justify-center">{t("calf-grith")}</div>
+      return <div className="flex flex-row items-center justify-center">{t("calf-girth")}</div>
     },
     cell: ({ row }) => {
       const t = useTranslations('sarc');
       return (
         <div className="flex flex-row items-center justify-center">
-          <span >{row.original.calf_grith}
-            <span className="text-sm">{(row.original.calf_grith != undefined) ? t('cm') : ""}</span>
+          <span >{row.original.calf_girth}
+            <span className="text-sm">{(row.original.calf_girth != undefined) ? t('cm') : ""}</span>
           </span>
         </div>
       )
@@ -221,19 +221,18 @@ export const columns_measurements: ColumnDef<Measurement>[] = [
     },
     cell: ({ row }) => {
       const t = useTranslations('sarc');
-      if ((row.original.balanceA != undefined)  || (row.original.balanceB != undefined) || (row.original.balanceC != undefined))
-      {
+      if ((row.original.balanceA != undefined) || (row.original.balanceB != undefined) || (row.original.balanceC != undefined)) {
         return (
           <div className="flex items-center justify-center">
             <div className="flex items-center justify-center">
               <img src="/img/sppb_A.png" className="w-[20px]"></img>
-              { row.original.balanceA }
+              {row.original.balanceA}
               <span className="text-sm">{t('seconds')}</span>
               <img src="/img/sppb_B.png" className="w-[18px] ml-2"></img>
-              { row.original.balanceB }
+              {row.original.balanceB}
               <span className="text-sm">{t('seconds')}</span>
               <img src="/img/sppb_C.png" className="w-[10px] ml-3"></img>
-              { row.original.balanceC }
+              {row.original.balanceC}
               <span className="text-sm">{t('seconds')}</span>
             </div>
           </div>
