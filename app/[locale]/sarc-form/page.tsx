@@ -47,6 +47,20 @@ import {
 import axios from "axios";
 import { jsPDF } from "jspdf"
 
+function imgToBase64(img: any) {
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = img.width;
+  canvas.height = img.height;
+
+  // I think this won't work inside the function from the console
+  //img.crossOrigin = 'anonymous';
+
+  ctx!.drawImage(img, 0, 0);
+
+  return canvas.toDataURL("image/jpeg", 1.0);
+}
+
 export default function Index(props: any) {
   //console.log("in Measurement page 50:", props);
   const t = useTranslations('sarc');
@@ -747,7 +761,39 @@ export default function Index(props: any) {
 
               <div className="">
                 <Button className="text-xl bg-primary"
-                  onClick={() => alert("Can not save in Demo Mode")}
+                  // onClick={() => alert("Can not save in Demo Mode")}
+                  onClick={() => {
+                    // const doc = new jsPDF('p', 'mm', [297, 210]); //default 72 ppi => pdf size 841 x 595
+                    const doc = new jsPDF('p', 'mm', [594, 420]); //default 72 ppi => pdf size 1683 x 1190 => print scale to A4 => 144ppi
+                    var imgStr = "";
+
+                    var img = new Image();
+                    img.src = "img/rebateRizap.jpg";
+
+                    if (img.complete) {
+                      imgStr = imgToBase64(img);
+                      console.log(imgStr.length);
+                      console.log("in Ddiagnose page 775:");
+                      // doc.addImage(imgStr, 10, 30, 770, 474, undefined, 'FAST');
+                      doc.addImage(imgStr, 0, 0, 420, 240);
+                      doc.save("new.pdf");
+                    } else {
+                      img.onload = function () {
+                        imgStr = imgToBase64(img);
+                        console.log(imgStr.length);
+                        console.log("in Ddiagnose page 781:");
+                        // doc.addImage(imgStr, 0, 3, 100, 50, undefined, 'FAST');
+                        doc.addImage(imgStr, 0, 0, 420, 240);
+                        doc.setFontSize(16); //default font-size:16
+                        doc.text("This is a test", 10, 10);
+                        doc.save("new.pdf");
+                      }
+                    }
+
+                    // doc.text("Hello world!", 10, 10);
+                    // doc.save("a4.pdf");
+
+                  }}
                 >
                   {t("save-questionnaire")}
                 </Button>
