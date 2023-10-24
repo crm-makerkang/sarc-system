@@ -11,6 +11,7 @@ import { UserInfo, Diagnose, Measurement } from "@/types/types"
 import { v4 as uuidv4 } from 'uuid';
 
 import { table_text_size, dia_type, dia_standard } from "@/Settings/settings"
+import { awgs2019_primary_dataURL, awgs2019_hospital_dataURL, ewgsop2_dataURL } from "@/models/imagesDataURL"
 
 import { format } from "date-fns"
 import { Calendar as CalendarIcon } from "lucide-react"
@@ -186,10 +187,10 @@ export default function Index(props: any) {
       balanceA: "",
       balanceB: "",
       balanceC: "",
-      uid: "",
+      uid: user.id,
       rid: "",
       dia_id: uuidv4(),
-      dia_datetime: momentNow.substring(0, 10),
+      dia_datetime: momentNow.substring(0, 10) + " " + momentNow.substring(11, 16),
       dia_result: "",
       primary_examiner: "",
       hospital_examiner: "",
@@ -290,6 +291,33 @@ export default function Index(props: any) {
       tug: selected_measurement.tug,
       walk_400m: selected_measurement.walk_400m,
     })
+  }
+
+  const saveNewDiagnose = (diagType: string) => {
+    if (diagnose.uid == "") {
+      alert(t("select-a-diagnose"));
+      return;
+    }
+
+    // const doc = new jsPDF('p', 'mm', [297, 210]); //default 72 ppi => pdf size 841 x 595
+    const doc = new jsPDF('p', 'mm', [594, 420]); //default 72 ppi => pdf size 1683 x 1190 => print scale to A4 => 144ppi
+    doc.setFontSize(16); //default font-size:16
+
+    const saveFileName = user.name + "_" + diagnose.dia_datetime.substring(0, 10) + "_" + diagnose.dia_datetime.substring(11, 16) + ".pdf";
+
+    if (diagType == "primary") {
+      doc.addImage(awgs2019_primary_dataURL, 0, 0, 420, 594);
+      doc.text("This is a test", 10, 10);
+      doc.save("awgs_primary_" + saveFileName);
+    } else if (diagType == "hospital") {
+      doc.addImage(awgs2019_hospital_dataURL, 0, 0, 420, 594);
+      doc.text("This is a test", 10, 10);
+      doc.save("awgs_hospital_" + saveFileName);
+    } else if (diagType == "ewgsop2") {
+      doc.addImage(ewgsop2_dataURL, 0, 0, 420, 594);
+      doc.text("This is a test", 10, 10);
+      doc.save("ewgsop2_" + saveFileName);
+    }
   }
 
   useEffect(() => {
@@ -878,13 +906,22 @@ export default function Index(props: any) {
                           )}
                         </div>
 
-                        <Button className="bg-primary text-white text-xl -mt-4 w-[120px]"
-                          onClick={() => {
-                            alert("Demo mode not support");
-                          }}
-                        >
-                          {t("save-new-diagnose")}
-                        </Button>
+                        <div className="flex flex-col mt-4">
+                          <Button className="bg-primary text-white text-xl -mt-4 w-[120px]"
+                            onClick={() => { alert("Demo mode not support"); }}
+                          >
+                            {t("save-new-diagnose")}
+                          </Button>
+                          <Button className="bg-primary text-white text-xl mt-2 w-[120px]"
+                            onClick={() => {
+                              alert("Demo mode not support");
+                              //saveNewDiagnose("primary")
+                            }}
+                          >
+                            {t("print-diagnose")}
+                          </Button>
+                        </div>
+
                       </div>
 
                       <div className="ml-16">
@@ -1260,13 +1297,24 @@ export default function Index(props: any) {
 
                         </div>
 
-                        <Button className="bg-primary text-white text-xl -mt-4 w-[120px]"
-                          onClick={() => {
-                            alert("Demo mode not support");
-                          }}
-                        >
-                          {t("save-new-diagnose")}
-                        </Button>
+                        <div className="flex flex-col mt-4">
+                          <Button className="bg-primary text-white text-xl -mt-4 w-[120px]"
+                            onClick={() => {
+                              alert("Demo mode not support");
+                            }}
+                          >
+                            {t("save-new-diagnose")}
+                          </Button>
+                          <Button className="bg-primary text-white text-xl mt-2 w-[120px]"
+                            onClick={() => {
+                              alert("Demo mode not support");
+                              // saveNewDiagnose("hospital")
+                            }}
+                          >
+                            {t("print-diagnose")}
+                          </Button>
+                        </div>
+
                       </div>
 
                       <div className="flex flex-row items-center justify-between">
@@ -1643,13 +1691,24 @@ export default function Index(props: any) {
 
                         </div>
 
-                        <Button className="bg-primary text-white text-xl -mt-4 w-[120px]"
-                          onClick={() => {
-                            alert("Demo mode not support");
-                          }}
-                        >
-                          {t("save-new-diagnose")}
-                        </Button>
+                        <div className="flex flex-col mt-4">
+                          <Button className="bg-primary text-white text-xl -mt-4 w-[120px]"
+                            onClick={() => {
+                              alert("Demo mode not support");
+                            }}
+                          >
+                            {t("save-new-diagnose")}
+                          </Button>
+                          <Button className="bg-primary text-white text-xl mt-2 w-[120px]"
+                            onClick={() => {
+                              alert("Demo mode not support");
+                              // saveNewDiagnose("ewgsop2")
+                            }}
+                          >
+                            {t("print-diagnose")}
+                          </Button>
+                        </div>
+
                       </div>
 
                       <div className="flex flex-row items-center justify-between">
