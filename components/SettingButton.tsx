@@ -63,6 +63,12 @@ function SettingButton() {
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem className={"cursor-none " + settings.table_text_size} >
+          Demo Version
+        </DropdownMenuItem>
+
+        <DropdownMenuSeparator />
+
+        <DropdownMenuItem className={"cursor-none " + settings.table_text_size} >
           IP: {ipaddress}
         </DropdownMenuItem>
 
