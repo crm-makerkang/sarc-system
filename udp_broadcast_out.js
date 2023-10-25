@@ -21,7 +21,7 @@ socket.on('listening', function () {
       ip_addr = "";
       console.log("error", e.message);
     }
-    ps
+
     if (ip_addr != "") {
       const broadcast_msg = "sarc,ip," + ip_addr + ",8089";
       const message = Buffer.from(broadcast_msg)
