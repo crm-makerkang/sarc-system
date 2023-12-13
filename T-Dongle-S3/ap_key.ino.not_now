@@ -1,4 +1,4 @@
-
+// for Lilygo TTGO T-Dongle
 #include "Arduino.h"
 // #include "SD_MMC.h"
 #include "WiFi.h"
@@ -89,7 +89,7 @@ void scan_wifi_rssi()
   WiFi.mode(WIFI_OFF);
 }
 
-void print_info(uint8_t disp_orientation, bool disp_esp_now)
+void lcd_info(uint8_t lcd_orientation, bool disp_esp_now)
 {
   String ssid = read_ssid();
   String sn = read_sn();
@@ -112,7 +112,7 @@ void print_info(uint8_t disp_orientation, bool disp_esp_now)
     sn = "S/N: " + sn;
   }
 
-  tft.setRotation(disp_orientation);
+  tft.setRotation(lcd_orientation);
 
   if (disp_esp_now)
   {
@@ -259,20 +259,23 @@ void normal_setup()
   const char *password = "123456789";
 
   String eeprom_apip = read_apip();
-  int apip_1=0;
-  int apip_2=0;
-  int apip_3=0;
-  int apip_4=0;
+  int apip_1 = 0;
+  int apip_2 = 0;
+  int apip_3 = 0;
+  int apip_4 = 0;
   int startIndex = 0;
   int periodIndex = 0;
-  periodIndex = eeprom_apip.indexOf('.'); 
-  apip_1 = eeprom_apip.substring(startIndex, periodIndex).toInt(); //192
-  startIndex = periodIndex+1;  periodIndex = eeprom_apip.indexOf('.', periodIndex+1); 
-  apip_2 = eeprom_apip.substring(startIndex, periodIndex).toInt(); //168
-  startIndex = periodIndex+1;  periodIndex = eeprom_apip.indexOf('.', periodIndex+1); 
-  apip_3 = eeprom_apip.substring(startIndex, periodIndex).toInt();  //4
-  startIndex = periodIndex+1;  periodIndex = eeprom_apip.indexOf('.', periodIndex+1); 
-  apip_4 = eeprom_apip.substring(startIndex, periodIndex).toInt();  //1
+  periodIndex = eeprom_apip.indexOf('.');
+  apip_1 = eeprom_apip.substring(startIndex, periodIndex).toInt(); // 192
+  startIndex = periodIndex + 1;
+  periodIndex = eeprom_apip.indexOf('.', periodIndex + 1);
+  apip_2 = eeprom_apip.substring(startIndex, periodIndex).toInt(); // 168
+  startIndex = periodIndex + 1;
+  periodIndex = eeprom_apip.indexOf('.', periodIndex + 1);
+  apip_3 = eeprom_apip.substring(startIndex, periodIndex).toInt(); // 4
+  startIndex = periodIndex + 1;
+  periodIndex = eeprom_apip.indexOf('.', periodIndex + 1);
+  apip_4 = eeprom_apip.substring(startIndex, periodIndex).toInt(); // 1
 
   Serial.printf("EEPROM APIP:%d.%d.%d.%d\n", apip_1, apip_2, apip_3, apip_4);
 
@@ -280,7 +283,7 @@ void normal_setup()
   WiFi.softAP(ssid, password);
 
   IPAddress IP(apip_1, apip_2, apip_3, apip_4);
-  IPAddress NMask(255,255,255,0);
+  IPAddress NMask(255, 255, 255, 0);
   WiFi.softAPConfig(IP, IP, NMask);
 
   IP = WiFi.softAPIP();
@@ -291,7 +294,7 @@ void normal_setup()
 // callback when data is sent
 void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status)
 {
-  Serial.print("\r\nLast Packet Send Status:\t");
+  Serial.print("Last Packet Send Status:\t");
   Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
 }
 
@@ -314,12 +317,11 @@ void OnDataRecv(const uint8_t *mac, const uint8_t *incomingData, int len)
   Serial.println();
 }
 
+uint8_t broadcastAddress[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+esp_now_peer_info_t peerInfo;
+test_struct test;
 void esp_now_setup()
 {
-  uint8_t broadcastAddress[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
-  esp_now_peer_info_t peerInfo;
-  test_struct test;
-
   WiFi.mode(WIFI_STA);
 
   Serial.println(WiFi.macAddress());
@@ -364,7 +366,7 @@ void esp_now_setup()
 }
 
 bool esp_now_enabled;
-uint8_t disp_orientation = 1;
+uint8_t lcd_orientation = 1;
 int state = 0; // 0:normal, 1:esp_now, 2: for future
 void setup()
 {
@@ -374,11 +376,11 @@ void setup()
   button.attachClick([]
                      {
     if (state == 0) {
-      disp_orientation = (disp_orientation + 2) % 4;
-      EEPROM.write(0, disp_orientation);
+      lcd_orientation = (lcd_orientation + 2) % 4;
+      EEPROM.write(0, lcd_orientation);
       EEPROM.commit();
-      Serial.println(disp_orientation);
-      print_info(disp_orientation, false);
+      Serial.printf("Change lcd orientation to %d",lcd_orientation);
+      lcd_info(lcd_orientation, false);
     } else if (state == 1) {
       set_esp_now(0); // disable esp-now
       ESP.restart();
@@ -400,7 +402,7 @@ void setup()
   }
   else
   {
-    disp_orientation = data;
+    lcd_orientation = data;
   }
 
   //  Initialise TFT
@@ -419,7 +421,7 @@ void setup()
   if (esp_now_enabled)
     state = 1;
 
-  print_info(disp_orientation, esp_now_enabled);
+  lcd_info(lcd_orientation, esp_now_enabled);
 
   switch (state)
   {
@@ -437,12 +439,38 @@ void setup()
   }
 }
 
+void broadcase_esp_now()
+{
+  test.x = random(0, 20);
+  test.y = random(0, 20);
+
+  esp_err_t result = esp_now_send(broadcastAddress, (uint8_t *)&test, sizeof(test_struct));
+
+  if (result == ESP_OK)
+  {
+    Serial.println("Sent with success");
+  }
+  else
+  {
+    Serial.println(result);
+  }
+
+  for (int i = 0; i < 40; i++)
+  {
+    button.tick();
+    delay(50);
+  }
+  // delay(2000);
+}
 void loop()
 {
   while (Serial.available() == 0)
   {
     button.tick();
     delay(50);
+
+    if (state == 1)
+      broadcase_esp_now();
   }                                          // wait for data available
   String incoming_str = Serial.readString(); // read until timeout (default 1000ms)
   incoming_str.trim();                       // remove any \r \n whitespace at the end of the String
