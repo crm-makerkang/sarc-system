@@ -258,10 +258,32 @@ void normal_setup()
   const char *ssid = "ESP32-Access-Point";
   const char *password = "123456789";
 
+  String eeprom_apip = read_apip();
+  int apip_1=0;
+  int apip_2=0;
+  int apip_3=0;
+  int apip_4=0;
+  int startIndex = 0;
+  int periodIndex = 0;
+  periodIndex = eeprom_apip.indexOf('.'); 
+  apip_1 = eeprom_apip.substring(startIndex, periodIndex).toInt(); //192
+  startIndex = periodIndex+1;  periodIndex = eeprom_apip.indexOf('.', periodIndex+1); 
+  apip_2 = eeprom_apip.substring(startIndex, periodIndex).toInt(); //168
+  startIndex = periodIndex+1;  periodIndex = eeprom_apip.indexOf('.', periodIndex+1); 
+  apip_3 = eeprom_apip.substring(startIndex, periodIndex).toInt();  //4
+  startIndex = periodIndex+1;  periodIndex = eeprom_apip.indexOf('.', periodIndex+1); 
+  apip_4 = eeprom_apip.substring(startIndex, periodIndex).toInt();  //1
+
+  Serial.printf("EEPROM APIP:%d.%d.%d.%d\n", apip_1, apip_2, apip_3, apip_4);
+
   // Remove the password parameter, if you want the AP (Access Point) to be open
   WiFi.softAP(ssid, password);
 
-  IPAddress IP = WiFi.softAPIP();
+  IPAddress IP(apip_1, apip_2, apip_3, apip_4);
+  IPAddress NMask(255,255,255,0);
+  WiFi.softAPConfig(IP, IP, NMask);
+
+  IP = WiFi.softAPIP();
   Serial.print("AP IP address: ");
   Serial.println(IP);
 }
@@ -322,23 +344,23 @@ void esp_now_setup()
     return;
   }
 
-  while (1)
-  {
-    test.x = random(0, 20);
-    test.y = random(0, 20);
+  // while (1) //for testing
+  // {
+  //   test.x = random(0, 20);
+  //   test.y = random(0, 20);
 
-    esp_err_t result = esp_now_send(broadcastAddress, (uint8_t *)&test, sizeof(test_struct));
+  //   esp_err_t result = esp_now_send(broadcastAddress, (uint8_t *)&test, sizeof(test_struct));
 
-    if (result == ESP_OK)
-    {
-      Serial.println("Sent with success");
-    }
-    else
-    {
-      Serial.println(result);
-    }
-    delay(2000);
-  }
+  //   if (result == ESP_OK)
+  //   {
+  //     Serial.println("Sent with success");
+  //   }
+  //   else
+  //   {
+  //     Serial.println(result);
+  //   }
+  //   delay(2000);
+  // }
 }
 
 bool esp_now_enabled;
@@ -366,7 +388,7 @@ void setup()
     Serial.println("long press enter esp_now mode");
     set_esp_now(1);
     ESP.restart(); });
-  button.setPressMs(5000); // long press 5s
+  button.setPressMs(3000); // long press 5s
 
   // Read display orientation from EEPROM
   EEPROM.begin(4096);
@@ -431,39 +453,39 @@ void loop()
   // Serial.println(cmd_str);
   // Serial.println(data_str);
 
-  if (cmd_str == "GSN")
+  if (cmd_str == "GSN") // Get S/N
   {
     Serial.print("CMD is GSN:"); // Get S/N
     Serial.println(read_sn());
   }
 
-  if (cmd_str == "SSN")
+  if (cmd_str == "SSN") // Set S/N
   {
     Serial.print("CMD is SSN:"); // Set S/N
     Serial.println(data_str);
     write_sn(data_str);
   }
 
-  if (cmd_str == "GID")
+  if (cmd_str == "GID") // Get SSID
   {
     Serial.print("CMD is GID:"); // Get SSID
     Serial.println(read_ssid());
   }
 
-  if (cmd_str == "SID")
+  if (cmd_str == "SID") // Set SSID
   {
     Serial.print("CMD is SID:"); // Set SSID
     Serial.println(data_str);
     write_ssid(data_str);
   }
 
-  if (cmd_str == "GIP")
+  if (cmd_str == "GIP") // Get AP IP
   {
     Serial.print("CMD is GIP:"); // Get AP IP
     Serial.println(read_apip());
   }
 
-  if (cmd_str == "SIP")
+  if (cmd_str == "SIP") // Set AP IP
   {
     Serial.print("CMD is SIP:"); // Set SSID
     Serial.println(data_str);
