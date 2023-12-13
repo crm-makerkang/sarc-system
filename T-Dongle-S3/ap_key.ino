@@ -313,7 +313,7 @@ void esp_now_setup()
 
   peerInfo.channel = 0;
   peerInfo.encrypt = false;
-  peerInfo.ifidx = WIFI_IF_STA;
+  peerInfo.ifidx = WIFI_IF_STA; // 沒這行會有 Failed to add peer 問題
   // register first peer
   memcpy(peerInfo.peer_addr, broadcastAddress, 6);
   if (esp_now_add_peer(&peerInfo) != ESP_OK)
