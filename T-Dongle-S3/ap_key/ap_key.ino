@@ -29,7 +29,7 @@
 
 TFT_eSPI tft = TFT_eSPI();
 CRGB leds;
-OneButton button(BTN_PIN, true);
+OneButton button(BTN_PIN, true); // BTN_PIN is 0 defined in pin_config.h
 
 // 舊的奇怪用法
 // #define PRINT_STR(str, x, y)                                                                                                                         \
@@ -117,15 +117,22 @@ void lcd_info(uint8_t lcd_orientation, bool disp_esp_now)
   if (disp_esp_now)
   {
     tft.fillScreen(TFT_RED);
-    int32_t x = 0, y = 15;
+    // int32_t x = 0, y = 15;
+    int32_t x = 0, y = 0;
     tft.setTextColor(TFT_WHITE, TFT_RED);
     // PRINT_STR("ESP-NOW", x, y)
     print_to_LCD("ESP-NOW", x, y);
+
+    // x = 0; y = 45;
     x = 0;
-    y = 45;
+    y = 30;
     tft.setTextColor(TFT_WHITE, TFT_RED);
-    // PRINT_STR(sn, x, y)
     print_to_LCD(sn, x, y);
+
+    x = 0;
+    y = 60;
+    tft.setTextColor(TFT_WHITE, TFT_RED);
+    print_to_LCD(ssid, x, y);
   }
   else
   {
@@ -255,7 +262,8 @@ void set_esp_now(bool on_off)
 
 void normal_setup()
 {
-  const char *ssid = "ESP32-Access-Point";
+  // const char *ssid = "ESP32-Access-Point";
+  char ssid[20] = "ESP32-Access-Point";
   const char *password = "123456789";
 
   String eeprom_apip = read_apip();
@@ -280,6 +288,20 @@ void normal_setup()
   Serial.printf("EEPROM APIP:%d.%d.%d.%d\n", apip_1, apip_2, apip_3, apip_4);
 
   // Remove the password parameter, if you want the AP (Access Point) to be open
+
+  int snStrLen = EEPROM.read(ssid_offset);
+  if (snStrLen < 20)
+  {
+    // char chars[snStrLen + 1];
+
+    for (int i = 0; i < snStrLen; i++)
+    {
+      ssid[i] = EEPROM.read(ssid_offset + 1 + i);
+    }
+    ssid[snStrLen] = 0;
+  }
+
+  Serial.println(ssid);
   WiFi.softAP(ssid, password);
 
   IPAddress IP(apip_1, apip_2, apip_3, apip_4);
@@ -299,27 +321,28 @@ void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status)
 }
 
 // callback function that will be executed when data is received
-typedef struct test_struct
+typedef struct esp_now_struct
 {
-  int x;
-  int y;
-} test_struct;
-test_struct myData;
+  int seq_num = 0;
+  char esp_now_msg[40];
+} esp_now_struct;
+esp_now_struct broadcast_data;
+
 void OnDataRecv(const uint8_t *mac, const uint8_t *incomingData, int len)
 {
-  memcpy(&myData, incomingData, sizeof(myData));
+  memcpy(&broadcast_data, incomingData, sizeof(broadcast_data));
   Serial.print("Bytes received: ");
   Serial.println(len);
-  Serial.print("x: ");
-  Serial.println(myData.x);
-  Serial.print("y: ");
-  Serial.println(myData.y);
+  Serial.print("seq_num: ");
+  Serial.println(broadcast_data.seq_num);
+  Serial.print("msg: ");
+  Serial.println(broadcast_data.esp_now_msg);
   Serial.println();
 }
 
 uint8_t broadcastAddress[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 esp_now_peer_info_t peerInfo;
-test_struct test;
+esp_now_struct test;
 void esp_now_setup()
 {
   WiFi.mode(WIFI_STA);
@@ -351,7 +374,7 @@ void esp_now_setup()
   //   test.x = random(0, 20);
   //   test.y = random(0, 20);
 
-  //   esp_err_t result = esp_now_send(broadcastAddress, (uint8_t *)&test, sizeof(test_struct));
+  //   esp_err_t result = esp_now_send(broadcastAddress, (uint8_t *)&test, sizeof(esp_now_struct));
 
   //   if (result == ESP_OK)
   //   {
@@ -385,11 +408,13 @@ void setup()
       set_esp_now(0); // disable esp-now
       ESP.restart();
     } });
+
   button.attachLongPressStart([]
                               {
     Serial.println("long press enter esp_now mode");
     set_esp_now(1);
     ESP.restart(); });
+
   button.setPressMs(3000); // long press 5s
 
   // Read display orientation from EEPROM
@@ -441,10 +466,12 @@ void setup()
 
 void broadcase_esp_now()
 {
-  test.x = random(0, 20);
-  test.y = random(0, 20);
+  test.seq_num = test.seq_num + 1;
 
-  esp_err_t result = esp_now_send(broadcastAddress, (uint8_t *)&test, sizeof(test_struct));
+  sprintf(test.esp_now_msg, "SSID: %s", read_ssid());
+  Serial.printf("%s length is %d\n", test.esp_now_msg, sizeof(esp_now_struct));
+
+  esp_err_t result = esp_now_send(broadcastAddress, (uint8_t *)&test, sizeof(esp_now_struct));
 
   if (result == ESP_OK)
   {
@@ -492,6 +519,8 @@ void loop()
     Serial.print("CMD is SSN:"); // Set S/N
     Serial.println(data_str);
     write_sn(data_str);
+    lcd_info(lcd_orientation, esp_now_enabled);
+    ESP.restart();
   }
 
   if (cmd_str == "GID") // Get SSID
@@ -505,6 +534,8 @@ void loop()
     Serial.print("CMD is SID:"); // Set SSID
     Serial.println(data_str);
     write_ssid(data_str);
+    lcd_info(lcd_orientation, esp_now_enabled);
+    ESP.restart();
   }
 
   if (cmd_str == "GIP") // Get AP IP

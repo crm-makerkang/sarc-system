@@ -22,8 +22,8 @@ typedef struct struct_message
   int y;
 } struct_message;
 
-// Create a struct_message called myData
-struct_message myData;
+// Create a struct_message called broadcast_data
+struct_message broadcast_data;
 
 // callback when data is sent
 void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
@@ -31,13 +31,13 @@ void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
   Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
 }
 void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
-  memcpy(&myData, incomingData, sizeof(myData));
+  memcpy(&broadcast_data, incomingData, sizeof(broadcast_data));
   Serial.print("Bytes received: ");
   Serial.println(len);
   Serial.print("x: ");
-  Serial.println(myData.x);
+  Serial.println(broadcast_data.x);
   Serial.print("y: ");
-  Serial.println(myData.y);
+  Serial.println(broadcast_data.y);
   Serial.println();
 }
  
@@ -77,14 +77,14 @@ void setup() {
  
 void loop() {
   // Set values to send
-  // strcpy(myData.a, "THIS IS A CHAR");
-  // myData.b = random(1,20);
-  // myData.c = 1.2;
-  // myData.d = "Hello";
-  // myData.e = false;
+  // strcpy(broadcast_data.a, "THIS IS A CHAR");
+  // broadcast_data.b = random(1,20);
+  // broadcast_data.c = 1.2;
+  // broadcast_data.d = "Hello";
+  // broadcast_data.e = false;
 
   // // Send message via ESP-NOW
-  // esp_err_t result = esp_now_send(broadcastAddress, (uint8_t *) &myData, sizeof(myData));
+  // esp_err_t result = esp_now_send(broadcastAddress, (uint8_t *) &broadcast_data, sizeof(broadcast_data));
    
   // if (result == ESP_OK) {
   //   Serial.println("Sent with success");
