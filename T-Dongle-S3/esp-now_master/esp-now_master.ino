@@ -27,10 +27,6 @@
 #define HSV_BLUE 150
 #define HSV_SATURATE 255
 
-bool esp_now_enabled;
-uint8_t lcd_orientation = 1;
-int state = 0; // 0:normal, 1:esp_now, 2: for future
-
 TFT_eSPI tft = TFT_eSPI();
 CRGB leds;
 OneButton button(BTN_PIN, true); // BTN_PIN is 0 defined in pin_config.h
@@ -97,6 +93,7 @@ void lcd_info(uint8_t lcd_orientation, bool disp_esp_now)
 {
   String ssid = read_ssid();
   String sn = read_sn();
+  String ap_ip = read_apip();
 
   if (ssid == "No SSID")
   {
@@ -121,22 +118,10 @@ void lcd_info(uint8_t lcd_orientation, bool disp_esp_now)
   if (disp_esp_now)
   {
     tft.fillScreen(TFT_RED);
-    // int32_t x = 0, y = 15;
-    int32_t x = 0, y = 0;
     tft.setTextColor(TFT_WHITE, TFT_RED);
-    // PRINT_STR("ESP-NOW", x, y)
-    print_to_LCD("ESP-NOW", x, y);
-
-    // x = 0; y = 45;
-    x = 0;
-    y = 30;
-    tft.setTextColor(TFT_WHITE, TFT_RED);
-    print_to_LCD(sn, x, y);
-
-    x = 0;
-    y = 60;
-    tft.setTextColor(TFT_WHITE, TFT_RED);
-    print_to_LCD(ssid, x, y);
+    print_to_LCD(sn, 0, 0);
+    print_to_LCD(ssid, 0, 29);
+    print_to_LCD(ap_ip, 0, 58);
   }
   else
   {
@@ -339,22 +324,14 @@ void OnDataRecv(const uint8_t *mac, const uint8_t *incomingData, int len)
   Serial.println(len);
   Serial.print("seq_num: ");
   Serial.println(broadcast_data.seq_num);
-  // Serial.print("msg: ");
-  // Serial.println(broadcast_data.esp_now_msg);
-  String data_str(broadcast_data.esp_now_msg);
-  Serial.printf("Get SSID: %s, SN: %s, APIP: %s\n", data_str.substring(6, 12), data_str.substring(17, 23), data_str.substring(30, 42));
-  if (state == 1)
-  {
-    write_ssid(data_str.substring(6, 12));
-    write_sn(data_str.substring(17, 23));
-    write_apip(data_str.substring(30, 42));
-    lcd_info(1, 1);
-  }
+  Serial.print("msg: ");
+  Serial.println(broadcast_data.esp_now_msg);
+  Serial.println();
 }
 
 uint8_t broadcastAddress[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 esp_now_peer_info_t peerInfo;
-esp_now_struct test;
+esp_now_struct sendData;
 void esp_now_setup()
 {
   WiFi.mode(WIFI_STA);
@@ -384,28 +361,37 @@ void esp_now_setup()
 
 void clickHandler()
 {
-  if (state == 0)
-  {
-    lcd_orientation = (lcd_orientation + 2) % 4;
-    EEPROM.write(0, lcd_orientation);
-    EEPROM.commit();
-    Serial.printf("Change lcd orientation to %d", lcd_orientation);
-    lcd_info(lcd_orientation, false);
-  }
-  else if (state == 1)
-  {
-    set_esp_now(0); // disable esp-now
-    ESP.restart();
-  }
-}
+  Serial.println("Click");
+  int sn_num = read_sn().substring(2, 6).toInt();
+  Serial.println(sn_num);
 
-void longPressHandler()
-{
-  Serial.println("long press enter esp_now mode");
-  set_esp_now(1);
+  sn_num++;
+  String sn_4digits = String(sn_num);
+  if (sn_num < 10)
+  {
+    sn_4digits = "000" + sn_4digits;
+  } else if (sn_num < 100)
+  {
+    sn_4digits = "00" + sn_4digits;
+  } else if (sn_num < 1000)
+  {
+    sn_4digits = "0" + sn_4digits;
+  }
+  write_sn("SA" + String(sn_4digits));
+  write_ssid("SA" + String(sn_4digits));
   ESP.restart();
 }
 
+void longpressHandler()
+{
+  write_sn("SA0001");
+  write_ssid("SA0001");
+  ESP.restart();
+}
+
+bool esp_now_enabled = true;
+uint8_t lcd_orientation = 1;
+int state = 1; // 0:normal, 1:esp_now, 2: for future
 void setup()
 {
   Serial.begin(115200);
@@ -423,6 +409,7 @@ void setup()
   //     set_esp_now(0); // disable esp-now
   //     ESP.restart();
   //   } });
+
   button.attachClick(clickHandler);
 
   // button.attachLongPressStart([]
@@ -430,8 +417,8 @@ void setup()
   //   Serial.println("long press enter esp_now mode");
   //   set_esp_now(1);
   //   ESP.restart(); });
-  button.attachLongPressStart(longPressHandler);
 
+  button.attachLongPressStart(longpressHandler);
   button.setPressMs(3000); // long press 5s
 
   // Read display orientation from EEPROM
@@ -459,36 +446,39 @@ void setup()
   leds = CHSV(HSV_BLUE, HSV_SATURATE, 20); // hue:0 -> RED, hue:100 -> GREEN, hue:150 -> BLUE, Full saturation, Brightness: 20 is OK
   FastLED.show();
 
-  esp_now_enabled = get_esp_now();
-  if (esp_now_enabled)
-    state = 1;
+  // esp_now_enabled = get_esp_now();
+  // if (esp_now_enabled)
+  //   state = 1;
 
   lcd_info(lcd_orientation, esp_now_enabled);
 
-  switch (state)
-  {
-  case 0: // normal
-    Serial.println("Start Normal State");
-    normal_setup();
-    break;
-  case 1: // esp_now
-    Serial.println("Start ESP-NOW State");
-    esp_now_setup(); // will not go to loop()
-    break;
-  default:
-    Serial.printf("Unknown state %d\n", state);
-    break;
-  }
+  Serial.println("Start ESP-NOW State");
+  esp_now_setup(); // will not go to loop()
+
+  // switch (state)
+  // {
+  // case 0: // normal
+  //   Serial.println("Start Normal State");
+  //   normal_setup();
+  //   break;
+  // case 1: // esp_now
+  //   Serial.println("Start ESP-NOW State");
+  //   esp_now_setup(); // will not go to loop()
+  //   break;
+  // default:
+  //   Serial.printf("Unknown state %d\n", state);
+  //   break;
+  // }
 }
 
 void broadcase_esp_now()
 {
-  test.seq_num = test.seq_num + 1;
+  sendData.seq_num = sendData.seq_num + 1;
 
-  sprintf(test.esp_now_msg, "SSID: %s", read_ssid());
-  Serial.printf("%s length is %d\n", test.esp_now_msg, sizeof(esp_now_struct));
+  sprintf(sendData.esp_now_msg, "SSID: %s SN: %s APIP: %s", read_ssid(), read_sn(), read_apip());
+  Serial.printf("%s length is %d\n", sendData.esp_now_msg, sizeof(esp_now_struct));
 
-  esp_err_t result = esp_now_send(broadcastAddress, (uint8_t *)&test, sizeof(esp_now_struct));
+  esp_err_t result = esp_now_send(broadcastAddress, (uint8_t *)&sendData, sizeof(esp_now_struct));
 
   if (result == ESP_OK)
   {
@@ -536,7 +526,7 @@ void loop()
     Serial.print("CMD is SSN:"); // Set S/N
     Serial.println(data_str);
     write_sn(data_str);
-    lcd_info(lcd_orientation, esp_now_enabled);
+    //lcd_info(lcd_orientation, esp_now_enabled);
     ESP.restart();
   }
 
@@ -551,7 +541,7 @@ void loop()
     Serial.print("CMD is SID:"); // Set SSID
     Serial.println(data_str);
     write_ssid(data_str);
-    lcd_info(lcd_orientation, esp_now_enabled);
+    //lcd_info(lcd_orientation, esp_now_enabled);
     ESP.restart();
   }
 
@@ -566,6 +556,7 @@ void loop()
     Serial.print("CMD is SIP:"); // Set SSID
     Serial.println(data_str);
     write_apip(data_str);
+    ESP.restart();
   }
 
   if (cmd_str == "GEN")
@@ -585,6 +576,7 @@ void loop()
     {
       set_esp_now(false);
     }
+    ESP.restart();
   }
 
   if (cmd_str == "RST")
