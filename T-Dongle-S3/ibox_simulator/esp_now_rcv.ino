@@ -1,6 +1,5 @@
 // Simulate iBox receiver for Lilygo TTGO T-Dongle
 #include "Arduino.h"
-// #include "SD_MMC.h"
 #include "WiFi.h"
 #include "pin_config.h"
 #include <EEPROM.h>
@@ -17,8 +16,6 @@
 #define esp_now_offset 40
 #define ap_ip_offset 41
 
-// #include "lv_conf.h"
-// #include "lvgl.h"    // https://github.com/lvgl/lvgl
 #include <FastLED.h> // https://github.com/FastLED/FastLED
 // hue:0 -> RED, hue:100 -> GREEN, hue:150 -> BLUE
 #define HSV_RED 0
@@ -144,7 +141,7 @@ void lcd_info(uint8_t lcd_orientation)
   {
     BG_COLOR = TFT_BLACK;
     FG_COLOR = TFT_GREEN;
-    mode = "AP Mode:";
+    mode = "iBox:";
     line2 = "Connecting...";
     line3 = "";
   }
