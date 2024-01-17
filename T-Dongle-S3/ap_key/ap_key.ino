@@ -27,7 +27,7 @@ bool esp_now_enabled;
 uint8_t lcd_orientation = 1;
 int state = 0; // 0:normal, 1:esp_now, 2: for future
 
-TFT_eSPI tft = TFT_eSPI();
+TFT_eSPI tft = TFT_eSPI();       // LCD pins are defined in pin_config.h
 CRGB leds;
 OneButton button(BTN_PIN, true); // BTN_PIN is 0 defined in pin_config.h
 
@@ -224,7 +224,10 @@ void normal_setup(){
   }
 
   Serial.println(ssid);
-  WiFi.softAP(ssid, password); // Remove the password parameter, if you want the AP (Access Point) to be open
+
+  //bool softAP(const char* ssid, const char* passphrase = NULL, int channel = 1, int ssid_hidden = 0, int max_connection = 4);
+  //WiFi.softAP(ssid, password); // Remove the password parameter, if you want the AP (Access Point) to be open
+  WiFi.softAP(ssid, password, 1, 0, 8); // Remove the password parameter, if you want the AP (Access Point) to be open
 
   IPAddress IP(apip_1, apip_2, apip_3, apip_4);
   IPAddress NMask(255, 255, 255, 0);
