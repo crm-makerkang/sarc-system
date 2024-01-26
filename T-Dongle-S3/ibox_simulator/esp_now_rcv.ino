@@ -311,23 +311,42 @@ void setup()
     esp_now_register_send_cb(OnDataSent);
     esp_now_register_recv_cb(OnDataRecv);
 
-    peerInfo.channel = 0;
-    peerInfo.encrypt = false;
-    peerInfo.ifidx = WIFI_IF_STA; // 沒這行會有 Failed to add peer 問題
-    // register first peer
-    memcpy(peerInfo.peer_addr, broadcastAddress, 6);
-    if (esp_now_add_peer(&peerInfo) != ESP_OK)
-    {
-      Serial.println("Failed to add peer");
-      return;
-    }
+    // peerInfo.channel = 0;
+    // peerInfo.encrypt = false;
+    // peerInfo.ifidx = WIFI_IF_STA; // 沒這行會有 Failed to add peer 問題
+    // register first peer, receiver 可以不用 register peer
+    // memcpy(peerInfo.peer_addr, broadcastAddress, 6);
+    // if (esp_now_add_peer(&peerInfo) != ESP_OK)
+    // {
+    //   Serial.println("Failed to add peer");
+    //   return;
+    // }
 
     Serial.println("Listen to ESP_NOW packages");
   }
 }
 
+unsigned long previousMillis = 0;
+unsigned long currentMillis = 0;
+const long interval = 2000;
+char rssi_buffer[40];
 void loop()
 {
   button.tick();
   delay(50);
+  currentMillis = millis();
+
+  if (currentMillis - previousMillis >= interval) {
+    previousMillis = currentMillis;
+    // 讀取RSSI數值
+    int rssi = WiFi.RSSI();
+    
+    Serial.print("RSSI: ");
+    Serial.println(rssi);
+
+
+    sprintf(rssi_buffer, ":%d\n", rssi);
+    print_to_LCD(rssi_buffer, 90,55);
+    
+  }
 }
