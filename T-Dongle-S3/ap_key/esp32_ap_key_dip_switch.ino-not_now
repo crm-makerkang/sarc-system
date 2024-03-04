@@ -1,0 +1,147 @@
+// for Lilygo TTGO T-Dongle
+#include "Arduino.h"
+#include "WiFi.h"
+
+#ifdef USE096_128X64_OLED // defined in platformio.ini
+  #include <U8g2lib.h>
+  // ESP32 GP1012 接 OLED SCL will cause flashing error
+  U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, /* reset=*/U8X8_PIN_NONE, /*SCL*/13, /*SDA*/14); // ESP32 Thing, HW I2C with pin remapping
+#endif
+
+#ifdef USE091_128X32_OLED // defined in platformio.ini
+  #include <U8g2lib.h>
+  // ESP32 GP1012 接 OLED SCL will cause flashing error
+  U8G2_SSD1306_128X32_UNIVISION_F_HW_I2C u8g2(U8G2_R0, /* reset=*/U8X8_PIN_NONE, /*SCL*/13, /*SDA*/14); // ESP32 Thing, HW I2C with pin remapping
+#endif
+
+#include "OneButton.h" // https://github.com/mathertel/OneButton
+
+#define DPISW_D1_PIN  15 //17  //GPI17
+#define DPISW_D2_PIN  4  //16  //GPI16 
+#define DPISW_D3_PIN  16 //4   //GPIO4
+#define DPISW_D4_PIN  17 //15  //GPIO15
+
+char ssid[20] = "ESP32-Access-Point";
+const char *password = "123456789";
+
+OneButton button(0, true); // 0 is BOOT button
+
+void print_to_LCD(String str, int x, int y){
+  u8g2.setCursor(x, y);
+  u8g2.print(str);
+}
+String read_ssid(){
+  int ssid_num = (1-digitalRead(DPISW_D1_PIN)) * 2 + (1-digitalRead(DPISW_D2_PIN));
+
+  ssid[0]='S'; ssid[1]='A'; ssid[2]='0'; ssid[3]='0'; ssid[4]='0';
+  ssid[5]=48+ssid_num; ssid[6]=0;
+
+  String ssid = "SA000" + String(ssid_num);
+  return ssid;
+}
+
+int read_channel(){
+  int channel_num = 1;
+  int channel_dip = (1-digitalRead(DPISW_D3_PIN)) * 2 + (1-digitalRead(DPISW_D4_PIN));
+
+  switch (channel_dip)
+  {
+  case 0:
+    channel_num = 1;
+    break;
+  case 1:
+    channel_num = 6;
+    break;
+  case 2:
+    channel_num = 11;
+    break;
+  case 3:
+    // Channel 14 問題： ESP32-S3 若指定 Channel 14，會有 [  1191][E][WiFiAP.cpp:168] softAP(): set AP config failed
+    channel_num = 13;
+    break;
+  default:
+    break;
+  }
+
+  return channel_num;
+}
+
+void clickHandler(){
+  Serial.println("boot botton clicked");
+}
+
+void longPressHandler(){
+  Serial.println("long press enter esp_now mode");
+}
+
+void setup(){
+  pinMode(DPISW_D1_PIN, INPUT_PULLUP);  // DIP switch position 1
+  pinMode(DPISW_D2_PIN, INPUT_PULLUP);  // DIP switch position 2
+  pinMode(DPISW_D3_PIN, INPUT_PULLUP);  // DIP switch position 3
+  pinMode(DPISW_D4_PIN, INPUT_PULLUP);  // DIP switch position 4
+
+  Serial.begin(115200);
+
+  button.attachClick(clickHandler);
+  button.attachLongPressStart(longPressHandler);
+
+  button.setPressMs(3000); // long press 5s
+
+  u8g2.begin();
+  u8g2.enableUTF8Print(); // enable UTF8 support for the Arduino print() function
+  // u8g2.setFont(u8g2_font_unifont_t_chinese1);
+  u8g2.setFont(u8g2_font_helvR14_tf);
+
+  // u8g2.setFontDirection(0);
+  // u8g2.clearBuffer();
+  // print_to_LCD("SSID: "+read_ssid(), 0, 20); // read_ssid() 也會將 SSID 填到 char* ssid 裡
+  // print_to_LCD("Channel: "+String(read_channel()), 0, 41);
+  // print_to_LCD("Connected:", 0, 62);
+  // print_to_LCD("0", 100, 62);
+  // u8g2.sendBuffer();
+
+  u8g2.setFontDirection(2);
+  u8g2.clearBuffer();
+  print_to_LCD("SSID: "+read_ssid(),127, 46); // read_ssid() 也會將 SSID 填到 char* ssid 裡
+  print_to_LCD("Channel: "+String(read_channel()), 127, 25);
+  print_to_LCD("Connected:", 127, 4);
+  print_to_LCD("0", 25, 4);
+  u8g2.sendBuffer();
+
+  Serial.printf("CPU freq: %d MHz\n", getCpuFrequencyMhz());
+  Serial.printf("DIP SW bit1 %d, bit2 %d, bit3 %d, bit4 %d, channel %d\n", digitalRead(DPISW_D1_PIN), digitalRead(DPISW_D2_PIN), 
+                                                               digitalRead(DPISW_D3_PIN), digitalRead(DPISW_D4_PIN), read_channel());
+
+  Serial.printf("AP SSID: %s\n", ssid);
+  WiFi.softAP(ssid, password, read_channel(), 0, 10); // ssid, passphrase, channel, ssid_hidden, max_connection
+                                        // Remove the password parameter, if you want the AP (Access Point) to be open
+
+  IPAddress IP = WiFi.softAPIP();
+  Serial.print("AP IP address: ");
+  Serial.println(IP);
+}
+void loop(){
+  int connected_stations =0;
+  while (Serial.available() == 0){
+    button.tick();
+    delay(50);
+    if (WiFi.softAPgetStationNum()!=connected_stations) {
+      connected_stations = WiFi.softAPgetStationNum();
+      //u8g2.setFontDirection(1);
+      // u8g2.clearBuffer();
+      // print_to_LCD("SSID: "+read_ssid(), 0, 20); // read_ssid() 也會將 SSID 填到 char* ssid 裡
+      // print_to_LCD("Channel: "+String(read_channel()), 0, 41);
+      // print_to_LCD("Connected:", 0, 62);
+      // print_to_LCD(String(connected_stations), 100, 62);
+      // u8g2.sendBuffer();
+
+      u8g2.setFontDirection(2);
+      u8g2.clearBuffer();
+      print_to_LCD("SSID: "+read_ssid(),127, 46); // read_ssid() 也會將 SSID 填到 char* ssid 裡
+      print_to_LCD("Channel: "+String(read_channel()), 127, 25);
+      print_to_LCD("Connected:", 127, 4);
+      print_to_LCD(String(connected_stations), 25, 4);
+      u8g2.sendBuffer();
+    }
+  }                                          
+}

@@ -88,7 +88,6 @@ void scan_wifi_rssi(){
 void lcd_info(uint8_t lcd_orientation, bool disp_esp_now){
   String ssid = read_ssid();
   String sn = read_sn();
-  int channel = read_channel();
 
   ssid = (ssid == "No SSID") ? "No SSID" : "SSID: " + ssid;
   sn   = (sn   == "No S/N")  ? "No S/N"  : "S/N: "  + sn;
@@ -113,14 +112,7 @@ void lcd_info(uint8_t lcd_orientation, bool disp_esp_now){
 
     tft.setTextColor(TFT_WHITE, TFT_BLACK);
     print_to_LCD(ssid, 0, 29);
-    //print_to_LCD(sn, 0, 58);
-    print_to_LCD("Channel: "+String(channel), 0, 58);
-
-    // // read GPIO of MMC card pins
-    // char aaa[64];
-    // sprintf(aaa, "IO is %d, %d, %d, %d\n", digitalRead(SD_MMC_D2_PIN),digitalRead(SD_MMC_D3_PIN),digitalRead(SD_MMC_D0_PIN),digitalRead(SD_MMC_D1_PIN));
-    // print_to_LCD(String(aaa), 0, 58);  
-
+    print_to_LCD(sn, 0, 58);
   }
 }
 
@@ -144,43 +136,14 @@ void write_sn(String sn){
 }
 
 String read_ssid(){
-  // int snStrLen = EEPROM.read(ssid_offset);
-  // if (snStrLen > 20) return "No SSID";
+  int snStrLen = EEPROM.read(ssid_offset);
+  if (snStrLen > 20) return "No SSID";
 
-  // char chars[snStrLen + 1];
+  char chars[snStrLen + 1];
 
-  // for (int i = 0; i < snStrLen; i++) chars[i] = EEPROM.read(ssid_offset + 1 + i);
-  // chars[snStrLen] = '\0';
-  // return String(chars);
-
-  int ssid_num = (1-digitalRead(SD_MMC_D2_PIN)) * 2 + (1-digitalRead(SD_MMC_D3_PIN));
-  String ssid = "SA000" + String(ssid_num);
-  return ssid;
-}
-
-int read_channel(){
-  int channel_num = 1;
-  int channel_dip = (1-digitalRead(SD_MMC_D0_PIN)) * 2 + (1-digitalRead(SD_MMC_D1_PIN));
-
-  switch (channel_dip)
-  {
-  case 0:
-    channel_num = 1;
-    break;
-  case 1:
-    channel_num = 6;
-    break;
-  case 2:
-    channel_num = 11;
-    break;
-  case 3:
-    channel_num = 14;
-    break;
-  default:
-    break;
-  }
-
-  return channel_num;
+  for (int i = 0; i < snStrLen; i++) chars[i] = EEPROM.read(ssid_offset + 1 + i);
+  chars[snStrLen] = '\0';
+  return String(chars);
 }
 
 void write_ssid(String ssid){
@@ -228,56 +191,49 @@ void normal_setup(){
   char ssid[20] = "ESP32-Access-Point";
   const char *password = "123456789";
 
-  String eeprom_apip = read_apip();
-  int apip_1 = 0;
-  int apip_2 = 0;
-  int apip_3 = 0;
-  int apip_4 = 0;
-  int startIndex = 0;
-  int periodIndex = 0;
-
-  // Arduino 不支援 String split 的痛苦
-  periodIndex = eeprom_apip.indexOf('.');
-  apip_1 =      eeprom_apip.substring(startIndex, periodIndex).toInt(); // 192
-  startIndex =  periodIndex + 1;
-  periodIndex = eeprom_apip.indexOf('.', periodIndex + 1);
-  apip_2 =      eeprom_apip.substring(startIndex, periodIndex).toInt(); // 168
-  startIndex =  periodIndex + 1;
-  periodIndex = eeprom_apip.indexOf('.', periodIndex + 1);
-  apip_3 =      eeprom_apip.substring(startIndex, periodIndex).toInt(); // 4
-  startIndex =  periodIndex + 1;
-  periodIndex = eeprom_apip.indexOf('.', periodIndex + 1);
-  apip_4 = eeprom_apip.substring(startIndex, periodIndex).toInt(); // 1
-  Serial.printf("EEPROM APIP:%d.%d.%d.%d\n", apip_1, apip_2, apip_3, apip_4);
+  // String eeprom_apip = read_apip();
+  // int apip_1 = 0;
+  // int apip_2 = 0;
+  // int apip_3 = 0;
+  // int apip_4 = 0;
+  // int startIndex = 0;
+  // int periodIndex = 0;
+  // // Arduino 不支援 String split 的痛苦
+  // periodIndex = eeprom_apip.indexOf('.');
+  // apip_1 =      eeprom_apip.substring(startIndex, periodIndex).toInt(); // 192
+  // startIndex =  periodIndex + 1;
+  // periodIndex = eeprom_apip.indexOf('.', periodIndex + 1);
+  // apip_2 =      eeprom_apip.substring(startIndex, periodIndex).toInt(); // 168
+  // startIndex =  periodIndex + 1;
+  // periodIndex = eeprom_apip.indexOf('.', periodIndex + 1);
+  // apip_3 =      eeprom_apip.substring(startIndex, periodIndex).toInt(); // 4
+  // startIndex =  periodIndex + 1;
+  // periodIndex = eeprom_apip.indexOf('.', periodIndex + 1);
+  // apip_4 = eeprom_apip.substring(startIndex, periodIndex).toInt(); // 1
+  // Serial.printf("EEPROM APIP:%d.%d.%d.%d\n", apip_1, apip_2, apip_3, apip_4);
 
   // WiFi.softAP(ssid, password) 的 ssid 不接受 String, 所以不用 read_ssid(),
   // 直接讀取 EEPROM，
-  // int snStrLen = EEPROM.read(ssid_offset);
-  // if (snStrLen < 20){
-  //   for (int i = 0; i < snStrLen; i++) ssid[i] = EEPROM.read(ssid_offset + 1 + i);
-  //   ssid[snStrLen] = 0;
-  // } else {
-  //   for (int i = 0; i < snStrLen; i++) ssid[i] = EEPROM.read(ssid_offset + 1 + i);
-  //   ssid[snStrLen] = 0;
-  // }
-
-  byte ssid_num = (1-digitalRead(SD_MMC_D2_PIN)) * 2 + (1-digitalRead(SD_MMC_D3_PIN));
-
-  ssid[0]='S'; ssid[1]='A'; ssid[2]='0'; ssid[3]='0'; ssid[4]='0';
-  ssid[5]=48+ssid_num; ssid[6]=0;
+  int snStrLen = EEPROM.read(ssid_offset);
+  if (snStrLen < 20){
+    for (int i = 0; i < snStrLen; i++) ssid[i] = EEPROM.read(ssid_offset + 1 + i);
+    ssid[snStrLen] = 0;
+  } else {
+    for (int i = 0; i < snStrLen; i++) ssid[i] = EEPROM.read(ssid_offset + 1 + i);
+    ssid[snStrLen] = 0;
+  }
 
   Serial.println(ssid);
 
   //bool softAP(const char* ssid, const char* passphrase = NULL, int channel = 1, int ssid_hidden = 0, int max_connection = 4);
   //WiFi.softAP(ssid, password); // Remove the password parameter, if you want the AP (Access Point) to be open
-  WiFi.softAP(ssid, password, read_channel(), 0, 8); // ssid, passphrase, channel, ssid_hidden, max_connection
-                                        // Remove the password parameter, if you want the AP (Access Point) to be open
+  WiFi.softAP(ssid, password, 1, 0, 8); // Remove the password parameter, if you want the AP (Access Point) to be open
 
-  IPAddress IP(apip_1, apip_2, apip_3, apip_4);
-  IPAddress NMask(255, 255, 255, 0);
-  WiFi.softAPConfig(IP, IP, NMask); //local_IP, gateway, subnet
+  // IPAddress IP(apip_1, apip_2, apip_3, apip_4);
+  // IPAddress NMask(255, 255, 255, 0);
+  // WiFi.softAPConfig(IP, IP, NMask);
 
-  IP = WiFi.softAPIP();
+  IPAddress IP = WiFi.softAPIP();
   Serial.print("AP IP address: ");
   Serial.println(IP);
 }
@@ -360,20 +316,6 @@ void longPressHandler(){
 }
 
 void setup(){
-
-  /*
-  #define SD_MMC_D0_PIN  14
-  #define SD_MMC_D1_PIN  17
-  #define SD_MMC_D2_PIN  21
-  #define SD_MMC_D3_PIN  18
-  #define SD_MMC_CLK_PIN 12
-  #define SD_MMC_CMD_PIN 16
-  */
-  pinMode(SD_MMC_D0_PIN, INPUT);  // DIP switch position 3
-  pinMode(SD_MMC_D1_PIN, INPUT);  // DIP switch position 4
-  pinMode(SD_MMC_D2_PIN, INPUT);  // DIP switch position 1
-  pinMode(SD_MMC_D3_PIN, INPUT);  // DIP switch position 2
-
   Serial.begin(115200);
 
   button.attachClick(clickHandler);
@@ -391,8 +333,8 @@ void setup(){
   else lcd_orientation = data;
 
   //  Initialise TFT
-  pinMode(TFT_LEDA_PIN, OUTPUT); // 似乎沒必要，先留著
-  digitalWrite(TFT_LEDA_PIN, 0); // 似乎沒必要，先留著
+  pinMode(TFT_LEDA_PIN, OUTPUT); // 似乎沒必要，但先留著
+  digitalWrite(TFT_LEDA_PIN, 0); // 似乎沒必要，但先留著
   tft.init();
   tft.setTextFont(4);
 
@@ -407,19 +349,21 @@ void setup(){
 
   lcd_info(lcd_orientation, esp_now_enabled);
 
-  switch (state){
-  case 0: // normal
-    Serial.println("Start Normal State");
-    normal_setup();
-    break;
-  case 1: // esp_now
-    Serial.println("Start ESP-NOW State");
-    esp_now_setup(); // will not go to loop()
-    break;
-  default:
-    Serial.printf("Unknown state %d\n", state);
-    break;
-  }
+  normal_setup();
+
+  // switch (state){
+  // case 0: // normal
+  //   Serial.println("Start Normal State");
+  //   normal_setup();
+  //   break;
+  // case 1: // esp_now
+  //   Serial.println("Start ESP-NOW State");
+  //   esp_now_setup(); // will not go to loop()
+  //   break;
+  // default:
+  //   Serial.printf("Unknown state %d\n", state);
+  //   break;
+  // }
 }
 
 void broadcase_esp_now(){
