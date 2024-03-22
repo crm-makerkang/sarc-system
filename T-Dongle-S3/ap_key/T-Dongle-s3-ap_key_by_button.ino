@@ -40,8 +40,8 @@ OneButton button(BTN_PIN, true); // BTN_PIN is 0 defined in pin_config.h
 //     y += 8;                                                                                                                                          \
 //   } while (0);
 
-char ssid[20] = "ESP32-Access-Point";
-const char *password = "123456789";
+char ssid[20] = "UCARE_2AF0";
+const char *password = "11223344";
 byte setting_ssid, setting_channel;
 
 int connected_stations =0;
@@ -131,7 +131,14 @@ void main_screen(uint8_t lcd_orientation){
   print_to_LCD(ssid, 0, 0);
 
   tft.setTextColor(TFT_WHITE, TFT_BLACK);
-  print_to_LCD("Channel: "+String(read_channel()), 0, 29); 
+
+  //print_to_LCD("Channel: "+String(read_channel()), 0, 29); 
+
+  // fixed channel to 1
+  print_to_LCD("Channel: 1", 0, 29); 
+
+  tft.setTextColor(TFT_ORANGE, TFT_BLACK);
+  print_to_LCD("Clients: 0", 0, 58);
 }
 
 
@@ -158,7 +165,10 @@ void set_channel_screen(){
 void setup(){
   Serial.begin(115200);
 
+  // click for changing the display orientation
   button.attachClick(clickHandler);
+  
+  // long-press change the state
   button.attachLongPressStart(longPressHandler);
 
   button.setPressMs(1000); // long press time
@@ -195,17 +205,19 @@ void setup(){
   state=0; // 0: main, 1: setting ssid, 0: setting channel
 
   // read ssid_num and cheanel from EEPROM
-  ssid[0]='S'; ssid[1]='A'; ssid[2]='0'; ssid[3]='0'; 
-  ssid[4]=48+read_ssid_num(); ssid[5]=0;
+  // ssid[0]='S'; ssid[1]='A'; ssid[2]='0'; ssid[3]='0'; 
+  // ssid[4]=48+read_ssid_num(); ssid[5]=0;
 
-  Serial.println(ssid);
-  Serial.println(read_channel());
+  // Serial.println(ssid);
+  // Serial.println(read_channel());
 
   //bool softAP(const char* ssid, const char* passphrase = NULL, int channel = 1, int ssid_hidden = 0, int max_connection = 4);
   //WiFi.softAP(ssid, password); // Remove the password parameter, if you want the AP (Access Point) to be open
   // Channel 14 問題： ESP32-S3 若指定 Channel 14，會有 [  1191][E][WiFiAP.cpp:168] softAP(): set AP config failed
-  WiFi.softAP(ssid, password, read_channel(), 0, 10); // ssid, passphrase, channel, ssid_hidden, max_connection
-                                        // Remove the password parameter, if you want the AP (Access Point) to be open
+  // WiFi.softAP(ssid, password, read_channel(), 0, 10); // ssid, passphrase, channel, ssid_hidden, max_connection, Remove the password parameter, if you want the AP (Access Point) to be open
+  
+  // Fixed SSID and Channel
+  WiFi.softAP(ssid, password, 1, 0, 10); // ssid, passphrase, channel, ssid_hidden, max_connection, Remove the password parameter, if you want the AP (Access Point) to be open
 
   IPAddress IP = WiFi.softAPIP();
   Serial.print("AP IP address: ");
@@ -223,6 +235,7 @@ void loop(){
     if (WiFi.softAPgetStationNum()!=connected_stations) {
       connected_stations = WiFi.softAPgetStationNum();
       tft.setTextColor(TFT_ORANGE, TFT_BLACK);
+      tft.fillRect(0, 58, 240, 8, TFT_BLACK);
       print_to_LCD("Clients: "+ String(connected_stations), 0, 58);
     }
   }
